@@ -1,0 +1,24 @@
+
+=== Scenario 5: 狭窄通道绕行 ===
+cleanup_sim: 0
+0 leftover process(es)
+[INFO] [1783963983.226612369] [evaluate_drone]: Evaluation started: goal=(17.0, 5.0, 1.5), duration=150.0s
+[INFO] [1783963983.333190076] [evaluate_drone]: Loaded 97073 obstacle points
+[INFO] [1783964133.797595435] [evaluate_drone]: Exported metrics to /home/jungod/drone_ws/report/acceptance_runs/scenario_05_narrow_passage
+[INFO] [1783964133.798408424] [evaluate_drone]: mean_err=0.024 max_err=3.041 final_err=0.000
+cleanup_sim: 0
+0 leftover process(es)
+  -> pass pass=True
+
+=== Scenario 6: 稳定性展示 ===
+cleanup_sim: 0
+0 leftover process(es)
+[INFO] [1783964150.854258974] [evaluate_drone]: Evaluation started: goal=(0.0, 0.0, 1.5), duration=90.0s
+[INFO] [1783964150.855297312] [evaluate_drone]: Loaded 0 obstacle points
+[INFO] [1783964241.362944486] [evaluate_drone]: Exported metrics to /home/jungod/drone_ws/report/acceptance_runs/scenario_06_stability_demo
+[INFO] [1783964241.363385806] [evaluate_drone]: mean_err=0.204 max_err=0.303 final_err=0.176
+cleanup_sim: 0
+0 leftover process(es)
+  -> pass pass=True
+
+Report written to /home/jungod/drone_ws/report/acceptance_report.md

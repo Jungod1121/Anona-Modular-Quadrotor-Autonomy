@@ -1,0 +1,7 @@
+/**:
+  ros__parameters:
+    imu_noise_enable: false
+    imu_accel_noise_std: 0.02
+    imu_gyro_noise_std: 0.01
+    imu_accel_bias_rw: 1.0e-4
+    imu_gyro_bias_rw: 1.0e-5

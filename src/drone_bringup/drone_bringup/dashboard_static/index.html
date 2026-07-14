@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Drone Sim Control</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand-block">
+      <p class="brand">Drone WS</p>
+      <h1 data-i18n="title">Sim Control</h1>
+    </div>
+    <div class="top-right">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-btn" data-lang="en" id="langEn">EN</button>
+        <button type="button" class="lang-btn" data-lang="zh" id="langZh">中文</button>
+      </div>
+      <div class="run-pill" id="runPill" data-state="idle">
+        <span class="dot"></span>
+        <span id="runLabel">Idle</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel primary">
+      <h2 data-i18n="runMode">Mode</h2>
+      <div class="mode-row" id="modeRow" role="radiogroup">
+        <button type="button" class="chip mode-chip" data-mode="single" aria-checked="true" data-i18n="modeSingle">Single</button>
+        <button type="button" class="chip mode-chip" data-mode="multi" aria-checked="false" data-i18n="modeMulti">Multi</button>
+      </div>
+
+      <div id="singleBlock">
+        <h2 class="sub" data-i18n="planner">Planner</h2>
+        <p class="hint" data-i18n-html="plannerHint">Pick Path A / B / C, then Start.</p>
+        <div class="planner-grid" id="plannerGrid" role="radiogroup"></div>
+      </div>
+
+      <div id="multiBlock" hidden>
+        <h2 class="sub" data-i18n="multiMode">Multi mission</h2>
+        <p class="hint" data-i18n-html="multiHint">EGO-Swarm is the official multi core; shared-field / formation use homemade planners.</p>
+        <div class="planner-grid" id="multiGrid" role="radiogroup"></div>
+        <div class="row twin">
+          <label>
+            <span data-i18n="numDrones">Drones</span>
+            <input type="number" id="numDrones" value="2" min="2" max="3" step="1" />
+          </label>
+          <label>
+            <span data-i18n="formation">Formation</span>
+            <select id="formation">
+              <option value="v">v</option>
+              <option value="line">line</option>
+              <option value="column">column</option>
+              <option value="triangle">triangle</option>
+              <option value="diamond">diamond</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <h2 class="sub" data-i18n="map">Map</h2>
+      <p class="hint" data-i18n-html="mapHint">Official EGO or homemade maps. See <code>MAPS.md</code>.</p>
+      <div class="map-grid" id="mapGrid" role="radiogroup"></div>
+
+      <div class="row twin">
+        <label>
+          <span data-i18n="mapSeed">Map seed</span>
+          <input type="number" id="seed" value="1" min="0" step="1" />
+        </label>
+        <label>
+          <span data-i18n="maxVel">Max vel (m/s)</span>
+          <input type="number" id="maxVel" value="1.2" min="0.2" max="4" step="0.1" />
+        </label>
+      </div>
+      <label class="check">
+        <input type="checkbox" id="useRviz" checked />
+        <span data-i18n="useRviz">Launch RViz2 with the stack</span>
+      </label>
+
+      <div class="actions">
+        <button type="button" class="btn start" id="btnStart" data-i18n="start">Start</button>
+        <button type="button" class="btn ghost" id="btnRestart" data-i18n="restart">Restart</button>
+        <button type="button" class="btn stop" id="btnStop" data-i18n="stop">Stop</button>
+      </div>
+
+      <div class="cmd-box">
+        <div class="cmd-label" data-i18n="equivCmd">Equivalent command</div>
+        <code id="cmdPreview">—</code>
+      </div>
+    </section>
+
+    <section class="panel side">
+      <h2 data-i18n="live">Live</h2>
+      <dl class="telemetry" id="telemetry">
+        <div><dt data-i18n="position">Position</dt><dd id="pos">—</dd></div>
+        <div><dt data-i18n="velocity">Velocity</dt><dd id="vel">—</dd></div>
+        <div><dt data-i18n="uptime">Uptime</dt><dd id="uptime">—</dd></div>
+        <div><dt data-i18n="pid">PID</dt><dd id="pid">—</dd></div>
+      </dl>
+      <pre id="swarmPos" class="swarm-pos" hidden></pre>
+
+      <h2 class="sub" data-i18n="goal">Goal</h2>
+      <p class="hint goal-hint" data-i18n-html="goalHint">Publish goals in RViz with <strong>2D Goal Pose</strong>. Height uses cruise_height (default 1.0 m).</p>
+
+      <h2 class="sub" data-i18n="presets">Presets</h2>
+      <div class="preset-row">
+        <button type="button" class="chip" data-preset="cross" data-i18n="presetCross">Corridor ±15</button>
+        <button type="button" class="chip" data-preset="swarm" data-i18n="presetSwarm">EGO-Swarm ×2</button>
+        <button type="button" class="chip" data-preset="home" data-i18n="presetHome">Homemade defaults</button>
+      </div>
+    </section>
+
+    <section class="panel logs">
+      <div class="logs-head">
+        <h2 data-i18n="processLog">Process log</h2>
+        <button type="button" class="btn tiny ghost" id="btnClearLog" data-i18n="clearView">Clear view</button>
+      </div>
+      <pre id="logView" aria-live="polite"></pre>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span data-i18n="footerPrefix">Local only</span>
+    · <span id="hostHint"></span> ·
+    <span data-i18n="footerSuffix">plant stays custom (no SO3)</span>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

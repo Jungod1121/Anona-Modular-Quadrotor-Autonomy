@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>drone_map</name>
+  <version>0.1.0</version>
+  <description>Fixed-seed procedural obstacle map generator with connectivity check. PointCloud2 latch publishing pattern references MARSIM/pengyu_sim map_generator; obstacle layout is self-developed (not loaded from PCD).</description>
+  <maintainer email="student@example.com">drone_ws</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>pcl_conversions</depend>
+  <depend>PCL</depend>
+  <depend>Eigen3</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

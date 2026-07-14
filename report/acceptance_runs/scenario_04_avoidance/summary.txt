@@ -1,0 +1,10 @@
+samples: 3002
+mean_pos_err: 0.1294 m
+max_pos_err: 7.0328 m
+final_pos_err: 0.0000 m
+hover_pass_0.3m: True
+goal_pass_0.3m: True
+planner_success_ever: True
+final_planner_state: EXEC_TRAJ
+min_obstacle_distance: 0.5127 m
+avoidance_pass_0.35m: True

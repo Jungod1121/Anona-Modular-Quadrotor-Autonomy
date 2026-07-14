@@ -1,0 +1,13 @@
+
+=== Scenario 4: 静态避障 ===
+cleanup_sim: 0
+0 leftover process(es)
+[INFO] [1783963800.956618487] [evaluate_drone]: Evaluation started: goal=(17.0, 5.0, 1.5), duration=150.0s
+[INFO] [1783963801.060706046] [evaluate_drone]: Loaded 96008 obstacle points
+[INFO] [1783963951.538521887] [evaluate_drone]: Exported metrics to /home/jungod/drone_ws/report/acceptance_runs/scenario_04_avoidance
+[INFO] [1783963951.539124714] [evaluate_drone]: mean_err=0.168 max_err=7.940 final_err=0.000
+cleanup_sim: 0
+0 leftover process(es)
+  -> pass pass=True
+
+Report written to /home/jungod/drone_ws/report/acceptance_report.md

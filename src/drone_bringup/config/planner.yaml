@@ -1,0 +1,39 @@
+/**:
+  ros__parameters:
+    namespace: ""
+    resolution: 0.25
+    inflate_radius: 0.45
+    map_origin_x: -2.0
+    map_origin_y: -2.0
+    map_origin_z: 0.0
+    map_size_x: 24.0
+    map_size_y: 14.0
+    map_size_z: 3.0
+    replan_dist: 1.5
+    goal_tolerance: 0.35
+    local_goal_lookahead: 0.8
+    control_rate: 20.0
+    max_vel: 1.5
+    max_acc: 2.0
+    dist_threshold: 0.5
+    bspline_clearance_auto: true
+    bspline_ts: 0.25
+    cruise_z: 1.5
+    z_band: 0.35
+    vertical_cost_scale: 8.0
+    collision_horizon: 1.5
+    emergency_clearance: 0.12
+    replan_clearance: 0.25
+    emergency_recovery_sec: 1.0
+    safety_grace_sec: 1.0
+    replan_cooldown_sec: 2.0
+    execution_safety_enable: false
+    # Stable default: dense Grid/Dyn A* polyline + local_goal.
+    # Official EGO-Planner is available via ego_avoidance.launch.py (separate).
+    use_trajectory_cmd: false
+    yaw_lookahead: 0.6
+    use_dyn_astar: true
+    enable_bspline_opt: false
+    local_mapping_enable: false
+    local_mapping_raycast_clear: false
+    min_replan_interval_sec: 0.45
