@@ -1,0 +1,25 @@
+global_planning_node:
+  ros__parameters:
+    MapTopic: '/map_generator/global_cloud'
+    TargetTopic: '/drone/goal'
+    OdomTopic: '/drone/odom'
+    DilateRadius: 0.35
+    VoxelWidth: 0.25
+    MapBound: [-18.0, 18.0, -12.0, 12.0, 0.0, 4.0]
+    TimeoutRRT: 0.02
+    MaxVelMag: 1.5
+    MaxBdrMag: 2.1
+    MaxTiltAngle: 0.45
+    MinThrust: 2.0
+    MaxThrust: 20.0
+    VehicleMass: 1.0
+    GravAcc: 9.8
+    HorizDrag: 0.70
+    VertDrag: 0.80
+    ParasDrag: 0.01
+    SpeedEps: 0.0001
+    WeightT: 20.0
+    ChiVec: [1.0e+4, 1.0e+4, 1.0e+4, 1.0e+4, 1.0e+5]
+    SmoothingEps: 1.0e-2
+    IntegralIntervs: 16
+    RelCostTol: 1.0e-5

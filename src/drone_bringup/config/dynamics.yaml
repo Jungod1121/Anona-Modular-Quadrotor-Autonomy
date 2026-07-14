@@ -1,0 +1,31 @@
+/**:
+  ros__parameters:
+    mass: 1.0
+    gravity: 9.81
+    arm_length: 0.18
+    Ixx: 0.01
+    Iyy: 0.01
+    Izz: 0.02
+    k_F: 3.0e-5
+    k_M: 5.0e-7
+    tau_motor: 0.02
+    omega_min: 0.0
+    omega_max: 800.0
+    integration_rate: 500.0
+    publish_rate: 100.0
+    cmd_timeout: 0.5
+    init_x: 0.0
+    init_y: 0.0
+    init_z: 0.0
+    init_yaw: 0.0
+    wind_enable: false
+    wind_const_x: 0.3
+    wind_const_y: -0.2
+    wind_const_z: 0.0
+    wind_sin_amp: 0.15
+    wind_sin_freq: 0.25
+    imu_noise_enable: false
+    imu_accel_noise_std: 0.02
+    imu_gyro_noise_std: 0.01
+    imu_accel_bias_rw: 1.0e-4
+    imu_gyro_bias_rw: 1.0e-5

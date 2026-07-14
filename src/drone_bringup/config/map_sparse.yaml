@@ -1,0 +1,22 @@
+/**:
+  ros__parameters:
+    map_mode: sparse
+    seed: 42
+    max_attempts: 50
+    start_x: 0.0
+    start_y: 0.0
+    start_z: 1.5
+    goal_x: 0.0
+    goal_y: 0.0
+    goal_z: 1.5
+    safety_distance: 0.4
+    clearance_radius: 1.2
+    min_obstacle_spacing: 0.9
+    min_obstacle_radius: 0.12
+    max_obstacle_radius: 0.3
+    point_resolution: 0.08
+    downsample_voxel: 0.0
+    grid_resolution: 0.2
+    corridor_gap_width: 1.5
+    local_sense_radius: 0.0
+    local_sense_rate: 10.0

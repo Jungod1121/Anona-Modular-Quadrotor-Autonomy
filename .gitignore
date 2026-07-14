@@ -1,0 +1,11 @@
+build/
+install/
+log/
+*.pyc
+__pycache__/
+.vscode/
+*.bag
+*.csv
+scripts/output/
+
+.ros_log_tmp/

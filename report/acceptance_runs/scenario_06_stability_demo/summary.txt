@@ -1,0 +1,8 @@
+samples: 1801
+mean_pos_err: 0.2044 m
+max_pos_err: 0.3035 m
+final_pos_err: 0.1815 m
+hover_pass_0.3m: True
+goal_pass_0.3m: True
+planner_success_ever: False
+final_planner_state: 
