@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>decomp_rviz_plugins</name>
+  <version>0.0.0</version>
+  <description>Decomp ROS utils headers (RViz/PCL plugins stripped for drone_ws Path E)</description>
+  <maintainer email="ggeesara@gmail.com">Geesara</maintainer>
+  <license>BSD</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>decomp_util</depend>
+  <depend>decomp_ros_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

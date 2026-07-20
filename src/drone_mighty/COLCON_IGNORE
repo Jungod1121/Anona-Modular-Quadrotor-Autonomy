@@ -1,0 +1,2 @@
+# Unused duplicate adapter — production Path E uses mighty_vendor + mighty_cmd_bridge.
+# Kept for reference; excluded from colcon builds.

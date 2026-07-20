@@ -1,0 +1,15 @@
+{
+  "n_rays": 36,
+  "ray_max": 6.0,
+  "max_speed": 1.2,
+  "world_scale": 40.0,
+  "robot_r": 0.22,
+  "ray_width": 0.4,
+  "goal_tol": 0.7,
+  "action": "desired_velocity",
+  "horizon_s": 0.45,
+  "easy": false,
+  "n_obstacles": 55,
+  "world_size": 30.0,
+  "domain": "dense+forest+gate+corridor+maze"
+}

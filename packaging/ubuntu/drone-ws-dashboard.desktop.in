@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Drone WS Console
+Name[zh_CN]=无人机仿真控制台
+Comment=Local mission console for drone_ws (ROS 2 sim)
+Comment[zh_CN]=drone_ws 本地仿真控制台（启动并打开浏览器）
+Exec=@BIN@
+Icon=@ICON@
+Terminal=false
+Categories=Development;Science;Education;
+Keywords=drone;ros;sim;dashboard;planner;
+StartupNotify=true

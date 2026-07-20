@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>drone_exploration</name>
+  <version>0.1.0</version>
+  <description>
+    FUEL-style exploration (fog-of-war local sensing + frontier FSM).
+    Drives the shared plant/planner contract; does not vendor official FUEL binaries.
+  </description>
+  <maintainer email="student@example.com">drone_ws</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>sensor_msgs_py</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

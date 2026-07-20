@@ -1,132 +1,498 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN" data-ambiance="night" data-page="lab">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Drone Sim Control</title>
-  <link rel="stylesheet" href="/style.css" />
+  <meta name="color-scheme" content="dark light" />
+  <title>无人机仿真控制台 · Flight Deck</title>
+  <link rel="icon" type="image/png" href="/favicon.png?v=mascot1" />
+  <link rel="apple-touch-icon" href="/brand-mascot.png?v=mascot1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css?v=fpviz1" />
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('drone_dash_ambiance');
+        var amb = saved === 'day' || saved === 'night' ? saved : 'night';
+        document.documentElement.setAttribute('data-ambiance', amb);
+        var page = localStorage.getItem('drone_dash_page') || 'lab';
+        if (location.hash) page = location.hash.replace(/^#/, '') || page;
+        if (page === 'home') page = 'lab';
+        document.documentElement.setAttribute('data-page', page);
+      } catch (e) {
+        document.documentElement.setAttribute('data-ambiance', 'night');
+        document.documentElement.setAttribute('data-page', 'lab');
+      }
+    })();
+  </script>
 </head>
 <body>
-  <header class="top">
-    <div class="brand-block">
-      <p class="brand">Drone WS</p>
-      <h1 data-i18n="title">Sim Control</h1>
+  <div class="shell">
+    <img class="app-bg" id="appBg" src="/bg-15-sequoia-sunrise.png" alt="" aria-hidden="true" decoding="async" />
+    <script>
+      (function () {
+        try {
+          var bg = localStorage.getItem('drone_dash_bg');
+          if (bg && /^(\/|https?:|data:)/.test(bg)) {
+            document.getElementById('appBg').src = bg;
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <div class="app-bg-veil" aria-hidden="true"></div>
+    <div id="chromeLg" class="chrome-lg">
+      <!-- Safari-style inset sidebar: floating rectangle, nested panels -->
+      <aside class="rail" aria-label="Pages">
+        <div class="rail__scroll">
+          <section class="rail__panel rail__panel--brand">
+            <div class="rail__brand">
+              <img class="rail__logo" src="/brand-mascot.png?v=mascot1" width="40" height="40" alt="" decoding="async" />
+              <div>
+                <a class="rail__name" href="#lab" data-nav="lab" data-i18n="brandName">无人机仿真控制台</a>
+                <p class="rail__tag" data-i18n="brandTag">Flight Deck</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="rail__panel rail__panel--nav">
+            <p class="rail__section" data-i18n="navSectionMain">任务</p>
+            <div class="rail__stack">
+              <button type="button" class="rail__btn" data-nav="lab" title="Lab">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v6l4 8H5l4-8V3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                <span data-i18n="pageLab">实验</span>
+              </button>
+              <button type="button" class="rail__btn" data-nav="single" title="Single">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 5v2M12 17v2M5 12h2M17 12h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <span data-i18n="pageSingle">单机</span>
+              </button>
+              <button type="button" class="rail__btn" data-nav="multi" title="Multi">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="16" cy="8" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="16" cy="16" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                <span data-i18n="pageMulti">多机</span>
+              </button>
+              <button type="button" class="rail__btn" data-nav="guide" title="Guide">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 10v6M12 7.5h.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <span data-i18n="navGuide">指南</span>
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <section class="rail__panel rail__panel--foot">
+          <div class="rail__foot">
+            <span class="rail__avatar" aria-hidden="true">DW</span>
+            <div>
+              <strong data-i18n="brandName">无人机仿真控制台</strong>
+              <span id="hostHint" class="mono">local</span>
+            </div>
+          </div>
+        </section>
+      </aside>
     </div>
-    <div class="top-right">
-      <div class="lang-switch" role="group" aria-label="Language">
-        <button type="button" class="lang-btn" data-lang="en" id="langEn">EN</button>
-        <button type="button" class="lang-btn" data-lang="zh" id="langZh">中文</button>
-      </div>
-      <div class="run-pill" id="runPill" data-state="idle">
-        <span class="dot"></span>
-        <span id="runLabel">Idle</span>
-      </div>
-    </div>
-  </header>
 
-  <main class="layout">
-    <section class="panel primary">
-      <h2 data-i18n="runMode">Mode</h2>
-      <div class="mode-row" id="modeRow" role="radiogroup">
-        <button type="button" class="chip mode-chip" data-mode="single" aria-checked="true" data-i18n="modeSingle">Single</button>
-        <button type="button" class="chip mode-chip" data-mode="multi" aria-checked="false" data-i18n="modeMulti">Multi</button>
-      </div>
+    <div id="lg-main" class="app-main">
+      <div class="app-main-bg" aria-hidden="true"></div>
+      <!-- Deck bar stays CSS frost; pills inside use LiquidGlass at night. -->
+      <header class="deck-bar" id="topNav">
+        <div class="deck-lg" id="deckLg">
+          <h1 class="deck-bar__heading" id="pageTitle">验收实验</h1>
+          <span class="page-chip chrome-pill mono" id="pageChip" data-liquid="1" data-liquid-role="chip" data-no-drag>LAB</span>
+          <span class="deck-bar__grow" aria-hidden="true"></span>
+          <span class="live-pill chrome-pill" id="runPill" data-state="idle" data-liquid="1" data-liquid-role="chip" data-no-drag>
+            <i aria-hidden="true"></i>
+            <span id="runLabel">空闲</span>
+          </span>
+          <span class="deck-bar__clock mono" id="uptime">—</span>
+          <span class="deck-bar__grow" aria-hidden="true"></span>
+          <div class="bg-picker chrome-pill" id="bgPicker" data-liquid="1" data-liquid-role="button" data-no-drag>
+            <button type="button" class="bg-picker__toggle" id="btnBgPicker" aria-haspopup="dialog" aria-expanded="false" data-i18n="bgPicker">背景</button>
+            <div class="bg-picker__panel" id="bgPickerPanel" hidden role="dialog" aria-label="Background">
+              <header class="bg-picker__head">
+                <strong data-i18n="bgPickerTitle">背景图</strong>
+                <p class="muted" data-i18n="bgPickerHint">点选预设，或上传本地图片。</p>
+              </header>
+              <div class="bg-picker__grid" id="bgPickerGrid"></div>
+              <footer class="bg-picker__foot">
+                <label class="btn btn--ghost bg-picker__upload">
+                  <span data-i18n="bgUpload">上传图片</span>
+                  <input type="file" id="bgFileInput" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" hidden />
+                </label>
+                <button type="button" class="btn btn--ghost" id="btnBgReset" data-i18n="bgReset">默认</button>
+              </footer>
+            </div>
+          </div>
+          <div class="chrome-seg" role="group" aria-label="Ambiance" data-liquid="1" data-liquid-role="button" data-no-drag>
+            <button type="button" class="seg__btn" data-ambiance="day" id="ambDay" data-i18n="ambianceDay">日间</button>
+            <button type="button" class="seg__btn" data-ambiance="night" id="ambNight" data-i18n="ambianceNight">夜间</button>
+          </div>
+          <div class="chrome-seg" role="group" aria-label="Language" data-liquid="1" data-liquid-role="button" data-no-drag>
+            <button type="button" class="seg__btn lang-btn" data-lang="en" id="langEn">EN</button>
+            <button type="button" class="seg__btn lang-btn" data-lang="zh" id="langZh">中文</button>
+          </div>
+        </div>
+      </header>
 
-      <div id="singleBlock">
-        <h2 class="sub" data-i18n="planner">Planner</h2>
-        <p class="hint" data-i18n-html="plannerHint">Pick Path A / B / C, then Start.</p>
-        <div class="planner-grid" id="plannerGrid" role="radiogroup"></div>
-      </div>
+      <main class="workspace" id="workspace">
+      <!-- SINGLE -->
+      <section class="page" data-page="single" id="page-single">
+        <div class="mission-lg" id="missionLgSingle">
+          <section class="mission-shell liquid-panel--main mission-block mission-feather" id="plannerShell" data-liquid="1" data-liquid-role="panel" data-no-drag>
+            <header class="block-head">
+              <h2 data-i18n="planner">规划器</h2>
+              <p class="muted" data-i18n-html="plannerHint">选择路径 A–H，再点启动。</p>
+            </header>
+            <div class="preset-row preset-row--inline" id="singlePresets">
+              <button type="button" class="chip" data-preset="home" data-i18n="presetHome">Dyn-A* 默认</button>
+              <button type="button" class="chip" data-preset="cross" data-i18n="presetCross">走廊 ±15</button>
+              <button type="button" class="chip" data-preset="fuel" data-i18n="presetFuel">边界探索</button>
+            </div>
+            <div id="singleBlock">
+              <div id="plannerGroups" class="planner-groups"></div>
+            </div>
+          </section>
 
-      <div id="multiBlock" hidden>
-        <h2 class="sub" data-i18n="multiMode">Multi mission</h2>
-        <p class="hint" data-i18n-html="multiHint">EGO-Swarm is the official multi core; shared-field / formation use homemade planners.</p>
-        <div class="planner-grid" id="multiGrid" role="radiogroup"></div>
-        <div class="row twin">
-          <label>
-            <span data-i18n="numDrones">Drones</span>
-            <input type="number" id="numDrones" value="2" min="2" max="3" step="1" />
-          </label>
-          <label>
-            <span data-i18n="formation">Formation</span>
-            <select id="formation">
-              <option value="v">v</option>
-              <option value="line">line</option>
-              <option value="column">column</option>
-              <option value="triangle">triangle</option>
-              <option value="diamond">diamond</option>
-            </select>
+          <section class="mission-shell liquid-panel--main mission-block mission-feather" data-liquid-slot="goal" id="goalShell" data-liquid="1" data-liquid-role="panel" data-no-drag>
+            <header class="block-head">
+              <h2 data-i18n="goal">目标点</h2>
+            </header>
+            <p class="muted" id="goalHintDefault" data-i18n-html="goalHint">请在 RViz 用 <strong>2D Goal Pose</strong> 发布目标。</p>
+            <div id="exploreBlock" hidden>
+              <p class="muted" data-i18n-html="exploreHint">路径 D：点 <strong>开始探索</strong>触发边界前沿状态机。</p>
+              <button type="button" class="btn btn--go" id="btnExplore" data-i18n="startExplore">开始探索</button>
+              <dl class="metrics">
+                <div><dt data-i18n="exploreStatus">探索状态</dt><dd id="exploreStatus">—</dd></div>
+              </dl>
+            </div>
+            <!-- Path G PPO training docks here when that planner is selected -->
+            <div id="rlTrainSlot" class="rl-train-slot" hidden></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- MULTI -->
+      <section class="page" data-page="multi" id="page-multi">
+        <div class="mission-lg" id="missionLgMulti">
+          <section class="mission-shell liquid-panel--main mission-block mission-feather" id="multiBlock" data-liquid="1" data-liquid-role="panel" data-no-drag>
+            <header class="block-head">
+              <h2 data-i18n="multiMode">多机任务</h2>
+              <p class="muted" data-i18n-html="multiHint">请用本页：多机 → EGO-Swarm → 机数 → 启动。</p>
+            </header>
+            <div class="preset-row preset-row--inline">
+              <button type="button" class="chip" data-preset="swarm" data-i18n="presetSwarm">EGO-Swarm ×2</button>
+            </div>
+            <div class="choice-list" id="multiGrid" role="radiogroup"></div>
+          </section>
+          <section class="mission-shell liquid-panel--main mission-block mission-feather" id="multiFields" data-liquid="1" data-liquid-role="panel" data-no-drag>
+            <div class="fields">
+              <label>
+                <span data-i18n="numDrones">机数</span>
+                <input type="number" id="numDrones" value="2" min="2" max="20" step="1" />
+              </label>
+              <label>
+                <span data-i18n="formation">队形</span>
+                <select id="formation">
+                  <option value="v">V（楔形）</option>
+                  <option value="line">横排 line</option>
+                  <option value="column">纵列 column</option>
+                </select>
+              </label>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- Shared map deck: each host is its own LiquidGlass root so the unit
+           can move single↔multi without busting planner page caches. -->
+      <div id="mapPanelHost" class="map-liquid-host map-liquid-host--main mission-feather" hidden>
+        <div id="mapPanel" class="mission-shell liquid-panel--main map-panel map-panel--calc" data-liquid="1" data-liquid-role="panel" data-no-drag>
+          <header class="block-head">
+            <h2 data-i18n="map">地图</h2>
+            <p class="muted" data-i18n-html="mapHint">场景类型（随机森林、迷宫、通道…）。见 <code>MAPS.md</code>。</p>
+          </header>
+          <div class="choice-list choice-list--maps" id="mapGrid" role="radiogroup"></div>
+        </div>
+      </div>
+      <div id="mapFieldsHost" class="map-liquid-host map-liquid-host--main mission-feather" hidden>
+        <div id="mapFields" class="mission-shell liquid-panel--main map-panel-fields map-panel--calc" data-liquid="1" data-liquid-role="panel" data-no-drag>
+          <div class="fields">
+            <label>
+              <span data-i18n="mapSeed">地图种子</span>
+              <input type="number" id="seed" value="1" min="0" step="1" />
+            </label>
+            <label>
+              <span data-i18n="maxVel">最大速度 (m/s)</span>
+              <input type="number" id="maxVel" value="1.2" min="0.2" max="4" step="0.1" />
+            </label>
+          </div>
+          <label class="check">
+            <input type="checkbox" id="useRviz" checked />
+            <span data-i18n="useRviz">一并启动 RViz2</span>
           </label>
         </div>
       </div>
 
-      <h2 class="sub" data-i18n="map">Map</h2>
-      <p class="hint" data-i18n-html="mapHint">Official EGO or homemade maps. See <code>MAPS.md</code>.</p>
-      <div class="map-grid" id="mapGrid" role="radiogroup"></div>
+      <div id="xyTrackHost" class="map-liquid-host map-liquid-host--track mission-feather" hidden>
+      <aside class="frost-panel liquid-panel--map xy-track map-panel--calc" id="xyTrackPanel" data-liquid="1" data-liquid-role="panel" data-no-drag aria-label="Map top-down">
+        <div class="xy-track__head">
+          <h2 class="block__label" data-i18n="trackTitle">地图 · 俯视</h2>
+          <div class="xy-track__actions">
+            <div class="seg xy-track__orient" role="group" aria-label="Map orientation">
+              <button type="button" class="seg__btn is-active" id="btnMapHeading" data-i18n="trackHeading">机头朝上</button>
+              <button type="button" class="seg__btn" id="btnMapNorth" data-i18n="trackNorth">北朝上</button>
+            </div>
+            <span class="mono tiny" id="xyTrackHint">—</span>
+            <button type="button" class="btn btn--ghost btn--tiny" id="btnClearTrack" data-i18n="trackClear">清空轨迹</button>
+          </div>
+        </div>
+        <p class="muted tiny" data-i18n="trackHint">RViz 俯视 · 障碍 · 实际+规划轨迹</p>
+        <div class="xy-track__stage" id="xyTrackStage">
+          <canvas id="xyTrackCanvas" class="xy-track__canvas" width="512" height="320" aria-hidden="true"></canvas>
+          <div class="xy-track__resize" id="xyTrackResize" role="separator" aria-orientation="horizontal" title="Resize map height"></div>
+        </div>
+        <!-- Start / stop / restart — under the map on 单机 / 多机 -->
+        <div class="mission-run-bar" id="missionRunBar">
+          <div class="mission-run-bar__copy">
+            <strong data-i18n="missionRunTitle">仿真控制</strong>
+            <p class="muted" data-i18n="missionRunHint">启动 / 停止本页单机或多机任务。</p>
+          </div>
+          <div class="mission-run-bar__actions">
+            <button type="button" class="btn btn--ghost btn--warn" id="btnStop" data-i18n="stop">停止</button>
+            <button type="button" class="btn btn--ghost" id="btnRestart" data-i18n="restart">重启</button>
+            <button type="button" class="btn btn--go" id="btnStart" data-i18n="start">启动</button>
+          </div>
+        </div>
 
-      <div class="row twin">
-        <label>
-          <span data-i18n="mapSeed">Map seed</span>
-          <input type="number" id="seed" value="1" min="0" step="1" />
-        </label>
-        <label>
-          <span data-i18n="maxVel">Max vel (m/s)</span>
-          <input type="number" id="maxVel" value="1.2" min="0.2" max="4" step="0.1" />
-        </label>
+        <!-- Compact live monitor — under the map (also docks into lab when useful) -->
+        <div class="monitor-dock" id="monitorDock">
+          <header class="monitor-dock__head">
+            <h2 class="block__label" data-i18n="pageMonitor">监控</h2>
+            <p class="muted tiny" data-i18n="homeMonitorDesc">遥测、诊断、进程日志与等效命令。</p>
+          </header>
+          <dl class="telem telem--compact" id="telemetryStrip">
+            <div>
+              <dt data-i18n="position">位置</dt>
+              <dd class="mono" id="pos">—</dd>
+            </div>
+            <div>
+              <dt data-i18n="velocity">速度</dt>
+              <dd class="mono" id="vel">—</dd>
+            </div>
+            <div>
+              <dt data-i18n="warnings">告警</dt>
+              <dd id="warnings">—</dd>
+            </div>
+          </dl>
+          <pre id="swarmPos" class="mono swarm-pos" hidden></pre>
+          <dl class="metrics metrics--compact" id="diagMetrics">
+            <div><dt data-i18n="diagState">状态</dt><dd id="diagState">—</dd></div>
+            <div><dt data-i18n="diagFallback">回退</dt><dd id="diagFallback">—</dd></div>
+            <div><dt data-i18n="diagReason">原因</dt><dd id="diagReason">—</dd></div>
+            <div><dt data-i18n="diagClearance">净空</dt><dd id="diagClearance">—</dd></div>
+            <div><dt data-i18n="diagSolve">求解</dt><dd id="diagSolve">—</dd></div>
+            <div><dt data-i18n="pid">PID</dt><dd id="pid">—</dd></div>
+          </dl>
+          <div class="monitor-dock__cmd">
+            <span class="muted tiny" data-i18n="equivCmd">等效命令</span>
+            <code id="cmdPreview" class="mono cmd-preview">—</code>
+          </div>
+          <div class="monitor-dock__log" id="logsFold">
+            <div class="fold__head--row">
+              <h3 class="block__label" data-i18n="processLog">进程日志</h3>
+              <button type="button" class="btn btn--ghost btn--tiny" id="btnClearLog" data-i18n="clearView">清空显示</button>
+            </div>
+            <pre id="logView" aria-live="polite"></pre>
+          </div>
+        </div>
+      </aside>
       </div>
-      <label class="check">
-        <input type="checkbox" id="useRviz" checked />
-        <span data-i18n="useRviz">Launch RViz2 with the stack</span>
-      </label>
 
-      <div class="actions">
-        <button type="button" class="btn start" id="btnStart" data-i18n="start">Start</button>
-        <button type="button" class="btn ghost" id="btnRestart" data-i18n="restart">Restart</button>
-        <button type="button" class="btn stop" id="btnStop" data-i18n="stop">Stop</button>
-      </div>
+      <!-- LAB -->
+      <section class="page page--lab" data-page="lab" id="page-lab">
+        <header class="page-hero page-hero--compact">
+          <p class="page-hero__eyebrow" data-i18n="pageLab">实验</p>
+          <h1 data-i18n="sectionExperiments">实验 / 验收</h1>
+          <p class="muted" data-i18n-html="expHint">在本页直接跑六项验收：可全部一起测，也可单独测某一个场景。要看飞行请勾选下方 RViz。</p>
+        </header>
+        <div class="lab-layout lab-lg" id="labLg">
+          <section class="frost-panel lab-panel mission-feather" data-liquid="1" data-liquid-role="panel" data-no-drag>
+            <label class="check check--accent" id="accRvizLabel">
+              <input type="checkbox" id="accUseRviz" checked />
+              <span data-i18n="accUseRviz">验收时打开 RViz2（实时查看）</span>
+            </label>
+            <p class="muted tiny" id="accRunHint" hidden></p>
+            <div class="btn-row">
+              <button type="button" class="btn btn--go" id="btnAccAll" data-i18n="accRunAll">运行全部 6 项</button>
+              <button type="button" class="btn btn--warn" id="btnAccStop" data-i18n="accStop">停止验收</button>
+            </div>
+            <div class="progress" id="accProgress" hidden>
+              <div class="progress__meta">
+                <span data-i18n="accScore">最近结果</span>
+                <span class="mono" id="accProgressLabel">—</span>
+              </div>
+              <div class="progress__track" aria-hidden="true">
+                <div class="progress__fill" id="accProgressFill" style="width:0%"></div>
+              </div>
+            </div>
+            <dl class="metrics metrics--glass">
+              <div><dt data-i18n="accState">验收状态</dt><dd id="accState">—</dd></div>
+              <div><dt data-i18n="accScore">最近结果</dt><dd id="accScore">—</dd></div>
+            </dl>
+            <ul class="acc-list" id="accScenarioList" role="list"></ul>
+            <p class="muted tiny" id="accRvizHint" hidden></p>
+            <pre id="accLog" class="mono log-pane" hidden></pre>
+            <p class="muted tiny"><span data-i18n="reportDir">报告目录</span>: <code class="mono" id="reportDir">report/</code></p>
+            <ul class="cmd-list">
+              <li>
+                <code class="mono cmd-snippet" id="cmdBatchDry">python3 scripts/run_batch_matrix.py --dry-run</code>
+                <button type="button" class="btn btn--ghost btn--tiny" data-copy="cmdBatchDry" data-i18n="copyCmd">复制</button>
+              </li>
+              <li>
+                <code class="mono cmd-snippet" id="cmdAcceptance">python3 scripts/run_acceptance.py</code>
+                <button type="button" class="btn btn--ghost btn--tiny" data-copy="cmdAcceptance" data-i18n="copyCmd">复制</button>
+              </li>
+            </ul>
+          </section>
+          <section class="frost-panel lab-panel lab-panel--side mission-feather" data-liquid="1" data-liquid-role="panel" data-no-drag>
+            <h2 class="block__label" data-i18n="sectionResults">结果历史</h2>
+            <ul class="report-list" id="reportList" aria-live="polite">
+              <li class="muted" data-i18n="reportsLoading">加载中…</li>
+            </ul>
+            <div id="monitorLabSlot" class="monitor-lab-slot" hidden></div>
+          </section>
+        </div>
+      </section>
 
-      <div class="cmd-box">
-        <div class="cmd-label" data-i18n="equivCmd">Equivalent command</div>
-        <code id="cmdPreview">—</code>
-      </div>
-    </section>
+      <!-- GUIDE — in-app how-to for Flight Deck -->
+      <section class="page page--guide" data-page="guide" id="page-guide">
+        <header class="page-hero page-hero--compact">
+          <p class="page-hero__eyebrow" data-i18n="navGuide">指南</p>
+          <h1 data-i18n="guideTitle">怎么用本控制台</h1>
+          <p class="muted" data-i18n="guideLead">留在应用内学习：实验、单机、多机与本指南。不必再打开外部文档。</p>
+        </header>
+        <div class="guide-layout">
+          <nav class="guide-toc frost-panel" aria-label="Guide sections">
+            <p class="block__label" data-i18n="guideToc">本页目录</p>
+            <a href="#guide-start" data-i18n="guideTocStart">1. 先认识界面</a>
+            <a href="#guide-chrome" data-i18n="guideTocChrome">2. 背景 / 亮暗 / 语言</a>
+            <a href="#guide-single" data-i18n="guideTocSingle">3. 单机怎么飞</a>
+            <a href="#guide-multi" data-i18n="guideTocMulti">4. 多机怎么跑</a>
+            <a href="#guide-map" data-i18n="guideTocMap">5. 地图与俯视</a>
+            <a href="#guide-lab" data-i18n="guideTocLab">6. 验收实验</a>
+            <a href="#guide-tips" data-i18n="guideTocTips">7. 常见问题</a>
+          </nav>
+          <div class="guide-body">
+            <article class="frost-panel guide-card" id="guide-start">
+              <h2 data-i18n="guideStartTitle">1. 先认识界面</h2>
+              <p data-i18n="guideStartP1">左侧是任务导航：实验、单机、多机、指南。点哪一页，中间就切换到对应任务，不用离开本窗口。</p>
+              <ul class="guide-list">
+                <li data-i18n-html="guideStartLi1"><strong>实验</strong>：跑六项验收，看结果与日志（默认首页）。</li>
+                <li data-i18n-html="guideStartLi2"><strong>单机</strong>：选规划器、选地图、设目标，再启动仿真。</li>
+                <li data-i18n-html="guideStartLi3"><strong>多机</strong>：选协同模式、机数 / 队形、地图，再启动。</li>
+                <li data-i18n-html="guideStartLi4"><strong>指南</strong>：本页说明，随时查阅怎么用控制台。</li>
+              </ul>
+            </article>
+            <article class="frost-panel guide-card" id="guide-chrome">
+              <h2 data-i18n="guideChromeTitle">2. 背景 / 亮暗 / 语言</h2>
+              <p data-i18n="guideChromeP1">顶栏右侧可随时改外观，不影响仿真配置：</p>
+              <ul class="guide-list">
+                <li data-i18n-html="guideChromeLi1"><strong>背景</strong>：点预设缩略图，或上传本地图片。</li>
+                <li data-i18n-html="guideChromeLi2"><strong>日间 / 夜间</strong>：日间为 CSS 毛玻璃，夜间启用液态玻璃。</li>
+                <li data-i18n-html="guideChromeLi3"><strong>EN / 中文</strong>：切换界面语言，选择会记住。</li>
+              </ul>
+            </article>
+            <article class="frost-panel guide-card" id="guide-single">
+              <h2 data-i18n="guideSingleTitle">3. 单机怎么飞</h2>
+              <ol class="guide-steps">
+                <li data-i18n-html="guideSingleS1">打开<strong>单机</strong>页。</li>
+                <li data-i18n-html="guideSingleS2">在「规划器」大卡片里点选一条路径（A–H）。</li>
+                <li data-i18n-html="guideSingleS3">在「地图」卡片里选场景（也可改种子 / 最大速度）。</li>
+                <li data-i18n-html="guideSingleS4">右侧点<strong>启动</strong>。需要看 3D 时勾选 RViz。</li>
+                <li data-i18n-html="guideSingleS5">在 RViz 用 <strong>2D Goal Pose</strong> 发目标；俯视面板会显示障碍与轨迹。</li>
+                <li data-i18n-html="guideSingleS6">结束用<strong>停止</strong>；要重来点<strong>重启</strong>。</li>
+              </ol>
+              <p class="muted tiny" data-i18n="guideSingleHint">提示：单机页顶部的预设（如 Dyn-A*、走廊）会自动选好规划器 + 地图。</p>
+            </article>
+            <article class="frost-panel guide-card" id="guide-multi">
+              <h2 data-i18n="guideMultiTitle">4. 多机怎么跑</h2>
+              <ol class="guide-steps">
+                <li data-i18n-html="guideMultiS1">打开<strong>多机</strong>页。</li>
+                <li data-i18n-html="guideMultiS2">选任务：EGO-Swarm / 共享空域避障 / 编队。</li>
+                <li data-i18n-html="guideMultiS3">设机数与队形（若该模式需要）。</li>
+                <li data-i18n-html="guideMultiS4">选地图后点<strong>启动</strong>。</li>
+              </ol>
+            </article>
+            <article class="frost-panel guide-card" id="guide-map">
+              <h2 data-i18n="guideMapTitle">5. 地图与俯视</h2>
+              <p data-i18n="guideMapP1">单机 / 多机页右侧是「地图 · 俯视」：障碍、实际轨迹与规划轨迹叠在一起。可切换「机头朝上 / 北朝上」，拖底边改高度。</p>
+              <p data-i18n="guideMapP2">下方监控区显示位置、速度、告警、FSM 与日志。仿真控制条位于监控区上方：停止 / 重启 / 启动。</p>
+            </article>
+            <article class="frost-panel guide-card" id="guide-lab">
+              <h2 data-i18n="guideLabTitle">6. 验收实验</h2>
+              <ol class="guide-steps">
+                <li data-i18n-html="guideLabS1">打开<strong>实验</strong>页。</li>
+                <li data-i18n-html="guideLabS2">需要观看时勾选「验收时打开 RViz2」。</li>
+                <li data-i18n-html="guideLabS3">点击<strong>运行全部 6 项</strong>，或在列表里单项「运行」。</li>
+                <li data-i18n-html="guideLabS4">右侧看结果历史；报告目录显示在页内。</li>
+              </ol>
+            </article>
+            <article class="frost-panel guide-card" id="guide-tips">
+              <h2 data-i18n="guideTipsTitle">7. 常见问题</h2>
+              <ul class="guide-list">
+                <li data-i18n-html="guideTipsLi1"><strong>点启动没反应</strong>：看进程日志；确认本机 ROS / 工作空间已按 README 装好。</li>
+                <li data-i18n-html="guideTipsLi2"><strong>俯视空白</strong>：先启动仿真，等地图点云上来；状态会提示「等待地图」。</li>
+                <li data-i18n-html="guideTipsLi3"><strong>背景换不了</strong>：硬刷新一次；大图上传后稍等加载。</li>
+                <li data-i18n-html="guideTipsLi4"><strong>只想看界面、不飞</strong>：仍可浏览各页与预设；启动才会拉起仿真进程。</li>
+              </ul>
+              <p class="muted tiny" data-i18n="guideTipsFoot">本指南就在控制台里。侧栏点「指南」随时回来，不必另开浏览器页。</p>
+            </article>
+          </div>
+        </div>
+      </section>
 
-    <section class="panel side">
-      <h2 data-i18n="live">Live</h2>
-      <dl class="telemetry" id="telemetry">
-        <div><dt data-i18n="position">Position</dt><dd id="pos">—</dd></div>
-        <div><dt data-i18n="velocity">Velocity</dt><dd id="vel">—</dd></div>
-        <div><dt data-i18n="uptime">Uptime</dt><dd id="uptime">—</dd></div>
-        <div><dt data-i18n="pid">PID</dt><dd id="pid">—</dd></div>
-      </dl>
-      <pre id="swarmPos" class="swarm-pos" hidden></pre>
+      <!-- Path G / H train panel — docks under goal when Path G or H is selected -->
+      <section class="frost-panel train-panel" id="rlBlock" hidden>
+        <header class="block-head">
+          <h2 data-i18n="sectionTraining">训练进度</h2>
+          <p class="muted" data-i18n-html="rlTrainHint">选中路径 G / H 后可用：训练局部规划器。与仿真启动相互独立。</p>
+        </header>
+        <div class="btn-row">
+          <button type="button" class="btn btn--go" id="btnRlTrain" data-i18n="startRlTrain">开始训练</button>
+          <button type="button" class="btn btn--warn" id="btnRlStop" data-i18n="stopRlTrain">停止训练</button>
+        </div>
+        <div class="progress" id="rlProgress" hidden>
+          <div class="progress__meta">
+            <span data-i18n="rlSuccess">当前成功率</span>
+            <span class="mono" id="rlProgressLabel">—</span>
+          </div>
+          <div class="progress__track" aria-hidden="true">
+            <div class="progress__fill progress__fill--accent" id="rlProgressFill" style="width:0%"></div>
+          </div>
+        </div>
+        <dl class="metrics metrics--glass">
+          <div><dt data-i18n="rlTrainState">训练状态</dt><dd id="rlTrainState">—</dd></div>
+          <div><dt data-i18n="rlSuccess">当前成功率</dt><dd id="rlSuccess">—</dd></div>
+          <div><dt data-i18n="rlBest">最佳成功率</dt><dd id="rlBest">—</dd></div>
+          <div><dt data-i18n="rlTarget">目标</dt><dd id="rlTarget">—</dd></div>
+          <div><dt data-i18n="rlSteps">步数</dt><dd id="rlSteps">—</dd></div>
+          <div><dt data-i18n="rlCheckpoint">检查点</dt><dd id="rlCheckpoint">—</dd></div>
+        </dl>
+        <pre id="rlTrainLog" class="mono log-pane" hidden></pre>
+      </section>
 
-      <h2 class="sub" data-i18n="goal">Goal</h2>
-      <p class="hint goal-hint" data-i18n-html="goalHint">Publish goals in RViz with <strong>2D Goal Pose</strong>. Height uses cruise_height (default 1.0 m).</p>
+      </main>
 
-      <h2 class="sub" data-i18n="presets">Presets</h2>
-      <div class="preset-row">
-        <button type="button" class="chip" data-preset="cross" data-i18n="presetCross">Corridor ±15</button>
-        <button type="button" class="chip" data-preset="swarm" data-i18n="presetSwarm">EGO-Swarm ×2</button>
-        <button type="button" class="chip" data-preset="home" data-i18n="presetHome">Homemade defaults</button>
-      </div>
-    </section>
+      <footer class="deck-foot">
+        <p>
+          <span data-i18n="footerPrefix">仅本地</span>
+          ·
+          <span data-i18n="footerSuffix">级联 PID 被控对象 · 无 SO3</span>
+        </p>
+      </footer>
+    </div>
+  </div>
 
-    <section class="panel logs">
-      <div class="logs-head">
-        <h2 data-i18n="processLog">Process log</h2>
-        <button type="button" class="btn tiny ghost" id="btnClearLog" data-i18n="clearView">Clear view</button>
-      </div>
-      <pre id="logView" aria-live="polite"></pre>
-    </section>
-  </main>
-
-  <footer class="foot">
-    <span data-i18n="footerPrefix">Local only</span>
-    · <span id="hostHint"></span> ·
-    <span data-i18n="footerSuffix">plant stays custom (no SO3)</span>
-  </footer>
-
-  <script src="/app.js"></script>
+  <script src="/app.js?v=fpviz1"></script>
+  <script type="module" src="/liquid-boot.js?v=fpviz1"></script>
 </body>
 </html>

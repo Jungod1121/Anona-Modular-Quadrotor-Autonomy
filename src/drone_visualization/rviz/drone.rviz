@@ -5,10 +5,12 @@ Panels:
       Expanded:
         - /Global Options1
         - /Grid1
-        - /Obstacles1
+        - /OccupancyInflate1
         - /DroneBody1
         - /ActualPath1
         - /PlannedTrajectory1
+        - /LocalGoal1
+        - /MissionGoal1
       Splitter Ratio: 0.5
   - Class: rviz_common/Selection
     Name: Selection
@@ -48,7 +50,7 @@ Visualization Manager:
       Plane Cell Count: 48
       Reference Frame: map
       Value: true
-    - Alpha: 0.85
+    - Alpha: 0.35
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
         Max Value: 3
@@ -57,18 +59,18 @@ Visualization Manager:
       Axis: Z
       Channel Name: intensity
       Class: rviz_default_plugins/PointCloud2
-      Color: 200; 80; 60
+      Color: 255; 255; 255
       Color Transformer: FlatColor
       Decay Time: 0
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
-      Name: Obstacles
+      Name: ObstaclesGlobal
       Position Transformer: XYZ
       Selectable: true
-      Size (Pixels): 4
-      Size (m): 0.08
+      Size (Pixels): 2
+      Size (m): 0.05
       Style: Flat Squares
       Topic:
         Depth: 5
@@ -78,8 +80,39 @@ Visualization Manager:
         Value: /map/obstacles
       Use Fixed Frame: true
       Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 2.8
+        Min Value: 0.0
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz_default_plugins/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: false
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: OccupancyInflate
+      Position Transformer: XYZ
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.1
+      Style: Flat Squares
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /planner/occupancy_inflate
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: false
     - Class: rviz_default_plugins/MarkerArray
-      Enabled: true
+      Enabled: false
       Name: ObstacleMarkers
       Namespaces:
         boundary: true
@@ -91,7 +124,7 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /map/obstacles_markers
-      Value: true
+      Value: false
     - Class: rviz_default_plugins/MarkerArray
       Enabled: true
       Name: DroneBody
@@ -156,10 +189,41 @@ Visualization Manager:
       Shaft Length: 0.1
       Topic:
         Depth: 5
-        Durability Policy: Volatile
+        Durability Policy: Transient Local
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /planner/trajectory
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: LocalGoal
+      Namespaces:
+        {}
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /planner/local_goal_marker
+      Value: true
+    - Alpha: 1
+      Axes Length: 0.5
+      Axes Radius: 0.05
+      Class: rviz_default_plugins/Pose
+      Color: 85; 255; 127
+      Enabled: true
+      Head Length: 0.25
+      Head Radius: 0.12
+      Name: MissionGoal
+      Shaft Length: 0.5
+      Shaft Radius: 0.06
+      Shape: Arrow
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /drone/goal
       Value: true
     - Angle Tolerance: 0.1
       Class: rviz_default_plugins/Odometry

@@ -1,15 +1,18 @@
 # Available obstacle maps
 
-Catalog of portable scenes for Path A/B/C. Selected with:
+Catalog of portable scenes for Path A–H / Mode D. Selected with:
 
 ```bash
 ros2 launch drone_bringup planner_sim.launch.py planner:=gcopter map:=official_forest
 ros2 run drone_bringup dashboard   # map picker in the web UI
 ```
 
-All maps are **procedural point clouds** (no PCD scene files). A `cloud_bridge`
-republishes onto both `/map/obstacles` (Path A) and `/map_generator/global_cloud`
-(Path B/C), so any planner can consume any map.
+All maps are **procedural point clouds** (no PCD scene files). A `map_adapter`
+node republishes onto both `/map/obstacles` and `/map_generator/global_cloud`,
+publishes a coarse `/map/occupancy` slice at cruise height, and `/map/metadata`
+(JSON bounds / difficulty / seed). Official maps get an AABB boundary wall cloud
+when the generator omits outer walls. The legacy `cloud_bridge` entry point remains
+available for minimal relay-only setups.
 
 ## Pose / AABB (why forest works, mockamap used to fail)
 
@@ -46,9 +49,29 @@ Sources: `src/ego_vendor/map_generator`, `src/ego_vendor/mockamap`.
 |----|---------|-----------|
 | **dense_field** | `drone_map` | Cylinders/spheres + boundary walls (Path A default) |
 | **sparse** | `drone_map` | Few obstacles, open field |
-| **narrow_corridor** | `drone_map` | Gate + side clutter |
+| **narrow_corridor** | `drone_map` | S-bend: 3 staggered 1.2–1.8 m doors + side clutter (PLAN §5.3) |
 | **ego_maze2d_port** | `drone_map` | Port of mockamap maze2D into homemade frame |
 | **ego_forest_port** | `drone_map` | Port of forest cylinders+rings into homemade frame |
+
+## Tier presets (review dataset)
+
+Curated difficulty tiers — **additive** presets; legacy map IDs above are unchanged.
+
+| ID | Tier | Based on | `difficulty` | Default `seed` |
+|----|------|----------|--------------|----------------|
+| **tier_simple_open** | simple | `sparse` | simple | 42 |
+| **tier_medium_corridor** | medium | `narrow_corridor` | medium | 42 |
+| **tier_complex_forest** | complex | `official_forest` | complex | 1 |
+| **tier_extreme_maze** | extreme | `official_maze2d` | extreme | 510 |
+
+Optional larger variants: **forest_wide** (denser `ego_dense_forest`), **dense_asymmetric**
+(diagonal start–goal through `dense_field`).
+
+### Per-map metadata fields
+
+Every catalog entry includes: `difficulty` (`simple` \| `medium` \| `complex` \| `extreme`),
+`seed`, `obstacle_family`, `safety_radius`, and `bounds` (`xmin`…`zmax`). Published on
+`/map/metadata` when `map_adapter` is running.
 
 ## Defaults
 
@@ -57,6 +80,13 @@ Sources: `src/ego_vendor/map_generator`, `src/ego_vendor/mockamap`.
 | homemade | `dense_field` |
 | ego | `official_forest` |
 | gcopter | `official_forest` |
+| fuel_explore | `narrow_corridor` (homemade gate corridor; not FUEL upstream warehouse) |
+| vfh | `dense_field` |
+| sac | `dense_field` |
+
+Path D is **FUEL-style**, not upstream FUEL: homemade maps + simplified fog/frontier
+FSM + EGO trajectories. The original FUEL demo uses its own PCD warehouse (20×12 m)
+and Fast-Planner hierarchy — we do **not** ship that scene or planner stack.
 
 Aliases: `forest`→`official_forest`, `perlin`→`official_perlin`, `maze2d`→`official_maze2d`,
 `narrow`→`narrow_corridor`, `auto`→planner default.

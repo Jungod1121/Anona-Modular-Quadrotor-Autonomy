@@ -7,7 +7,7 @@ from ament_index_python.packages import get_package_prefix, get_package_share_di
 from launch.actions import ExecuteProcess, TimerAction
 from launch_ros.actions import Node
 
-from drone_bringup.maps_catalog import MAPS, normalize_map_id
+from drone_bringup.maps_catalog import MAPS, normalize_map_id, pose_for_map
 
 
 def workspace_root() -> str:
@@ -101,6 +101,33 @@ def map_node(
     )
 
 
+def map_adapter_node(input_topic: str, map_id: str, seed: int = 1, planner: str = '') -> Node:
+    mid = normalize_map_id(map_id, planner=planner)
+    meta = MAPS[mid]
+    pose = pose_for_map(mid, planner=planner)
+    return Node(
+        package='drone_bringup',
+        executable='map_adapter',
+        name='map_adapter',
+        output='screen',
+        parameters=[{
+            'input_topic': input_topic,
+            'output_topics': [
+                '/map/obstacles',
+                '/map_generator/global_cloud',
+            ],
+            'frame_id': 'map',
+            'map_id': mid,
+            'seed': int(seed),
+            'cruise_z': float(pose['init_z']),
+            'z_band': 0.55,
+            'grid_resolution': 0.25,
+            'ensure_boundary': meta['family'] == 'official',
+            'boundary_resolution': 0.15,
+        }],
+    )
+
+
 def cloud_bridge_node(input_topic: str) -> Node:
     return Node(
         package='drone_bringup',
@@ -186,7 +213,8 @@ def _mockamap_node(mock_type: int, seed: int) -> Node:
             'x_length': 20,
             'y_length': 20,
             'z_length': 2,
-            'road_width': 1.2,
+            # 1.5 m lanes leave margin after Path A inflate / EGO dist0.
+            'road_width': 1.5,
             'add_wall_x': 0,
             'add_wall_y': 0,
             'maze_type': 1,
@@ -216,26 +244,30 @@ def map_stack(
     map_id: str,
     seed: int = 1,
     planner: str = '',
+    map_extra: Optional[Dict[str, Any]] = None,
 ) -> Tuple[List[Any], Dict[str, float]]:
     """Build obstacle map nodes + recommended init/goal pose for map_id."""
     mid = normalize_map_id(map_id, planner=planner)
     meta = MAPS[mid]
-    pose = dict(meta['pose'])
+    pose = pose_for_map(mid, planner=planner)
     nodes: List[Any] = []
 
     backend = meta['backend']
     if backend == 'drone_map':
+        map_params: Dict[str, Any] = {'seed': int(seed)}
+        if map_extra:
+            map_params.update(map_extra)
         nodes.append(map_node(
             meta['config'],
-            extra_params={'seed': int(seed)},
+            extra_params=map_params,
         ))
-        nodes.append(cloud_bridge_node('/map/obstacles'))
+        nodes.append(map_adapter_node('/map/obstacles', mid, seed=seed, planner=planner))
     elif backend == 'random_forest':
         nodes.append(_random_forest_node(int(seed)))
-        nodes.append(cloud_bridge_node('/map_generator/global_cloud'))
+        nodes.append(map_adapter_node('/map_generator/global_cloud', mid, seed=seed, planner=planner))
     elif backend == 'mockamap':
         nodes.append(_mockamap_node(int(meta['mock_type']), int(seed)))
-        nodes.append(cloud_bridge_node('/mock_map'))
+        nodes.append(map_adapter_node('/mock_map', mid, seed=seed, planner=planner))
     else:
         raise RuntimeError(f'Unsupported map backend: {backend}')
 
@@ -350,3 +382,231 @@ def evaluate_process(
         period=delay_sec,
         actions=[ExecuteProcess(cmd=cmd, output='screen')],
     )
+
+
+def rl_planner_root() -> Tuple[str, bool]:
+    """Return (package root, is_ament_installed). Prefer src/ for live checkpoints."""
+    src = os.path.join(workspace_root(), 'src', 'drone_rl_planner')
+    try:
+        share = get_package_share_directory('drone_rl_planner')
+        # Prefer src when it has a newer / existing checkpoint
+        src_ckpt = os.path.join(src, 'checkpoints', 'sb3_ppo_local.zip')
+        share_ckpt = os.path.join(share, 'checkpoints', 'sb3_ppo_local.zip')
+        if os.path.isfile(src_ckpt):
+            if (not os.path.isfile(share_ckpt)
+                    or os.path.getmtime(src_ckpt) >= os.path.getmtime(share_ckpt)):
+                return src, False
+        return share, True
+    except Exception:
+        return src, False
+
+
+def resolve_rl_checkpoint(root: str) -> str:
+    """Best checkpoint path for SB3 PPO (with or without .zip suffix)."""
+    # Always also check workspace src/
+    src_root = os.path.join(workspace_root(), 'src', 'drone_rl_planner')
+    for base in (root, src_root):
+        ckpt = os.path.join(base, 'checkpoints', 'sb3_ppo_local')
+        for cand in (ckpt + '.zip', ckpt, os.path.join(base, 'checkpoints', 'ppo_local.npz')):
+            if os.path.isfile(cand):
+                return cand.replace('.zip', '') if cand.endswith('.zip') else cand
+    return os.path.join(root, 'checkpoints', 'sb3_ppo_local')
+
+
+def rl_planner_node(
+    cruise_z: float,
+    checkpoint: str = '',
+    extra_params: Optional[Dict[str, Any]] = None,
+) -> Node | ExecuteProcess:
+    """Legacy PPO node (optional). Prefer vfh_planner_node for Path G."""
+    root, installed = rl_planner_root()
+    src_root = os.path.join(workspace_root(), 'src', 'drone_rl_planner')
+    yaml_cfg = os.path.join(src_root if os.path.isdir(src_root) else root, 'config', 'rl_planner.yaml')
+    ckpt = checkpoint or resolve_rl_checkpoint(root)
+    params: Dict[str, Any] = {
+        'checkpoint': ckpt if (os.path.isfile(ckpt) or os.path.isfile(ckpt + '.zip')) else '',
+        'cruise_z': float(cruise_z),
+        'map_topic': '/map/obstacles',
+        'max_speed': 1.2,
+        'world_scale': 40.0,
+        'ray_max': 6.0,
+        'lookahead_m': 1.4,
+        'action_ema': 0.55,
+        'cmd_speed_scale': 0.65,
+        'pred_horizon_m': 4.5,
+        'dir_rate_limit': 1.8,
+        'goal_tol': 0.70,
+        'control_hz': 20.0,
+    }
+    if extra_params:
+        params.update(extra_params)
+    if installed:
+        return Node(
+            package='drone_rl_planner',
+            executable='rl_planner_node',
+            name='rl_planner_node',
+            output='screen',
+            parameters=[yaml_cfg, params],
+        )
+    script = os.path.join(root, 'drone_rl_planner', 'rl_planner_node.py')
+    return _python_node_process(script, root, yaml_cfg, params)
+
+
+def vfh_planner_node(
+    cruise_z: float,
+    extra_params: Optional[Dict[str, Any]] = None,
+) -> Node | ExecuteProcess:
+    """Path G default: PX4-style VFH+ local avoider (classical, deterministic)."""
+    root, installed = rl_planner_root()
+    src_root = os.path.join(workspace_root(), 'src', 'drone_rl_planner')
+    yaml_cfg = os.path.join(
+        src_root if os.path.isdir(src_root) else root, 'config', 'vfh_planner.yaml')
+    params: Dict[str, Any] = {
+        'cruise_z': float(cruise_z),
+        'map_topic': '/map/obstacles',
+        'n_sectors': 72,
+        'ray_max': 6.0,
+        'lookahead_m': 1.6,
+        'path_horizon_m': 7.0,
+        'goal_tol': 0.70,
+        'control_hz': 20.0,
+        'max_vel_hint': 0.85,
+    }
+    if extra_params:
+        params.update(extra_params)
+    # Prefer running from src so no colcon is required
+    script = os.path.join(
+        src_root if os.path.isdir(src_root) else root,
+        'drone_rl_planner', 'vfh_planner_node.py')
+    if installed and os.path.isfile(
+            os.path.join(get_package_prefix('drone_rl_planner'),
+                         'lib', 'drone_rl_planner', 'vfh_planner_node')):
+        return Node(
+            package='drone_rl_planner',
+            executable='vfh_planner_node',
+            name='vfh_planner_node',
+            output='screen',
+            parameters=[yaml_cfg, params] if os.path.isfile(yaml_cfg) else [params],
+        )
+    return _python_node_process(
+        script, src_root if os.path.isdir(src_root) else root,
+        yaml_cfg if os.path.isfile(yaml_cfg) else None, params)
+
+
+def resolve_sac_checkpoint(root: str) -> str:
+    """Best Path H SAC checkpoint (.pt)."""
+    src_root = os.path.join(workspace_root(), 'src', 'drone_rl_planner')
+    for base in (root, src_root):
+        for name in ('sac_polar_local_best.pt', 'sac_polar_local.pt'):
+            cand = os.path.join(base, 'checkpoints', name)
+            if os.path.isfile(cand):
+                return cand
+    return os.path.join(root, 'checkpoints', 'sac_polar_local.pt')
+
+
+def sac_planner_node(
+    cruise_z: float,
+    checkpoint: str = '',
+    extra_params: Optional[Dict[str, Any]] = None,
+) -> Node | ExecuteProcess:
+    """Path H: Polar DrQ-SAC → Bézier path with VFH safety fallback."""
+    root, installed = rl_planner_root()
+    src_root = os.path.join(workspace_root(), 'src', 'drone_rl_planner')
+    yaml_cfg = os.path.join(
+        src_root if os.path.isdir(src_root) else root, 'config', 'sac_planner.yaml')
+    ckpt = checkpoint or resolve_sac_checkpoint(root)
+    params: Dict[str, Any] = {
+        'checkpoint': ckpt if os.path.isfile(ckpt) else '',
+        'cruise_z': float(cruise_z),
+        'map_topic': '/map/obstacles',
+        'n_rings': 16,
+        'n_sectors': 36,
+        'ray_max': 6.0,
+        'max_speed': 1.0,
+        'goal_tol': 0.70,
+        'control_hz': 20.0,
+        'action_ema': 0.40,
+        'fallback_clear_m': 0.40,
+        'path_horizon_m': 8.0,
+        'blend_clear_m': 1.4,
+    }
+    if extra_params:
+        params.update(extra_params)
+    script = os.path.join(
+        src_root if os.path.isdir(src_root) else root,
+        'drone_rl_planner', 'sac_planner_node.py')
+    if installed and os.path.isfile(
+            os.path.join(get_package_prefix('drone_rl_planner'),
+                         'lib', 'drone_rl_planner', 'sac_planner_node')):
+        return Node(
+            package='drone_rl_planner',
+            executable='sac_planner_node',
+            name='sac_planner_node',
+            output='screen',
+            parameters=[yaml_cfg, params] if os.path.isfile(yaml_cfg) else [params],
+        )
+    return _python_node_process(
+        script, src_root if os.path.isdir(src_root) else root,
+        yaml_cfg if os.path.isfile(yaml_cfg) else None, params)
+
+
+def safety_supervisor_node(
+    cruise_z: float,
+    extra_params: Optional[Dict[str, Any]] = None,
+) -> Node | ExecuteProcess:
+    """Adapter-level VFH safety supervisor for Path H."""
+    root, installed = rl_planner_root()
+    src_root = os.path.join(workspace_root(), 'src', 'drone_rl_planner')
+    params: Dict[str, Any] = {
+        'cruise_z': float(cruise_z),
+        'map_topic': '/map/obstacles',
+        'fallback_clear_m': 0.40,
+        'blend_clear_m': 1.4,
+        'path_horizon_m': 8.0,
+        'enable_fallback': True,
+        'planner_id': 'sac',
+        'control_hz': 20.0,
+    }
+    if extra_params:
+        params.update(extra_params)
+    script = os.path.join(
+        src_root if os.path.isdir(src_root) else root,
+        'drone_rl_planner', 'safety_supervisor_node.py')
+    if installed and os.path.isfile(
+            os.path.join(get_package_prefix('drone_rl_planner'),
+                         'lib', 'drone_rl_planner', 'safety_supervisor_node')):
+        return Node(
+            package='drone_rl_planner',
+            executable='safety_supervisor_node',
+            name='safety_supervisor_node',
+            output='screen',
+            parameters=[params],
+        )
+    return _python_node_process(
+        script, src_root if os.path.isdir(src_root) else root, None, params)
+
+
+def _python_node_process(
+    script: str,
+    pkg_root: str,
+    yaml_cfg: Optional[str],
+    params: Dict[str, Any],
+) -> ExecuteProcess:
+    cmd = ['python3', script, '--ros-args']
+    if yaml_cfg and os.path.isfile(yaml_cfg):
+        cmd.extend(['--params-file', yaml_cfg])
+    for key, val in params.items():
+        if isinstance(val, bool):
+            cmd.extend(['-p', f'{key}:={"true" if val else "false"}'])
+        elif isinstance(val, (int, float)):
+            cmd.extend(['-p', f'{key}:={val}'])
+        else:
+            cmd.extend(['-p', f'{key}:={val}'])
+    py_path = os.pathsep.join(
+        p for p in (pkg_root, os.environ.get('PYTHONPATH', '')) if p)
+    return ExecuteProcess(
+        cmd=cmd,
+        additional_env={'PYTHONPATH': py_path},
+        output='screen',
+    )
+

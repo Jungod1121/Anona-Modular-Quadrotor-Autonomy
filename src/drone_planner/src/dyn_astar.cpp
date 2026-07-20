@@ -122,7 +122,8 @@ bool DynAStar::search(
   start.z() = opt.cruise_z;
   goal.z() = opt.cruise_z;
 
-  if (!grid.findFreeNearby(start) || !grid.findFreeNearby(goal)) {
+  if (!grid.findFreeNearby(start, opt.free_snap_radius) ||
+      !grid.findFreeNearby(goal, opt.free_snap_radius)) {
     return false;
   }
   start.z() = opt.cruise_z;

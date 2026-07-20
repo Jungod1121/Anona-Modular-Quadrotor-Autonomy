@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <algorithm>
 
 struct Config
 {
@@ -117,6 +118,11 @@ private:
     double trajStamp{0.0};
     bool mapInitialized{false};
     bool haveOdom{false};
+    bool havePlanned{false};
+    int mapIngestCount_{0};
+    size_t lastMapPoints_{0};
+    double lastMapIngestSec_{-1.0};
+    double lastPathPubSec_{-1.0};
     Eigen::Vector3d odomPos{Eigen::Vector3d::Zero()};
     Eigen::Vector3d odomVel{Eigen::Vector3d::Zero()};
 
@@ -146,7 +152,9 @@ public:
 
         localGoalPub = this->create_publisher<geometry_msgs::msg::PoseStamped>("/planner/local_goal", 10);
         trajCmdPub = this->create_publisher<drone_msgs::msg::TrajectoryCommand>("/planner/trajectory_cmd", 10);
-        pathPub = this->create_publisher<nav_msgs::msg::Path>("/planner/trajectory", 10);
+        // Latch so late RViz / dashboard subscribers still see the yellow path.
+        auto path_qos = rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable();
+        pathPub = this->create_publisher<nav_msgs::msg::Path>("/planner/trajectory", path_qos);
 
         RCLCPP_INFO(get_logger(),
                     "GCOPTER Path C ready: map=%s goal=%s → /planner/local_goal + trajectory_cmd",
@@ -162,13 +170,37 @@ public:
 
     void mapCallBack(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
     {
-        if (mapInitialized) {
+        // Lock after a successful plan. Before that, allow a few debounced
+        // reinjects so a stale TransientLocal leftover can be overwritten —
+        // but never rebuild voxel maps at cloud publish rate (~10 Hz), which
+        // starves process() and looks like a dead drone / missing blue path.
+        if (havePlanned) {
             return;
+        }
+        if (mapInitialized) {
+            if (mapIngestCount_ >= 3) {
+                return;
+            }
+            const double now_sec = this->now().seconds();
+            if (lastMapIngestSec_ >= 0.0 && (now_sec - lastMapIngestSec_) < 1.0) {
+                return;
+            }
         }
         if (msg->data.empty() || msg->point_step == 0) {
             return;
         }
         size_t total = msg->data.size() / msg->point_step;
+        if (total == 0) {
+            return;
+        }
+
+        Eigen::Vector3i xyz(
+            static_cast<int>((config.mapBound[1] - config.mapBound[0]) / config.voxelWidth),
+            static_cast<int>((config.mapBound[3] - config.mapBound[2]) / config.voxelWidth),
+            static_cast<int>((config.mapBound[5] - config.mapBound[4]) / config.voxelWidth));
+        Eigen::Vector3d offset(config.mapBound[0], config.mapBound[2], config.mapBound[4]);
+        voxelMap = voxel_map::VoxelMap(xyz, offset, config.voxelWidth);
+
         float *fdata = reinterpret_cast<float *>(&msg->data[0]);
         for (size_t i = 0; i < total; ++i) {
             size_t cur = msg->point_step / sizeof(float) * i;
@@ -181,7 +213,34 @@ public:
         }
         voxelMap.dilate(std::ceil(config.dilateRadius / voxelMap.getScale()));
         mapInitialized = true;
-        RCLCPP_INFO(get_logger(), "GCOPTER map ingested (%zu points)", total);
+        ++mapIngestCount_;
+        lastMapPoints_ = total;
+        lastMapIngestSec_ = this->now().seconds();
+        RCLCPP_INFO(get_logger(), "GCOPTER map ingested (%zu points, n=%d)",
+                    total, mapIngestCount_);
+    }
+
+    static bool nudgeToFree(voxel_map::VoxelMap & map, Eigen::Vector3d & pt,
+                            double z_lo, double z_hi)
+    {
+        if (map.query(pt) == 0) {
+            return true;
+        }
+        for (double r = 0.15; r <= 4.0; r += 0.15) {
+            for (int iz = -2; iz <= 2; ++iz) {
+                const double z = std::clamp(pt.z() + 0.25 * iz, z_lo, z_hi);
+                for (int k = 0; k < 24; ++k) {
+                    const double a = k * (2.0 * M_PI / 24.0);
+                    Eigen::Vector3d c(pt.x() + r * std::cos(a),
+                                     pt.y() + r * std::sin(a), z);
+                    if (map.query(c) == 0) {
+                        pt = c;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     void targetCallBack(const geometry_msgs::msg::PoseStamped::SharedPtr msg)
@@ -192,6 +251,13 @@ public:
         }
         if (!haveOdom) {
             RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000, "Waiting for odom…");
+            return;
+        }
+        // Sparse first cloud → front-end thinks air is free → "straight first goal".
+        if (mapIngestCount_ < 2 || lastMapPoints_ < 400) {
+            RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000,
+                "Map still warming up (n=%d pts=%zu)…",
+                mapIngestCount_, lastMapPoints_);
             return;
         }
 
@@ -205,13 +271,33 @@ public:
             start.z() = zGoal;
         }
 
-        if (voxelMap.query(goal) != 0) {
-            RCLCPP_WARN(get_logger(), "Goal in obstacle (%.2f %.2f %.2f)", goal.x(), goal.y(), goal.z());
+        const double z_lo = config.mapBound[4] + 0.2;
+        const double z_hi = config.mapBound[5] - 0.2;
+        Eigen::Vector3d goal0 = goal;
+        if (!nudgeToFree(voxelMap, goal, z_lo, z_hi)) {
+            RCLCPP_WARN(get_logger(), "Goal in obstacle (%.2f %.2f %.2f)",
+                        goal0.x(), goal0.y(), goal0.z());
             return;
+        }
+        if ((goal - goal0).norm() > 1e-3) {
+            RCLCPP_WARN(get_logger(),
+                        "Goal near obstacle — nudged (%.2f,%.2f,%.2f) → (%.2f,%.2f,%.2f)",
+                        goal0.x(), goal0.y(), goal0.z(), goal.x(), goal.y(), goal.z());
+        }
+        Eigen::Vector3d start0 = start;
+        if (!nudgeToFree(voxelMap, start, z_lo, z_hi)) {
+            RCLCPP_WARN(get_logger(), "Start in obstacle — cannot plan");
+            return;
+        }
+        if ((start - start0).norm() > 1e-3) {
+            RCLCPP_WARN(get_logger(), "Start nudged to free space");
         }
 
         visualizer.visualizeStartGoal(start, 0.5, 0);
         visualizer.visualizeStartGoal(goal, 0.5, 1);
+        // Lock the map before planning so mapCallBack cannot rebuild voxelMap
+        // under plan()'s feet.
+        havePlanned = true;
         plan(start, goal);
     }
 
@@ -224,6 +310,7 @@ public:
 
         if (route.size() <= 1) {
             RCLCPP_ERROR(get_logger(), "Path front-end failed");
+            havePlanned = false;
             return;
         }
 
@@ -251,10 +338,12 @@ public:
                            config.smoothingEps, config.integralIntervs,
                            magnitudeBounds, penaltyWeights, physicalParams)) {
             RCLCPP_ERROR(get_logger(), "GCOPTER setup failed");
+            havePlanned = false;
             return;
         }
         if (std::isinf(gcopter.optimize(traj, config.relCostTol))) {
             RCLCPP_ERROR(get_logger(), "GCOPTER optimize failed");
+            havePlanned = false;
             return;
         }
 
@@ -262,8 +351,12 @@ public:
             trajStamp = this->now().seconds();
             visualizer.visualize(traj, route);
             publishPath();
+            lastPathPubSec_ = trajStamp;
             RCLCPP_INFO(get_logger(), "GCOPTER traj pieces=%d duration=%.2fs",
                         traj.getPieceNum(), traj.getTotalDuration());
+        } else {
+            // Unlock so a later goal can try again with a fresh map if needed.
+            havePlanned = false;
         }
     }
 
@@ -292,7 +385,14 @@ public:
             return;
         }
 
-        double delta = this->now().seconds() - trajStamp;
+        const double now_sec = this->now().seconds();
+        // Keep yellow path visible for late RViz subscribers / volatile displays.
+        if (lastPathPubSec_ < 0.0 || (now_sec - lastPathPubSec_) > 1.0) {
+            publishPath();
+            lastPathPubSec_ = now_sec;
+        }
+
+        double delta = now_sec - trajStamp;
         if (delta < 0.0) {
             return;
         }

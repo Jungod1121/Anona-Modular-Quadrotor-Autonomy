@@ -14,6 +14,7 @@ find_package(builtin_interfaces REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MotorCommand.msg"
   "msg/PlannerStatus.msg"
+  "msg/PlannerDiagnostics.msg"
   "msg/TrajectoryCommand.msg"
   DEPENDENCIES std_msgs builtin_interfaces geometry_msgs
 )

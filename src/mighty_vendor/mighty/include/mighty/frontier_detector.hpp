@@ -1,0 +1,80 @@
+// Wavefront Frontier Detection (Keidar & Kaminka 2014).
+//
+// A "frontier cell" is a known-FREE cell adjacent to at least one UNKNOWN cell.
+// This detector runs two BFS passes seeded at the robot pose:
+//
+//   Pass A — outer BFS over reachable known-free cells from the robot.
+//            Frontier cells are tagged en passant.
+//   Pass B — inner BFS clusters frontier cells via 8-connectivity.
+//
+// The two-pass structure visits only the reachable known-free region of the
+// map, so cost is O(reachable cells) per cycle — much cheaper than naive
+// scans, and naturally ignores known-free regions disconnected from the robot.
+//
+// Stateless: all tunables are passed in via FrontierDetectorParams.
+
+#pragma once
+
+#include <Eigen/Core>
+#include <memory>
+#include <vector>
+
+#include "mighty/occ_grid_2d.hpp"
+
+class VisitedMap;
+
+struct FrontierDetectorParams {
+  int    cluster_min_cells       = 6;   // ~0.24 m² at 0.2 m res
+  int    border_margin_cells     = 2;   // exclude N-cell border ring from seeds
+  int    obstacle_clearance_cells = 1;  // disqualify free cells within N cells
+                                        // of an occupied cell (0 = disabled).
+                                        // Filters noisy frontiers hugging walls.
+  double robot_snap_radius_m     = 1.0; // spiral search if robot is not on FREE
+
+  // Optional axis-aligned bounding box that confines exploration. When
+  // bounds_enabled is true, frontier seeds outside [min_x,max_x]×[min_y,max_y]
+  // are dropped, so the robot never receives exploration goals outside the
+  // box. The BFS still expands through the entire reachable known-free area
+  // (so the box does not artificially split clusters), only the per-cell
+  // seed-tag is gated.
+  bool   bounds_enabled = false;
+  double bounds_min_x   = 0.0;
+  double bounds_max_x   = 0.0;
+  double bounds_min_y   = 0.0;
+  double bounds_max_y   = 0.0;
+};
+
+struct FrontierCluster {
+  Eigen::Vector2d centroid;             // world frame
+  std::vector<Eigen::Vector2d> cells;   // world frame, one entry per cell
+  int             size_cells = 0;
+  double          size_m2    = 0.0;
+  Eigen::Vector2d aabb_min = Eigen::Vector2d::Zero();
+  Eigen::Vector2d aabb_max = Eigen::Vector2d::Zero();
+};
+
+class FrontierDetector {
+ public:
+  explicit FrontierDetector(FrontierDetectorParams p) : params_(p) {}
+
+  /** @brief Run WFD on `grid` seeded at `robot_xy`.
+   *  @param grid        Local 2D occupancy window from the mapper.
+   *  @param robot_xy    Robot position in world frame.
+   *  @param visited_map Optional persistent "previously observed" bitmap.
+   *                     UNKNOWN neighbors that are already visited do *not*
+   *                     count as frontier-generating — they are stale slid-out
+   *                     cells, not genuine unexplored area.
+   *  @return Vector of frontier clusters in world frame, sorted by descending
+   *          size_cells. Empty if the robot pose can't be snapped to a free
+   *          cell or no frontiers exist.
+   */
+  std::vector<FrontierCluster> detect(
+      const OccGrid2D& grid,
+      const Eigen::Vector2d& robot_xy,
+      const VisitedMap* visited_map = nullptr) const;
+
+  const FrontierDetectorParams& params() const { return params_; }
+
+ private:
+  FrontierDetectorParams params_;
+};

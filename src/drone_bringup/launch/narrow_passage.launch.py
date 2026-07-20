@@ -28,7 +28,7 @@ def launch_setup(context, *args, **kwargs):
         ),
         controller_node(),
         map_node('map_narrow.yaml'),
-        planner_node({'inflate_radius': 0.25}),
+        planner_node({'inflate_radius': 0.12}),
         visualization_node(),
         send_goal_process(17.0, 5.0, 1.5, yaw=0.0, delay_sec=4.0),
     ]

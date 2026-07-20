@@ -3,12 +3,19 @@
     namespace: ""
     resolution: 0.25
     inflate_radius: 0.45
+    # Fallback AABB if auto_map_fit is false; with auto_fit the cloud defines the box.
     map_origin_x: -2.0
     map_origin_y: -2.0
     map_origin_z: 0.0
     map_size_x: 24.0
     map_size_y: 14.0
     map_size_z: 3.0
+    auto_map_fit: true
+    auto_map_margin: 2.5
+    auto_inflate: true
+    auto_inflate_min: 0.08
+    auto_inflate_max: 0.40
+    auto_map_max_cells: 2500000.0
     replan_dist: 1.5
     goal_tolerance: 0.35
     local_goal_lookahead: 0.8
@@ -21,6 +28,8 @@
     cruise_z: 1.5
     z_band: 0.35
     vertical_cost_scale: 8.0
+    free_snap_radius: 12
+    seal_boundary_layers: 1
     collision_horizon: 1.5
     emergency_clearance: 0.12
     replan_clearance: 0.25
@@ -34,6 +43,7 @@
     yaw_lookahead: 0.6
     use_dyn_astar: true
     enable_bspline_opt: false
+    # Local sensing (default off — Path B EGO owns local inflate viz).
     local_mapping_enable: false
     local_mapping_raycast_clear: false
     min_replan_interval_sec: 0.45

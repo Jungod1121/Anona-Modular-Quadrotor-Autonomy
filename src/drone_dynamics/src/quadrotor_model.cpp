@@ -70,13 +70,19 @@ double QuadrotorModel::nextGaussian()
 
 void QuadrotorModel::step(const Eigen::Vector4d & motor_rpm_cmd, double dt, double sim_time)
 {
-  // Motor first-order: ω̇ = (ω_cmd - ω) / τ
+  // Motor first-order with asymmetric τ_up / τ_down (pengyu_sim concept, own code).
   Eigen::Vector4d omega_cmd;
   for (int i = 0; i < 4; ++i) {
     omega_cmd(i) = std::clamp(rpmToRad(motor_rpm_cmd(i)), params_.omega_min, params_.omega_max);
   }
-  state_.motor_omega += (omega_cmd - state_.motor_omega) * (dt / params_.tau_motor);
   for (int i = 0; i < 4; ++i) {
+    const double err = omega_cmd(i) - state_.motor_omega(i);
+    double tau = params_.tau_motor;
+    if (params_.tau_motor_up > 0.0 && params_.tau_motor_down > 0.0) {
+      tau = (err >= 0.0) ? params_.tau_motor_up : params_.tau_motor_down;
+    }
+    tau = std::max(tau, 1e-4);
+    state_.motor_omega(i) += err * (dt / tau);
     state_.motor_omega(i) = std::clamp(state_.motor_omega(i), params_.omega_min, params_.omega_max);
   }
 
@@ -95,26 +101,34 @@ void QuadrotorModel::step(const Eigen::Vector4d & motor_rpm_cmd, double dt, doub
   const Eigen::Vector3d a = (thrust_world + gravity + F_ext) / params_.mass;
   last_body_accel_ = R.transpose() * (a + Eigen::Vector3d(0, 0, params_.gravity));  // specific force sense
 
-  // Translation with velocity / acceleration clamps for numerical stability
-  Eigen::Vector3d a_clamped = a;
-  const double a_norm = a_clamped.norm();
-  constexpr double kMaxAccel = 25.0;  // m/s^2
-  if (a_norm > kMaxAccel) {
-    a_clamped *= kMaxAccel / a_norm;
+  Eigen::Vector3d a_use = a;
+  if (params_.enable_state_clamps) {
+    const double a_norm = a_use.norm();
+    constexpr double kMaxAccel = 25.0;  // m/s^2
+    if (a_norm > kMaxAccel) {
+      a_use *= kMaxAccel / a_norm;
+    }
   }
-  state_.v += a_clamped * dt;
-  constexpr double kMaxVel = 8.0;  // m/s
-  const double v_norm = state_.v.norm();
-  if (v_norm > kMaxVel) {
-    state_.v *= kMaxVel / v_norm;
+  state_.v += a_use * dt;
+  if (params_.enable_state_clamps) {
+    constexpr double kMaxVel = 8.0;  // m/s
+    const double v_norm = state_.v.norm();
+    if (v_norm > kMaxVel) {
+      state_.v *= kMaxVel / v_norm;
+    }
   }
   state_.p += state_.v * dt;
-  // Ground contact: simple unilateral constraint
+  // Ground contact: unilateral constraint + light horizontal friction (anti-slide).
   if (state_.p.z() < 0.0) {
     state_.p.z() = 0.0;
     if (state_.v.z() < 0.0) {
       state_.v.z() = 0.0;
     }
+  }
+  if (state_.p.z() <= 1e-3 && params_.ground_friction > 0.0) {
+    const double damp = std::exp(-params_.ground_friction * dt);
+    state_.v.x() *= damp;
+    state_.v.y() *= damp;
   }
 
   // Rotation: I ω̇ = τ - ω × (I ω)
@@ -125,10 +139,12 @@ void QuadrotorModel::step(const Eigen::Vector4d & motor_rpm_cmd, double dt, doub
   const Eigen::Vector3d Iomega = I * state_.omega;
   const Eigen::Vector3d omega_dot = I.inverse() * (tau - state_.omega.cross(Iomega));
   state_.omega += omega_dot * dt;
-  constexpr double kMaxOmega = 12.0;  // rad/s — prevents TF NaN after flips
-  const double w_norm = state_.omega.norm();
-  if (w_norm > kMaxOmega) {
-    state_.omega *= kMaxOmega / w_norm;
+  if (params_.enable_state_clamps) {
+    constexpr double kMaxOmega = 12.0;  // rad/s — prevents TF NaN after flips
+    const double w_norm = state_.omega.norm();
+    if (w_norm > kMaxOmega) {
+      state_.omega *= kMaxOmega / w_norm;
+    }
   }
 
   // Quaternion integrate: q̇ = 0.5 * q ⊗ [0, ω], then renormalize each step

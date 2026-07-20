@@ -90,8 +90,21 @@ struct MapConfig
   int ego_circle_num{40};
   double ego_min_distance{0.8};
 
-  /// narrow_corridor gate opening width (m); clamped to [1.2, 1.8] (legacy mode).
+  /// narrow_corridor gate opening width (m); PLAN §5.3 clamps to [1.2, 1.8].
   double corridor_gap_width{1.5};
+  /// Number of N–S 通道墙 / staggered doors (3, 5, or 7).
+  int corridor_gate_count{5};
+
+  /// When true, enclose the field with perimeter WALL obstacles.
+  bool add_boundary_walls{true};
+  /// Optional AABB override (used when x_max > x_min).
+  bool use_custom_bounds{false};
+  double x_min{0.0};
+  double x_max{0.0};
+  double y_min{0.0};
+  double y_max{0.0};
+  double z_min{0.0};
+  double z_max{0.0};
 };
 
 struct MapGenerationResult
@@ -121,6 +134,9 @@ private:
 
   void addNarrowPassageGate(
     std::vector<Obstacle> & obstacles, const FieldBounds & bounds) const;
+
+  /// S-bend waypoints used for gate centers + cylinder keep-out (绕行).
+  std::vector<Eigen::Vector2d> narrowPassageWaypoints() const;
 
   void addBoundaryWalls(
     std::vector<Obstacle> & obstacles, const FieldBounds & bounds) const;

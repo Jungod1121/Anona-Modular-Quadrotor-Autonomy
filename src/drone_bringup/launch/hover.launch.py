@@ -20,7 +20,7 @@ def launch_setup(context, *args, **kwargs):
         extra_params={
             'init_x': 0.0,
             'init_y': 0.0,
-            'init_z': 0.0,
+            'init_z': 0.15,
             'init_yaw': 0.0,
         },
         param_files=['dynamics.yaml'],

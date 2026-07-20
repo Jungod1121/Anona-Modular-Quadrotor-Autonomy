@@ -18,5 +18,5 @@
     downsample_voxel: 0.0
     grid_resolution: 0.2
     corridor_gap_width: 1.5
-    local_sense_radius: 0.0
+    local_sense_radius: 6.0
     local_sense_rate: 10.0

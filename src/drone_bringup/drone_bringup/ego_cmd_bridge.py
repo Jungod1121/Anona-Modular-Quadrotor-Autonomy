@@ -49,6 +49,9 @@ class EgoCmdBridge(Node):
         self.declare_parameter('auto_goal_repeats', 5)
         self.declare_parameter('auto_goal_period', 0.4)
         self.declare_parameter('cruise_height', 1.0)
+        # Multi-drone: every EGO node also subscribes to /move_base_simple/goal —
+        # fan-out would give ALL drones the same goal. Keep false for swarms.
+        self.declare_parameter('publish_move_base_simple', True)
 
         ns = self.get_parameter('namespace').get_parameter_value().string_value.strip()
         drone_id = int(self.get_parameter('drone_id').value)
@@ -66,7 +69,8 @@ class EgoCmdBridge(Node):
         if not goal_in:
             goal_in = f'{prefix}/drone/goal' if prefix else '/drone/goal'
         if not goal_out:
-            # Relative FSM "goal" remapped per-drone; also keep legacy absolute.
+            # Fan-out destination for the FSM. Prefer remapped relative "goal"
+            # when namespaced; for single-drone use move_base_simple once.
             goal_out = f'{prefix}/drone/goal' if prefix else '/move_base_simple/goal'
 
         traj_topic = f'{prefix}/planner/trajectory_cmd'
@@ -75,13 +79,23 @@ class EgoCmdBridge(Node):
 
         self.traj_pub = self.create_publisher(TrajectoryCommand, traj_topic, 10)
         self.local_pub = self.create_publisher(PoseStamped, local_topic, 10)
-        self.path_pub = self.create_publisher(Path, path_topic, 10)
+        # Latch yellow path so late RViz (Path B/D) still sees /planner/trajectory.
+        path_qos = QoSProfile(
+            history=HistoryPolicy.KEEP_LAST,
+            depth=1,
+            reliability=ReliabilityPolicy.RELIABLE,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL,
+        )
+        self.path_pub = self.create_publisher(Path, path_topic, path_qos)
+        self._goal_out_topic = goal_out
         self.goal_out = self.create_publisher(PoseStamped, goal_out, GOAL_QOS)
-        # Single-drone Path B still needs RViz 2D Nav Goal → FSM absolute topic.
+        # Optional second fan-out — NEVER the same topic twice (double Triggered
+        # → planNextWaypoint spin_some while node already in rclcpp::spin → crash).
         self.goal_out_legacy = None
-        if not prefix:
-            self.goal_out_legacy = self.create_publisher(
-                PoseStamped, '/move_base_simple/goal', GOAL_QOS)
+        legacy = '/move_base_simple/goal'
+        fanout = bool(self.get_parameter('publish_move_base_simple').value)
+        if fanout and goal_out.rstrip('/') != legacy:
+            self.goal_out_legacy = self.create_publisher(PoseStamped, legacy, GOAL_QOS)
 
         self.create_subscription(PositionCommand, cmd_topic, self.on_cmd, 50)
         self.create_subscription(PoseStamped, goal_in, self.on_goal, GOAL_QOS)

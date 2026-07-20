@@ -1,0 +1,23 @@
+/**:
+  ros__parameters:
+    n_rays: 36
+    ray_max: 6.0
+    max_speed: 1.2
+    world_scale: 40.0
+    robot_r: 0.22
+    cruise_z: 1.5
+    lookahead_m: 1.4
+    horizon_s: 0.45
+    lookahead: 1.4
+    action_ema: 0.55
+    cmd_speed_scale: 0.65
+    pred_horizon_m: 4.5
+    pred_step_m: 0.35
+    dir_rate_limit: 1.8
+    goal_tol: 0.70
+    control_hz: 20.0
+    map_topic: /map/obstacles
+    odom_topic: /drone/odom
+    goal_topic: /drone/goal
+    checkpoint: ""
+    peer_namespaces: ""

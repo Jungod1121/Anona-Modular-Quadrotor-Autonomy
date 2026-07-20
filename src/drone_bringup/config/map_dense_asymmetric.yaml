@@ -1,0 +1,30 @@
+/**:
+  ros__parameters:
+    map_mode: dense_field
+    seed: 77
+    max_attempts: 200
+    start_x: 2.0
+    start_y: 6.0
+    start_z: 1.5
+    goal_x: 40.0
+    goal_y: 24.0
+    goal_z: 1.5
+    safety_distance: 0.4
+    clearance_radius: 0.55
+    min_obstacle_spacing: 0.85
+    min_obstacle_radius: 0.12
+    max_obstacle_radius: 0.3
+    point_resolution: 0.08
+    downsample_voxel: 0.10
+    grid_resolution: 0.2
+    corridor_gap_width: 1.5
+    local_sense_radius: 6.0
+    local_sense_rate: 10.0
+    add_boundary_walls: false
+    # Obstacle / wall markers in RViz (white).
+    obstacle_marker_r: 1.0
+    obstacle_marker_g: 1.0
+    obstacle_marker_b: 1.0
+    boundary_marker_r: 1.0
+    boundary_marker_g: 1.0
+    boundary_marker_b: 1.0

@@ -22,9 +22,13 @@ struct DynamicsParams
   double Izz{0.02};
   double k_F{3.0e-5};       // thrust coeff: F = k_F * omega^2 (hover ~286 rad/s for 1kg)
   double k_M{5.0e-7};       // torque coeff: M = k_M * omega^2
-  double tau_motor{0.02};   // motor first-order time constant [s]
+  double tau_motor{0.02};   // legacy single τ (used when tau_up/down <= 0)
+  double tau_motor_up{0.012};    // spin-up lag [s] (pengyu-inspired asymmetry)
+  double tau_motor_down{0.025};  // spin-down lag [s]
   double omega_min{0.0};
   double omega_max{800.0};  // rad/s internal limit; MotorCommand topic uses RPM
+  bool enable_state_clamps{true};  // a/v/ω clamps; disable for fidelity tests
+  double ground_friction{2.5};     // 1/s horizontal velocity damping when z≈0
   bool wind_enable{false};
   double wind_const_x{0.0};
   double wind_const_y{0.0};

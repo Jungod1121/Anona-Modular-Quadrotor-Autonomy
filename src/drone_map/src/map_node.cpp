@@ -2,6 +2,7 @@
 
 #include <pcl_conversions/pcl_conversions.h>
 
+#include <geometry_msgs/msg/point.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
@@ -42,9 +43,9 @@ public:
 
     generateAndPublishMap();
 
-    // Reinforce latched global map infrequently (planner ignores identical updates).
+    // Reinforce latched global map so late FP / adapter subscribers always get it.
     republish_timer_ = create_wall_timer(
-      10s, [this]() {
+      2s, [this]() {
         if (map_result_.cloud.empty()) {
           return;
         }
@@ -90,20 +91,29 @@ private:
     declare_parameter("downsample_voxel", 0.0);
     declare_parameter("grid_resolution", 0.2);
     declare_parameter("corridor_gap_width", 1.5);
+    declare_parameter("corridor_gate_count", 5);
     declare_parameter("ego_road_width", 0.6);
     declare_parameter("ego_resolution", 0.1);
     declare_parameter("ego_obs_num", 100);
     declare_parameter("ego_circle_num", 40);
     declare_parameter("ego_min_distance", 0.8);
 
+    declare_parameter("add_boundary_walls", true);
+    declare_parameter("field_x_min", 0.0);
+    declare_parameter("field_x_max", 0.0);
+    declare_parameter("field_y_min", 0.0);
+    declare_parameter("field_y_max", 0.0);
+    declare_parameter("field_z_min", 0.0);
+    declare_parameter("field_z_max", 0.0);
+
     declare_parameter("local_sense_radius", 5.0);
     declare_parameter("local_sense_rate", 10.0);
 
-    declare_parameter("obstacle_marker_r", 0.9);
-    declare_parameter("obstacle_marker_g", 0.3);
-    declare_parameter("obstacle_marker_b", 0.2);
-    declare_parameter("boundary_marker_r", 0.2);
-    declare_parameter("boundary_marker_g", 0.4);
+    declare_parameter("obstacle_marker_r", 1.0);
+    declare_parameter("obstacle_marker_g", 1.0);
+    declare_parameter("obstacle_marker_b", 1.0);
+    declare_parameter("boundary_marker_r", 1.0);
+    declare_parameter("boundary_marker_g", 1.0);
     declare_parameter("boundary_marker_b", 1.0);
 
     map_mode_str_ = get_parameter("map_mode").as_string();
@@ -129,11 +139,20 @@ private:
     cfg.downsample_voxel = get_parameter("downsample_voxel").as_double();
     cfg.grid_resolution = get_parameter("grid_resolution").as_double();
     cfg.corridor_gap_width = get_parameter("corridor_gap_width").as_double();
+    cfg.corridor_gate_count = get_parameter("corridor_gate_count").as_int();
     cfg.ego_road_width = get_parameter("ego_road_width").as_double();
     cfg.ego_resolution = get_parameter("ego_resolution").as_double();
     cfg.ego_obs_num = get_parameter("ego_obs_num").as_int();
     cfg.ego_circle_num = get_parameter("ego_circle_num").as_int();
     cfg.ego_min_distance = get_parameter("ego_min_distance").as_double();
+    cfg.add_boundary_walls = get_parameter("add_boundary_walls").as_bool();
+    cfg.x_min = get_parameter("field_x_min").as_double();
+    cfg.x_max = get_parameter("field_x_max").as_double();
+    cfg.y_min = get_parameter("field_y_min").as_double();
+    cfg.y_max = get_parameter("field_y_max").as_double();
+    cfg.z_min = get_parameter("field_z_min").as_double();
+    cfg.z_max = get_parameter("field_z_max").as_double();
+    cfg.use_custom_bounds = cfg.x_max > cfg.x_min && cfg.y_max > cfg.y_min;
 
     generator_ = std::make_unique<MapGenerator>(cfg);
 
@@ -180,6 +199,92 @@ private:
     markers_pub_->publish(buildMarkers());
   }
 
+  static void pushEdge(
+    visualization_msgs::msg::Marker & edge,
+    double x1, double y1, double z1,
+    double x2, double y2, double z2)
+  {
+    geometry_msgs::msg::Point a;
+    a.x = x1;
+    a.y = y1;
+    a.z = z1;
+    geometry_msgs::msg::Point b;
+    b.x = x2;
+    b.y = y2;
+    b.z = z2;
+    edge.points.push_back(a);
+    edge.points.push_back(b);
+  }
+
+  void appendObstacleOutline(
+    visualization_msgs::msg::MarkerArray & array, int & id,
+    const Obstacle & obs) const
+  {
+    visualization_msgs::msg::Marker edge;
+    edge.header.frame_id = "map";
+    edge.header.stamp = now();
+    edge.ns = obs.is_boundary ? "boundary_outline" : "obstacle_outline";
+    edge.id = id++;
+    edge.type = visualization_msgs::msg::Marker::LINE_LIST;
+    edge.action = visualization_msgs::msg::Marker::ADD;
+    edge.pose.orientation.w = 1.0;
+    edge.scale.x = 0.035;
+    edge.color.r = 0.10f;
+    edge.color.g = 0.12f;
+    edge.color.b = 0.16f;
+    edge.color.a = 1.0f;
+
+    const double cx = obs.center.x();
+    const double cy = obs.center.y();
+    const double cz = obs.center.z();
+
+    if (obs.shape == Obstacle::Shape::WALL) {
+      const double hx = obs.length_along_y ? (0.5 * obs.thickness) : (0.5 * obs.length);
+      const double hy = obs.length_along_y ? (0.5 * obs.length) : (0.5 * obs.thickness);
+      const double hz = 0.5 * obs.height;
+      const double xs[2] = {cx - hx, cx + hx};
+      const double ys[2] = {cy - hy, cy + hy};
+      const double zs[2] = {cz - hz, cz + hz};
+      // 12 box edges
+      for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 2; ++j) {
+          pushEdge(edge, xs[0], ys[i], zs[j], xs[1], ys[i], zs[j]);
+          pushEdge(edge, xs[i], ys[0], zs[j], xs[i], ys[1], zs[j]);
+          pushEdge(edge, xs[i], ys[j], zs[0], xs[i], ys[j], zs[1]);
+        }
+      }
+    } else if (obs.shape == Obstacle::Shape::CYLINDER ||
+               obs.shape == Obstacle::Shape::SPHERE) {
+      const double r = obs.radius;
+      const double z0 = (obs.shape == Obstacle::Shape::SPHERE)
+        ? (cz - r) : (cz - 0.5 * obs.height);
+      const double z1 = (obs.shape == Obstacle::Shape::SPHERE)
+        ? (cz + r) : (cz + 0.5 * obs.height);
+      constexpr int N = 20;
+      constexpr double kTwoPi = 6.283185307179586;
+      for (int i = 0; i < N; ++i) {
+        const double a0 = kTwoPi * static_cast<double>(i) / N;
+        const double a1 = kTwoPi * static_cast<double>(i + 1) / N;
+        const double x0 = cx + r * std::cos(a0);
+        const double y0 = cy + r * std::sin(a0);
+        const double x1 = cx + r * std::cos(a1);
+        const double y1 = cy + r * std::sin(a1);
+        pushEdge(edge, x0, y0, z0, x1, y1, z0);
+        pushEdge(edge, x0, y0, z1, x1, y1, z1);
+      }
+      for (int i = 0; i < 4; ++i) {
+        const double a = kTwoPi * static_cast<double>(i) / 4.0;
+        const double x = cx + r * std::cos(a);
+        const double y = cy + r * std::sin(a);
+        pushEdge(edge, x, y, z0, x, y, z1);
+      }
+    }
+
+    if (!edge.points.empty()) {
+      array.markers.push_back(edge);
+    }
+  }
+
   visualization_msgs::msg::MarkerArray buildMarkers() const
   {
     visualization_msgs::msg::MarkerArray array;
@@ -205,7 +310,8 @@ private:
         marker.color.g = static_cast<float>(get_parameter("obstacle_marker_g").as_double());
         marker.color.b = static_cast<float>(get_parameter("obstacle_marker_b").as_double());
       }
-      marker.color.a = 0.85f;
+      // Slightly translucent so dark outlines read clearly.
+      marker.color.a = 0.78f;
 
       switch (obs.shape) {
         case Obstacle::Shape::CYLINDER:
@@ -222,12 +328,19 @@ private:
           break;
         case Obstacle::Shape::WALL:
           marker.type = visualization_msgs::msg::Marker::CUBE;
-          marker.scale.x = obs.length;
-          marker.scale.y = obs.thickness;
+          // length_along_y: span is along Y (gate walls); else along X.
+          if (obs.length_along_y) {
+            marker.scale.x = obs.thickness;
+            marker.scale.y = obs.length;
+          } else {
+            marker.scale.x = obs.length;
+            marker.scale.y = obs.thickness;
+          }
           marker.scale.z = obs.height;
           break;
       }
       array.markers.push_back(marker);
+      appendObstacleOutline(array, id, obs);
     }
 
     visualization_msgs::msg::Marker start_marker;

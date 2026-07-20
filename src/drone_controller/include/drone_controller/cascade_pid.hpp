@@ -35,6 +35,7 @@ struct ControllerParams
   double max_thrust{0.0};      // 0 → auto: 4*k_F*(rpm_max in rad/s)²
   double rpm_min{0.0};
   double rpm_max{7000.0};
+  double max_motor_rpm_rate{12000.0};  // RPM/s slew limit (0 = disabled)
 
   double goal_slowdown_dist{3.0};  // beyond this, cap desired speed/accel toward goal
 
@@ -118,6 +119,8 @@ private:
   Mixer mixer_;
   Eigen::Vector3d pos_integral_{Eigen::Vector3d::Zero()};
   Eigen::Vector3d disturbance_acc_{Eigen::Vector3d::Zero()};  // estimated a_dist (world)
+  Eigen::Vector4d last_rpm_{Eigen::Vector4d::Zero()};
+  bool rpm_initialized_{false};
   double filtered_yaw_{0.0};
   bool yaw_initialized_{false};
 };

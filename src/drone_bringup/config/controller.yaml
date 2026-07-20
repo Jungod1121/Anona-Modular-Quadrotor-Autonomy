@@ -31,4 +31,5 @@
     max_thrust: 0.0
     rpm_min: 0.0
     rpm_max: 7000.0
+    max_motor_rpm_rate: 12000.0
     goal_slowdown_dist: 3.0
