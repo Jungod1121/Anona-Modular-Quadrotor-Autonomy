@@ -4,8 +4,9 @@
  * (INIT/WAIT_TARGET/GEN_NEW_TRAJ/REPLAN_TRAJ/EXEC_TRAJ/EMERGENCY_STOP),
  * rewritten for drone_ws topic contract — NOT a wrapper of ego launch.
  *
- * Topics in:  /drone/goal, /drone/odom, /map/obstacles
- * Topics out: /planner/trajectory, /planner/local_goal, /planner/trajectory_cmd, /planner/status
+ * Topics in:  /drone/goal, /drone/odom, /map/obstacles, /map/local_obstacles
+ * Topics out: /planner/trajectory, /planner/local_goal, /planner/trajectory_cmd,
+ *             /planner/status
  */
 #include "drone_planner/bspline_optimizer.hpp"
 #include "drone_planner/dyn_astar.hpp"
@@ -26,7 +27,9 @@
 #include <sensor_msgs/msg/point_cloud2.hpp>
 
 #include <mutex>
+#include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -64,6 +67,13 @@ public:
     declare_parameter("map_size_x", 20.0);
     declare_parameter("map_size_y", 12.0);
     declare_parameter("map_size_z", 3.0);
+    // General-purpose mode: fit AABB + inflate from the cloud (any catalog map).
+    declare_parameter("auto_map_fit", true);
+    declare_parameter("auto_map_margin", 2.5);
+    declare_parameter("auto_inflate", true);
+    declare_parameter("auto_inflate_min", 0.08);
+    declare_parameter("auto_inflate_max", 0.40);
+    declare_parameter("auto_map_max_cells", 2500000.0);
     declare_parameter("replan_dist", 1.5);
     declare_parameter("goal_tolerance", 0.35);
     declare_parameter("local_goal_lookahead", 1.2);
@@ -76,6 +86,8 @@ public:
     declare_parameter("cruise_z", 1.5);
     declare_parameter("z_band", 0.35);
     declare_parameter("vertical_cost_scale", 8.0);
+    declare_parameter("free_snap_radius", 8);
+    declare_parameter("seal_boundary_layers", 2);
     declare_parameter("collision_horizon", 1.5);
     declare_parameter("emergency_clearance", 0.12);
     declare_parameter("replan_clearance", 0.25);
@@ -111,19 +123,21 @@ public:
     w.lambda_collision = 14.0;
     optimizer_.setWeights(w);
 
-    grid_.setParams(
-      get_parameter("resolution").as_double(),
-      get_parameter("inflate_radius").as_double(),
-      Eigen::Vector3d(
-        get_parameter("map_origin_x").as_double(),
-        get_parameter("map_origin_y").as_double(),
-        get_parameter("map_origin_z").as_double()),
-      Eigen::Vector3d(
-        get_parameter("map_size_x").as_double(),
-        get_parameter("map_size_y").as_double(),
-        get_parameter("map_size_z").as_double()));
+    active_resolution_ = get_parameter("resolution").as_double();
+    active_inflate_ = get_parameter("inflate_radius").as_double();
+    active_origin_ = Eigen::Vector3d(
+      get_parameter("map_origin_x").as_double(),
+      get_parameter("map_origin_y").as_double(),
+      get_parameter("map_origin_z").as_double());
+    active_size_ = Eigen::Vector3d(
+      get_parameter("map_size_x").as_double(),
+      get_parameter("map_size_y").as_double(),
+      get_parameter("map_size_z").as_double());
+    grid_.setParams(active_resolution_, active_inflate_, active_origin_, active_size_);
 
-    traj_pub_ = create_publisher<nav_msgs::msg::Path>(prefix_ + "/planner/trajectory", 10);
+    traj_pub_ = create_publisher<nav_msgs::msg::Path>(
+      prefix_ + "/planner/trajectory",
+      rclcpp::QoS(1).transient_local().reliable());
     local_goal_pub_ = create_publisher<geometry_msgs::msg::PoseStamped>(
       prefix_ + "/planner/local_goal", 10);
     traj_cmd_pub_ = create_publisher<drone_msgs::msg::TrajectoryCommand>(
@@ -205,7 +219,7 @@ public:
     state_ = State::INIT;
     publishStatus("INIT", true, "booting");
     RCLCPP_INFO(get_logger(),
-      "drone_planner ready (DynAStar=%s, Bspline=%s, local_raycast=%s, map=%s, peers=%s)",
+      "drone_planner ready (DynAStar=%s, Bspline=%s, local_mapping=%s, map=%s, peers=%s)",
       get_parameter("use_dyn_astar").as_bool() ? "on" : "off",
       get_parameter("enable_bspline_opt").as_bool() ? "on" : "off",
       get_parameter("local_mapping_enable").as_bool() ? "on" : "off",
@@ -337,6 +351,43 @@ private:
     }
     return false;
   }
+  /** Estimate inflate from XY obstacle spacing (thin for mazes, thicker for sparse). */
+  static double estimateInflate(
+    const std::vector<Eigen::Vector3d> & pts,
+    double inflate_min, double inflate_max)
+  {
+    if (pts.size() < 16) {
+      return std::clamp(0.25, inflate_min, inflate_max);
+    }
+    const size_t stride = std::max<size_t>(1, pts.size() / 400);
+    std::vector<double> nn;
+    nn.reserve(400);
+    for (size_t i = 0; i < pts.size(); i += stride) {
+      double best = 1e9;
+      for (size_t j = 0; j < pts.size(); j += stride) {
+        if (i == j) {
+          continue;
+        }
+        const double dx = pts[i].x() - pts[j].x();
+        const double dy = pts[i].y() - pts[j].y();
+        const double d = std::hypot(dx, dy);
+        if (d > 1e-3 && d < best) {
+          best = d;
+        }
+      }
+      if (best < 1e8) {
+        nn.push_back(best);
+      }
+    }
+    if (nn.empty()) {
+      return std::clamp(0.25, inflate_min, inflate_max);
+    }
+    std::nth_element(nn.begin(), nn.begin() + nn.size() / 4, nn.end());
+    const double gap = nn[nn.size() / 4];
+    // ~30% of typical gap keeps corridors open on mazes, safe on dense fields.
+    return std::clamp(0.30 * gap, inflate_min, inflate_max);
+  }
+
   void ingestMap(const sensor_msgs::msg::PointCloud2 & msg)
   {
     pcl::PointCloud<pcl::PointXYZ> cloud;
@@ -352,14 +403,93 @@ private:
       return;
     }
 
+    double resolution = get_parameter("resolution").as_double();
+    double inflate = get_parameter("inflate_radius").as_double();
+    Eigen::Vector3d origin(
+      get_parameter("map_origin_x").as_double(),
+      get_parameter("map_origin_y").as_double(),
+      get_parameter("map_origin_z").as_double());
+    Eigen::Vector3d size(
+      get_parameter("map_size_x").as_double(),
+      get_parameter("map_size_y").as_double(),
+      get_parameter("map_size_z").as_double());
+
+    // First pass: collect finite points for AABB / spacing stats.
+    std::vector<Eigen::Vector3d> raw_pts;
+    raw_pts.reserve(cloud.size());
+    for (const auto & pt : cloud.points) {
+      if (!std::isfinite(pt.x) || !std::isfinite(pt.y) || !std::isfinite(pt.z)) {
+        continue;
+      }
+      raw_pts.emplace_back(pt.x, pt.y, pt.z);
+    }
+    if (raw_pts.empty()) {
+      return;
+    }
+
+    const bool auto_fit = get_parameter("auto_map_fit").as_bool();
+    if (auto_fit) {
+      Eigen::Vector3d pmin = raw_pts.front();
+      Eigen::Vector3d pmax = raw_pts.front();
+      for (const auto & p : raw_pts) {
+        pmin = pmin.cwiseMin(p);
+        pmax = pmax.cwiseMax(p);
+      }
+      // Include current odom / goal so forest starts outside the cloud still fit.
+      {
+        std::lock_guard<std::mutex> lk(mtx_);
+        if (have_odom_) {
+          const auto & p = odom_.pose.pose.position;
+          pmin = pmin.cwiseMin(Eigen::Vector3d(p.x, p.y, p.z));
+          pmax = pmax.cwiseMax(Eigen::Vector3d(p.x, p.y, p.z));
+        }
+        if (have_goal_) {
+          const auto & p = goal_.pose.position;
+          pmin = pmin.cwiseMin(Eigen::Vector3d(p.x, p.y, std::max(0.0, p.z)));
+          pmax = pmax.cwiseMax(Eigen::Vector3d(p.x, p.y, std::max(0.5, p.z)));
+        }
+      }
+      const double margin = get_parameter("auto_map_margin").as_double();
+      const double cruise = get_parameter("cruise_z").as_double();
+      origin = Eigen::Vector3d(
+        pmin.x() - margin,
+        pmin.y() - margin,
+        std::min(0.0, pmin.z() - 0.2));
+      size = Eigen::Vector3d(
+        (pmax.x() - pmin.x()) + 2.0 * margin,
+        (pmax.y() - pmin.y()) + 2.0 * margin,
+        std::max(pmax.z() - origin.z() + 0.5, cruise + 1.5));
+      size.x() = std::max(size.x(), 8.0);
+      size.y() = std::max(size.y(), 8.0);
+      size.z() = std::max(size.z(), 2.5);
+
+      // Cap memory: coarsen resolution if the AABB would explode.
+      const double max_cells = get_parameter("auto_map_max_cells").as_double();
+      for (int k = 0; k < 8; ++k) {
+        const double cells =
+          std::ceil(size.x() / resolution) *
+          std::ceil(size.y() / resolution) *
+          std::ceil(size.z() / resolution);
+        if (cells <= max_cells) {
+          break;
+        }
+        resolution = std::min(0.6, resolution * 1.25);
+      }
+    }
+
+    if (get_parameter("auto_inflate").as_bool()) {
+      inflate = estimateInflate(
+        raw_pts,
+        get_parameter("auto_inflate_min").as_double(),
+        get_parameter("auto_inflate_max").as_double());
+    }
+
     // Build off the hot path: downsample to ~grid resolution before inflate.
-    // Full 25k-point inflate under the mutex blocked the single-threaded executor
-    // and caused one-shot goals to be missed.
-    const double voxel = std::max(0.15, get_parameter("resolution").as_double());
+    const double voxel = std::max(0.15, resolution);
     std::vector<Eigen::Vector3d> pts;
-    pts.reserve(cloud.size() / 4 + 8);
+    pts.reserve(raw_pts.size() / 4 + 8);
     std::unordered_map<int64_t, bool> seen;
-    seen.reserve(cloud.size() / 4 + 8);
+    seen.reserve(raw_pts.size() / 4 + 8);
     auto vox_key = [voxel](double x, double y, double z) -> int64_t {
       const int ix = static_cast<int>(std::floor(x / voxel));
       const int iy = static_cast<int>(std::floor(y / voxel));
@@ -370,41 +500,35 @@ private:
     };
 
     OccupancyGrid new_grid;
-    new_grid.setParams(
-      get_parameter("resolution").as_double(),
-      get_parameter("inflate_radius").as_double(),
-      Eigen::Vector3d(
-        get_parameter("map_origin_x").as_double(),
-        get_parameter("map_origin_y").as_double(),
-        get_parameter("map_origin_z").as_double()),
-      Eigen::Vector3d(
-        get_parameter("map_size_x").as_double(),
-        get_parameter("map_size_y").as_double(),
-        get_parameter("map_size_z").as_double()));
+    new_grid.setParams(resolution, inflate, origin, size);
 
-    for (const auto & pt : cloud.points) {
-      if (!std::isfinite(pt.x) || !std::isfinite(pt.y) || !std::isfinite(pt.z)) {
-        continue;
-      }
-      const int64_t k = vox_key(pt.x, pt.y, pt.z);
+    for (const auto & p : raw_pts) {
+      const int64_t k = vox_key(p.x(), p.y(), p.z());
       if (seen.count(k)) {
         continue;
       }
       seen[k] = true;
-      Eigen::Vector3d p(pt.x, pt.y, pt.z);
       pts.push_back(p);
       new_grid.addPoint(p);
     }
-    new_grid.sealBoundary(2);
+    new_grid.sealBoundary(std::max(0, static_cast<int>(get_parameter("seal_boundary_layers").as_int())));
     new_grid.rebuildInflateLayer();
     OccupancyGrid base_copy = new_grid.clone();
 
     {
       std::lock_guard<std::mutex> lk(mtx_);
       // Skip identical maps — map_node republishes every few seconds for latching.
-      if (have_map_ && pts.size() == obstacles_.size() && pts.size() == last_map_voxels_) {
+      if (have_map_ && pts.size() == obstacles_.size() && pts.size() == last_map_voxels_ &&
+          (active_origin_ - origin).norm() < 1e-3 &&
+          (active_size_ - size).norm() < 1e-3 &&
+          std::abs(active_inflate_ - inflate) < 1e-3)
+      {
         return;
       }
+      active_origin_ = origin;
+      active_size_ = size;
+      active_inflate_ = inflate;
+      active_resolution_ = resolution;
       grid_ = std::move(new_grid);
       obstacles_ = std::move(pts);
       last_map_voxels_ = obstacles_.size();
@@ -414,8 +538,16 @@ private:
       have_map_ = true;
       need_replan_ = true;
     }
-    RCLCPP_INFO(get_logger(), "Map ingested: %zu raw -> %zu voxels (+boundary sealed)",
-      cloud.size(), last_map_voxels_);
+    RCLCPP_INFO(
+      get_logger(),
+      "Map ingested: %zu raw -> %zu voxels | origin=(%.1f,%.1f,%.1f) size=(%.1f,%.1f,%.1f) "
+      "res=%.2f inflate=%.2f%s%s",
+      cloud.size(), last_map_voxels_,
+      origin.x(), origin.y(), origin.z(),
+      size.x(), size.y(), size.z(),
+      resolution, inflate,
+      auto_fit ? " [auto_fit]" : "",
+      get_parameter("auto_inflate").as_bool() ? " [auto_inflate]" : "");
   }
 
   void ingestLocalMap(const sensor_msgs::msg::PointCloud2 & msg)
@@ -684,10 +816,10 @@ private:
     // Do not open-loop traj_cmd FF — lag → FF races ahead → blue cuts through obstacles.
     publish_traj_cmd = false;
 
-    const double ox = get_parameter("map_origin_x").as_double();
-    const double oy = get_parameter("map_origin_y").as_double();
-    const double sx = get_parameter("map_size_x").as_double();
-    const double sy = get_parameter("map_size_y").as_double();
+    const double ox = active_origin_.x();
+    const double oy = active_origin_.y();
+    const double sx = active_size_.x();
+    const double sy = active_size_.y();
     const double margin = 0.5;
     cmd_p.x() = std::clamp(cmd_p.x(), ox + margin, ox + sx - margin);
     cmd_p.y() = std::clamp(cmd_p.y(), oy + margin, oy + sy - margin);
@@ -704,12 +836,11 @@ private:
   bool plan(const Eigen::Vector3d & start, const Eigen::Vector3d & goal)
   {
     if (!have_map_) {
-      traj_ = {start, goal};
-      has_bspline_traj_ = false;
-      traj_duration_ = (goal - start).norm() / std::max(0.2, get_parameter("max_vel").as_double());
-      traj_start_ = now();
-      traj_idx_ = 0;
-      return true;
+      // Never invent a ballistic start→goal polyline — that flies through every
+      // obstacle once the map is late to arrive (reported on Path A/C dense maps).
+      RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000,
+        "No map yet — refusing straight-line plan");
+      return false;
     }
 
     RCLCPP_INFO(get_logger(), "Planning (%.1f,%.1f)->(%.1f,%.1f)",
@@ -724,6 +855,12 @@ private:
     opt.z_band = get_parameter("z_band").as_double();
     opt.vertical_cost_scale = get_parameter("vertical_cost_scale").as_double();
     opt.peer_radius = get_parameter("peer_radius").as_double();
+    int snap = std::max(4, static_cast<int>(get_parameter("free_snap_radius").as_int()));
+    if (get_parameter("auto_map_fit").as_bool()) {
+      // Larger maps / mazes: allow snapping out of walls farther.
+      snap = std::max(snap, static_cast<int>(std::ceil(2.5 / std::max(0.1, active_resolution_))));
+    }
+    opt.free_snap_radius = snap;
     // NOTE: plan() is only called from onTimer while mtx_ is already held.
     // Do not lock again (std::mutex is non-recursive → permanent deadlock, then
     // controller falls back to /drone/goal and flies straight through obstacles).
@@ -776,10 +913,10 @@ private:
     }
     // Dense A* polyline for tracking. Optional B-spline disabled by default
     // (see ego_avoidance.launch.py for official EGO-Planner packaging).
-    const auto dense_guide = densifyPath(guide, get_parameter("resolution").as_double());
+    const auto dense_guide = densifyPath(guide, active_resolution_);
     const auto free_guide = densifyPath(
       shortcutPath(grid_, guide),
-      std::max(0.35, get_parameter("resolution").as_double()));
+      std::max(0.35, active_resolution_));
 
     Eigen::Vector3d vel(
       odom_.twist.twist.linear.x,
@@ -1024,6 +1161,10 @@ private:
   OccupancyGrid base_grid_;
   BsplineOptimizer optimizer_;
   State state_{State::INIT};
+  Eigen::Vector3d active_origin_{Eigen::Vector3d::Zero()};
+  Eigen::Vector3d active_size_{Eigen::Vector3d(20, 12, 3)};
+  double active_inflate_{0.4};
+  double active_resolution_{0.25};
 
   mutable std::mutex mtx_;
   nav_msgs::msg::Odometry odom_;

@@ -33,13 +33,14 @@ class CloudBridge(Node):
         # Drop self-echo if input is also listed as an output.
         self.outputs = [t for t in outputs if t and t != input_topic]
 
-        # mockamap publishes VOLATILE; random_forest / drone_map are TRANSIENT_LOCAL.
-        # A TRANSIENT_LOCAL *subscriber* cannot receive VOLATILE publishers — so keep
-        # the input side VOLATILE (compatible with both: offered durability ≥ requested).
+        # All current map generators (drone_map / random_forest / mockamap) publish
+        # TRANSIENT_LOCAL. Subscribe the same way so late-joining bridge still gets the
+        # latched cloud immediately — VOLATILE would miss until the next republish
+        # (drone_map only every 10s → Path B/C looked like "map not loading").
         sub_qos = QoSProfile(
-            depth=5,
+            depth=1,
             reliability=ReliabilityPolicy.RELIABLE,
-            durability=DurabilityPolicy.VOLATILE,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL,
             history=HistoryPolicy.KEEP_LAST,
         )
         pub_qos = QoSProfile(

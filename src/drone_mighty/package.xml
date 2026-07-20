@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>drone_mighty</name>
+  <version>0.1.0</version>
+  <description>Path E plant adapter — Hermite/L-BFGS style global planner for drone_ws (MIGHTY-inspired; full mit-acl/mighty sources under mighty_vendor)</description>
+  <maintainer email="student@example.com">drone_ws</maintainer>
+  <license>MIT</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>nav_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>drone_msgs</depend>
+  <depend>eigen3_cmake_module</depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

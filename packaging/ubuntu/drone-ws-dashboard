@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# Ubuntu desktop launcher for the drone_ws mission console.
+set -euo pipefail
+
+PORT="${DRONE_DASH_PORT:-8765}"
+HOST="${DRONE_DASH_HOST:-127.0.0.1}"
+URL="http://${HOST}:${PORT}/"
+
+# Resolve workspace: env override → script-relative → default home path
+if [[ -n "${DRONE_WS:-}" ]]; then
+  WS="$DRONE_WS"
+else
+  HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+  if [[ -f "$HERE/../../install/setup.bash" ]]; then
+    WS="$(cd "$HERE/../.." && pwd)"
+  elif [[ -f "$HOME/drone_ws/install/setup.bash" ]]; then
+    WS="$HOME/drone_ws"
+  else
+    zenity --error --text="找不到 drone_ws（缺少 install/setup.bash）。\n请先 colcon build，或设置环境变量 DRONE_WS。" 2>/dev/null \
+      || notify-send "Drone WS" "找不到工作空间，请设置 DRONE_WS" 2>/dev/null \
+      || echo "ERROR: set DRONE_WS to your workspace root" >&2
+    exit 1
+  fi
+fi
+
+ROS_SETUP="${ROS_SETUP:-/opt/ros/humble/setup.bash}"
+if [[ ! -f "$ROS_SETUP" ]]; then
+  zenity --error --text="未找到 ROS：${ROS_SETUP}" 2>/dev/null || true
+  exit 1
+fi
+
+# Already up → just open the browser
+if ss -ltn 2>/dev/null | grep -qE ":${PORT}\\b" || curl -sf -o /dev/null --max-time 1 "$URL"; then
+  xdg-open "$URL" >/dev/null 2>&1 || true
+  exit 0
+fi
+
+# shellcheck disable=SC1090
+source "$ROS_SETUP"
+# shellcheck disable=SC1090
+source "$WS/install/setup.bash"
+
+LOG_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/drone-ws"
+mkdir -p "$LOG_DIR"
+LOG="$LOG_DIR/dashboard.log"
+
+nohup ros2 run drone_bringup dashboard -- --host "$HOST" --port "$PORT" --workspace "$WS" \
+  >"$LOG" 2>&1 &
+DASH_PID=$!
+
+# Wait until HTTP answers (or fail)
+for _ in $(seq 1 40); do
+  if curl -sf -o /dev/null --max-time 0.5 "$URL"; then
+    xdg-open "$URL" >/dev/null 2>&1 || true
+    notify-send "Drone WS" "控制台已启动：$URL" 2>/dev/null || true
+    exit 0
+  fi
+  if ! kill -0 "$DASH_PID" 2>/dev/null; then
+    zenity --error --text="Dashboard 启动失败。\n日志：$LOG" 2>/dev/null \
+      || echo "Dashboard failed — see $LOG" >&2
+    exit 1
+  fi
+  sleep 0.25
+done
+
+zenity --warning --text="Dashboard 启动超时。\n日志：$LOG\n仍可尝试打开 $URL" 2>/dev/null || true
+xdg-open "$URL" >/dev/null 2>&1 || true
+exit 1

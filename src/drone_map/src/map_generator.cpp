@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <limits>
 #include <queue>
 #include <random>
 #include <stdexcept>
@@ -26,6 +27,22 @@ int gridIndex(double value, double origin, double resolution)
 double clampValue(double v, double lo, double hi)
 {
   return std::max(lo, std::min(hi, v));
+}
+
+/// Dense / narrow: walls and cylinders share a fixed height (4 m).
+struct VerticalProfile
+{
+  double wall_h{4.0};
+  double pillar_h{4.0};
+};
+
+VerticalProfile verticalProfileFor(const FieldBounds & bounds)
+{
+  const double field_h = std::max(0.5, bounds.z_max - bounds.z_min);
+  VerticalProfile vp;
+  vp.wall_h = clampValue(4.0, 0.5, field_h);
+  vp.pillar_h = vp.wall_h;  // same height as walls
+  return vp;
 }
 
 }  // namespace
@@ -53,7 +70,16 @@ MapMode parseMapMode(const std::string & mode_str)
 MapGenerator::MapGenerator(MapConfig config)
 : config_(std::move(config))
 {
+  // PLAN §5.3: 1.2~1.8 m ≈ 2.5~3.5× quadrotor outline — wider is not "narrow".
   config_.corridor_gap_width = clampValue(config_.corridor_gap_width, 1.2, 1.8);
+  // Prefer odd counts so the weave ends near mid-Y before the goal.
+  if (config_.corridor_gate_count < 3) {
+    config_.corridor_gate_count = 3;
+  } else if (config_.corridor_gate_count > 7) {
+    config_.corridor_gate_count = 7;
+  } else if (config_.corridor_gate_count % 2 == 0) {
+    config_.corridor_gate_count += 1;  // 4→5, 6→7
+  }
   config_.min_obstacle_spacing = clampValue(config_.min_obstacle_spacing, 0.8, 1.0);
   config_.min_obstacle_radius = clampValue(config_.min_obstacle_radius, 0.12, 0.3);
   config_.max_obstacle_radius = clampValue(config_.max_obstacle_radius, 0.12, 0.3);
@@ -75,7 +101,24 @@ FieldBounds MapGenerator::boundsForMode(MapMode mode)
       b.z_max = 2.5;
       break;
     case MapMode::DENSE_FIELD:
+      // Wide open field filling a typical RViz orbit (~50×40 m). No perimeter
+      // walls by default (see add_boundary_walls); pillars fill to the edges.
+      b.x_min = -8.0;
+      b.x_max = 48.0;
+      b.y_min = -8.0;
+      b.y_max = 32.0;
+      b.z_min = 0.0;
+      b.z_max = 4.0;
+      break;
     case MapMode::NARROW_CORRIDOR:
+      // Outer flyable envelope; z matches fixed 4 m walls / pillars.
+      b.x_min = -2.0;
+      b.x_max = 22.0;
+      b.y_min = -2.0;
+      b.y_max = 12.0;
+      b.z_min = 0.0;
+      b.z_max = 4.0;
+      break;
     case MapMode::EGO_MAZE2D:
     case MapMode::EGO_DENSE_FOREST:
       // Outer flyable envelope (boundary walls sit on these edges).
@@ -118,6 +161,18 @@ MapGenerationResult MapGenerator::generate()
 {
   MapGenerationResult result;
   result.bounds = boundsForMode(config_.mode);
+  if (config_.use_custom_bounds && config_.x_max > config_.x_min &&
+    config_.y_max > config_.y_min)
+  {
+    result.bounds.x_min = config_.x_min;
+    result.bounds.x_max = config_.x_max;
+    result.bounds.y_min = config_.y_min;
+    result.bounds.y_max = config_.y_max;
+    if (config_.z_max > config_.z_min) {
+      result.bounds.z_min = config_.z_min;
+      result.bounds.z_max = config_.z_max;
+    }
+  }
   result.seed = config_.seed;
 
   const double origin_x = 0.5 * (result.bounds.x_min + result.bounds.x_max);
@@ -183,6 +238,14 @@ MapGenerationResult MapGenerator::generate()
   if (config_.mode == MapMode::SPARSE) {
     target_count = effectiveSeed(0) % 3;
   }
+  if (config_.mode == MapMode::DENSE_FIELD) {
+    // Keep pillar density ≈ 80 / (24×14) while the field grows.
+    constexpr double kRefArea = 24.0 * 14.0;
+    constexpr double kRefCount = 80.0;
+    const double area = field_x * field_y;
+    target_count = std::max(
+      80, static_cast<int>(std::lround(kRefCount * area / kRefArea)));
+  }
 
   const bool needs_connectivity =
     config_.mode == MapMode::DENSE_FIELD ||
@@ -203,9 +266,11 @@ MapGenerationResult MapGenerator::generate()
       result.attempt = attempt;
       result.obstacles = std::move(obstacles);
       result.connected = connected;
-      if (config_.mode == MapMode::DENSE_FIELD ||
-        config_.mode == MapMode::NARROW_CORRIDOR)
-      {
+      const bool want_walls =
+        config_.add_boundary_walls &&
+        (config_.mode == MapMode::DENSE_FIELD ||
+         config_.mode == MapMode::NARROW_CORRIDOR);
+      if (want_walls) {
         addBoundaryWalls(result.obstacles, result.bounds);
       }
       result.cloud = downsampleCloud(buildCloud(result.obstacles));
@@ -229,8 +294,9 @@ std::vector<Obstacle> MapGenerator::generateCandidateObstacles(
     return obstacles;
   }
 
-  // Keep random obstacles away from perimeter walls (inner playable corral).
-  constexpr double kWallObstacleMargin = 2.0;
+  // Keep pillars slightly inset from the AABB edge (no hard walls when
+  // add_boundary_walls is false — still avoid clipping the cloud silhouette).
+  const double kWallObstacleMargin = config_.add_boundary_walls ? 2.0 : 0.35;
   FieldBounds inner = bounds;
   inner.x_min += kWallObstacleMargin;
   inner.x_max -= kWallObstacleMargin;
@@ -245,15 +311,33 @@ std::vector<Obstacle> MapGenerator::generateCandidateObstacles(
   std::uniform_real_distribution<double> height_dist(0.8, bounds.z_max);
   std::uniform_real_distribution<double> shape_coin(0.0, 1.0);
 
+  const bool uniform_pillars =
+    config_.mode == MapMode::DENSE_FIELD ||
+    config_.mode == MapMode::NARROW_CORRIDOR;
+  const VerticalProfile vp = verticalProfileFor(bounds);
+
   const Eigen::Vector2d start(config_.start_x, config_.start_y);
   const Eigen::Vector2d goal(config_.goal_x, config_.goal_y);
   const bool narrow_mode = config_.mode == MapMode::NARROW_CORRIDOR;
-  const double passage_center_y = 0.5 * (config_.start_y + config_.goal_y);
-  const double gate_x = 0.5 * (config_.start_x + config_.goal_x);
-  const double gate_half_gap = config_.corridor_gap_width * 0.5;
-  // Side bays stay dense; keep a flyable lane toward the gate (EGO maze road + door).
-  const double corridor_half_width = narrow_mode ? 2.5 : 0.0;
-  const double gate_clear_x = 1.0;
+  // Keep-out tube around the forced S-bend only (NOT a 5 m open highway).
+  // Inspired by EGO maze roads / AirSim narrow-corridor benchmarks + PLAN §5.3.
+  const auto narrow_path = narrow_mode ? narrowPassageWaypoints() : std::vector<Eigen::Vector2d>{};
+  const double lane_half = narrow_mode ?
+    (0.5 * config_.corridor_gap_width + 0.45) : 0.0;
+
+  auto dist_to_narrow_path = [&](const Eigen::Vector2d & p) -> double {
+    double best = std::numeric_limits<double>::infinity();
+    for (size_t i = 1; i < narrow_path.size(); ++i) {
+      const Eigen::Vector2d & a = narrow_path[i - 1];
+      const Eigen::Vector2d & b = narrow_path[i];
+      const Eigen::Vector2d ab = b - a;
+      const double ab2 = ab.squaredNorm();
+      double t = (ab2 > 1e-12) ? (p - a).dot(ab) / ab2 : 0.0;
+      t = clampValue(t, 0.0, 1.0);
+      best = std::min(best, (p - (a + t * ab)).norm());
+    }
+    return best;
+  };
 
   int placed = 0;
   int rejections = 0;
@@ -263,7 +347,10 @@ std::vector<Obstacle> MapGenerator::generateCandidateObstacles(
     Obstacle obs;
     obs.shape = (shape_coin(rng) < 0.75) ? Obstacle::Shape::CYLINDER : Obstacle::Shape::SPHERE;
     obs.radius = radius_dist(rng);
-    obs.height = height_dist(rng);
+    // Dense / narrow: every cylinder shares one height, slightly above walls.
+    obs.height = (uniform_pillars && obs.shape == Obstacle::Shape::CYLINDER)
+      ? vp.pillar_h
+      : height_dist(rng);
     obs.center.x() = x_dist(rng);
     obs.center.y() = y_dist(rng);
     obs.center.z() = bounds.z_min + obs.height * 0.5;
@@ -276,17 +363,8 @@ std::vector<Obstacle> MapGenerator::generateCandidateObstacles(
 
     const Eigen::Vector2d pos(obs.center.x(), obs.center.y());
 
-    // Narrow corridor: dense clutter in side bays; central lane + gate mouth stay open.
-    if (narrow_mode &&
-      std::abs(obs.center.y() - passage_center_y) < corridor_half_width + obs.radius)
-    {
-      ++rejections;
-      continue;
-    }
-    if (narrow_mode &&
-      std::abs(obs.center.x() - gate_x) < gate_clear_x + obs.radius &&
-      std::abs(obs.center.y() - passage_center_y) < gate_half_gap + obs.radius + 0.15)
-    {
+    // Narrow corridor: clutter the side bays; only a thin tube along the S-path stays open.
+    if (narrow_mode && dist_to_narrow_path(pos) < lane_half + obs.radius) {
       ++rejections;
       continue;
     }
@@ -326,24 +404,54 @@ std::vector<Obstacle> MapGenerator::generateCandidateObstacles(
   return obstacles;
 }
 
+std::vector<Eigen::Vector2d> MapGenerator::narrowPassageWaypoints() const
+{
+  // Staggered gates force an S-bend (场景5「绕行」), not a straight shot through one door.
+  const double x0 = config_.start_x;
+  const double y0 = config_.start_y;
+  const double x1 = config_.goal_x;
+  const double y1 = config_.goal_y;
+  const double y_mid = 0.5 * (y0 + y1);
+  const double span = std::max(1.0, x1 - x0);
+  const double gap = config_.corridor_gap_width;
+  // Lateral offset must exceed the gap so successive doors do not align.
+  const double offset = std::max(2.0, gap + 0.7);
+  const int n_gates = config_.corridor_gate_count;
+
+  std::vector<Eigen::Vector2d> wps;
+  wps.reserve(static_cast<size_t>(n_gates) + 2);
+  wps.emplace_back(x0, y0);
+  for (int i = 0; i < n_gates; ++i) {
+    const double t = (i + 1.0) / (n_gates + 1.0);
+    const double x = x0 + t * span;
+    const double sign = (i % 2 == 0) ? 1.0 : -1.0;
+    wps.emplace_back(x, y_mid + sign * offset);
+  }
+  wps.emplace_back(x1, y1);
+  return wps;
+}
+
 void MapGenerator::addNarrowPassageGate(
   std::vector<Obstacle> & obstacles,
   const FieldBounds & bounds) const
 {
-  // PLAN §5.3 + EGO mockamap maze pattern: dense clutter + perpendicular gate with door.
-  const double passage_center_y = 0.5 * (config_.start_y + config_.goal_y);
-  const double gate_x = 0.5 * (config_.start_x + config_.goal_x);
+  // PLAN §5.3: deterministic walls that leave only a 1.2~1.8 m slit.
+  // N full-span N–S walls with offset doors → must weave (绕行).
+  const auto wps = narrowPassageWaypoints();
+  if (wps.size() < 3) {
+    return;
+  }
   const double gap = config_.corridor_gap_width;
-  const double gap_low = passage_center_y - gap * 0.5;
-  const double gap_high = passage_center_y + gap * 0.5;
-  const double wall_height = bounds.z_max - bounds.z_min;
-  const double wall_thickness = 0.15;
-  constexpr double kInnerMargin = 1.0;
+  const VerticalProfile vp = verticalProfileFor(bounds);
+  const double wall_height = vp.wall_h;
+  // ≥ ~2× SDF res (0.15) so solid voxels never leave a straight-line hole at y=mid.
+  const double wall_thickness = 0.32;
+  constexpr double kInnerMargin = 0.6;
   const double y_inner_min = bounds.y_min + kInnerMargin;
   const double y_inner_max = bounds.y_max - kInnerMargin;
 
-  auto add_y_wall = [&](double y0, double y1) {
-    if (y1 - y0 < 0.5) {
+  auto add_y_wall = [&](double gate_x, double y0, double y1) {
+    if (y1 - y0 < 0.4) {
       return;
     }
     Obstacle wall;
@@ -359,8 +467,17 @@ void MapGenerator::addNarrowPassageGate(
     obstacles.push_back(wall);
   };
 
-  add_y_wall(y_inner_min, gap_low);
-  add_y_wall(gap_high, y_inner_max);
+  auto add_gate_at = [&](double gate_x, double gap_cy) {
+    const double gap_low = gap_cy - gap * 0.5;
+    const double gap_high = gap_cy + gap * 0.5;
+    add_y_wall(gate_x, y_inner_min, gap_low);
+    add_y_wall(gate_x, gap_high, y_inner_max);
+  };
+
+  // Intermediate waypoints are door centers (skip start/goal).
+  for (size_t i = 1; i + 1 < wps.size(); ++i) {
+    add_gate_at(wps[i].x(), wps[i].y());
+  }
 }
 
 void MapGenerator::addBoundaryWalls(
@@ -368,7 +485,8 @@ void MapGenerator::addBoundaryWalls(
   const FieldBounds & bounds) const
 {
   const double t = 0.2;
-  const double h = bounds.z_max - bounds.z_min;
+  const VerticalProfile vp = verticalProfileFor(bounds);
+  const double h = vp.wall_h;
   const double zc = bounds.z_min + 0.5 * h;
   const double lx = bounds.x_max - bounds.x_min;
   const double ly = bounds.y_max - bounds.y_min;
@@ -583,36 +701,18 @@ pcl::PointCloud<pcl::PointXYZ> MapGenerator::sampleObstacleSurface(
     const double z0 = obstacle.center.z() - half_h;
     const double z1 = obstacle.center.z() + half_h;
 
-    auto add_face_grid =
-      [&](double ua0, double ua1, double va0, double va1,
-        auto map_fn) {
-        for (double u = ua0; u <= ua1 + 1e-6; u += step) {
-          for (double v = va0; v <= va1 + 1e-6; v += step) {
-            const Eigen::Vector3d p = map_fn(u, v);
-            cloud.points.emplace_back(
-              static_cast<float>(p.x()), static_cast<float>(p.y()), static_cast<float>(p.z()));
-          }
+    // Solid fill (not faces only). Thin gate walls otherwise leave holes at
+    // SDF resolution ~0.15 m so Fast-Planner flies straight through the slab.
+    // Step ≥0.12 keeps the cloud manageable while sealing voxels.
+    const double fill = std::max(step, 0.12);
+    for (double x = x0; x <= x1 + 1e-6; x += fill) {
+      for (double y = y0; y <= y1 + 1e-6; y += fill) {
+        for (double z = z0; z <= z1 + 1e-6; z += fill) {
+          cloud.points.emplace_back(
+            static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
         }
-      };
-
-    add_face_grid(x0, x1, z0, z1, [&](double x, double z) {
-      return Eigen::Vector3d(x, y0, z);
-    });
-    add_face_grid(x0, x1, z0, z1, [&](double x, double z) {
-      return Eigen::Vector3d(x, y1, z);
-    });
-    add_face_grid(y0, y1, z0, z1, [&](double y, double z) {
-      return Eigen::Vector3d(x0, y, z);
-    });
-    add_face_grid(y0, y1, z0, z1, [&](double y, double z) {
-      return Eigen::Vector3d(x1, y, z);
-    });
-    add_face_grid(x0, x1, y0, y1, [&](double x, double y) {
-      return Eigen::Vector3d(x, y, z0);
-    });
-    add_face_grid(x0, x1, y0, y1, [&](double x, double y) {
-      return Eigen::Vector3d(x, y, z1);
-    });
+      }
+    }
   }
 
   return cloud;

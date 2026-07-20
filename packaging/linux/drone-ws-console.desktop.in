@@ -1,0 +1,16 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Drone WS Console
+Name[zh_CN]=无人机仿真控制台
+GenericName=Mission Console
+GenericName[zh_CN]=仿真任务控制台
+Comment=Native Linux app for drone_ws sim control (ROS 2)
+Comment[zh_CN]=drone_ws 仿真控制原生 Linux 应用（含启停、规划器、验收）
+Exec=@BIN@
+Icon=@ICON@
+Terminal=false
+Categories=Development;Science;Education;Robotics;
+Keywords=drone;ros;sim;dashboard;planner;ego;
+StartupNotify=true
+StartupWMClass=drone-ws-console

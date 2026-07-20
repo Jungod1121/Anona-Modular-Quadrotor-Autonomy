@@ -1,0 +1,25 @@
+/**:
+  ros__parameters:
+    map_mode: ego_dense_forest
+    seed: 43
+    max_attempts: 250
+    start_x: 1.0
+    start_y: 5.0
+    start_z: 1.5
+    goal_x: 17.0
+    goal_y: 5.0
+    goal_z: 1.5
+    safety_distance: 0.4
+    clearance_radius: 1.2
+    min_obstacle_spacing: 0.75
+    min_obstacle_radius: 0.12
+    max_obstacle_radius: 0.35
+    point_resolution: 0.08
+    downsample_voxel: 0.1
+    grid_resolution: 0.2
+    ego_resolution: 0.1
+    ego_obs_num: 150
+    ego_circle_num: 60
+    ego_min_distance: 0.7
+    local_sense_radius: 6.0
+    local_sense_rate: 10.0

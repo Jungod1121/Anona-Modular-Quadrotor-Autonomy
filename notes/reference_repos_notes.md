@@ -82,6 +82,32 @@
 
 ---
 
+## d) FUEL（https://github.com/HKUST-Aerial-Robotics/FUEL）
+
+### 定位
+- **Fast UAV Exploration**：增量前沿面（FIS）+ 分层规划（覆盖路径 / 视点精修 / 最短时轨迹）。
+- **ROS1 only**（Melodic/Noetic + catkin）。整包含 `fuel_planner/`（Fast-Planner 核 + `exploration_manager`）与 `uav_simulator/`（SO3 仿真）。
+- 本地只读副本：`reference_repos/FUEL/`（`COLCON_IGNORE`）。**禁止修改该树，禁止接入 SO3 / fake_drone。**
+
+### 可借鉴
+| 模块 | 启示 |
+|------|------|
+| `active_perception` / FIS | 未知体积上提 frontier、聚类成视点 |
+| `exploration_manager` FSM | 2D Goal 仅作启动触发，之后自选下一视点 |
+| 探索盒 `box_min/max` | 限制可探索 AABB |
+| PCD + 局部感知 | 全局真值图 + 机体周围逐步「揭示」 |
+
+### 不要移植到本工程
+- `uav_simulator/` 全套（`so3_*`、`poscmd_2_odom`）
+- 整包 Fast-Planner ESDF 管线（本阶段用自研雾面栅格 + homemade 规划器）
+
+### 本工程对应
+- Path D：`drone_exploration`（自研 local sensing + frontier FSM）+ **Path B EGO** 轨迹后端 + 现有植物契约。
+- Launch：`fuel_explore.launch.py` / `planner:=fuel_explore`。
+- 报告表述：FUEL **式**探索（EGO 执行），非「已编译官方 FUEL / Fast-Planner 二进制」。
+
+---
+
 ## 对本工程的总体决策（留痕）
 
 1. **动力学 + 控制器**：纯自研 C++，参数 yaml 化。

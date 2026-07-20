@@ -1,0 +1,11 @@
+# Path E defaults (aligned with forest map / plant)
+mighty_planning_node:
+  ros__parameters:
+    MapTopic: '/map_generator/global_cloud'
+    TargetTopic: '/drone/goal'
+    OdomTopic: '/drone/odom'
+    CruiseHeight: 1.0
+    MaxVel: 1.5
+    DilateRadius: 0.35
+    VoxelWidth: 0.25
+    MapBound: [-18.0, 18.0, -12.0, 12.0, 0.0, 4.0]

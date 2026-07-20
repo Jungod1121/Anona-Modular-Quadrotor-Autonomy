@@ -275,4 +275,45 @@ void OccupancyGrid::integrateLocalCloud(
   }
 }
 
+void OccupancyGrid::appendOccupiedCloud(
+  std::vector<Eigen::Vector3d> & out,
+  const Eigen::Vector3d & center,
+  const Eigen::Vector3d & range,
+  bool use_inflate,
+  double truncate_height) const
+{
+  if (nx_ <= 0 || ny_ <= 0 || nz_ <= 0) {
+    return;
+  }
+
+  auto clamp_idx = [&](const Eigen::Vector3d & p) {
+    int ix = static_cast<int>(std::floor((p.x() - origin_.x()) * inv_res_));
+    int iy = static_cast<int>(std::floor((p.y() - origin_.y()) * inv_res_));
+    int iz = static_cast<int>(std::floor((p.z() - origin_.z()) * inv_res_));
+    return Eigen::Vector3i(
+      std::max(0, std::min(nx_ - 1, ix)),
+      std::max(0, std::min(ny_ - 1, iy)),
+      std::max(0, std::min(nz_ - 1, iz)));
+  };
+
+  const Eigen::Vector3i i_min = clamp_idx(center - range);
+  const Eigen::Vector3i i_max = clamp_idx(center + range);
+  const auto & layer = use_inflate ? occ_inflate_ : occ_raw_;
+
+  for (int x = i_min.x(); x <= i_max.x(); ++x) {
+    for (int y = i_min.y(); y <= i_max.y(); ++y) {
+      for (int z = i_min.z(); z <= i_max.z(); ++z) {
+        if (layer[cellIndex(x, y, z)] == 0) {
+          continue;
+        }
+        const Eigen::Vector3d p = indexToWorld(Eigen::Vector3i(x, y, z));
+        if (p.z() > truncate_height) {
+          continue;
+        }
+        out.push_back(p);
+      }
+    }
+  }
+}
+
 }  // namespace drone_planner

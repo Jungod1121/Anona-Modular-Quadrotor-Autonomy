@@ -2,7 +2,8 @@
 """
 Automated PLAN.md acceptance runner for all six scenarios.
 
-Launches each scenario headless (no RViz), runs evaluate_drone, parses metrics,
+Launches each scenario (RViz off by default; pass --use-rviz to watch),
+runs evaluate_drone, parses metrics,
 and writes report/acceptance_report.md + report/acceptance_results.json.
 """
 
@@ -38,6 +39,7 @@ class ScenarioSpec:
     criteria: Dict[str, str]
     notes: str = ''
     extra_processes: List[List[str]] = field(default_factory=list)
+    hold_at_goal: bool = False
 
 
 def parse_summary(path: Path) -> Dict[str, str]:
@@ -113,6 +115,8 @@ def cleanup_sim() -> None:
         'dynamics_node', 'controller_node', 'map_node', 'planner_node', 'viz_node',
         'send_goal', 'evaluate_drone', 'waypoint_publisher', 'rviz2',
         'ros2 launch drone_bringup',
+        'vfh_planner_node', 'sac_planner_node', 'rl_planner_node',
+        'vfh', 'sac_planner', 'safety_supervisor',
     ]
     for pat in patterns:
         subprocess.run(['pkill', '-9', '-f', pat], check=False,
@@ -135,7 +139,7 @@ def wait_for_topic(topic: str, timeout: float = 30.0) -> bool:
     return False
 
 
-def run_scenario(spec: ScenarioSpec, dry_run: bool = False) -> Dict:
+def run_scenario(spec: ScenarioSpec, dry_run: bool = False, use_rviz: bool = False) -> Dict:
     out_dir = OUTPUT_ROOT / f'scenario_{spec.id:02d}_{spec.launch.replace(".launch.py", "")}'
     if out_dir.exists():
         for old in out_dir.glob('*'):
@@ -167,7 +171,7 @@ def run_scenario(spec: ScenarioSpec, dry_run: bool = False) -> Dict:
 
     launch_cmd = [
         'ros2', 'launch', 'drone_bringup', spec.launch,
-        'use_rviz:=false',
+        f'use_rviz:={"true" if use_rviz else "false"}',
         *spec.launch_args,
     ]
 
@@ -255,6 +259,10 @@ def run_scenario(spec: ScenarioSpec, dry_run: bool = False) -> Dict:
                 checks[key] = bool(re.search(pattern, log_text))
 
         result['checks'] = checks
+        if spec.hold_at_goal:
+            result['supplementary_checks'] = {
+                '末段悬停≤0.3m': parse_bool(summary.get('hold_at_goal_pass_0.3m', 'false')),
+            }
         result['pass'] = all(checks.values()) if checks else False
         result['status'] = 'pass' if result['pass'] else 'fail'
 
@@ -300,6 +308,7 @@ SCENARIOS = [
             '最终位置误差≤0.3m': 'summary:goal_pass_0.3m_true',
         },
         notes='目标 (0,0,1.5)，3s 后自动发 goal',
+        hold_at_goal=True,
     ),
     ScenarioSpec(
         id=2,
@@ -314,6 +323,7 @@ SCENARIOS = [
             '最大误差≤3.0m(起飞过程)': 'summary:max_pos_err_lte_3.0',
         },
         notes='目标 (2,1,1.5)',
+        hold_at_goal=True,
     ),
     ScenarioSpec(
         id=3,
@@ -343,6 +353,7 @@ SCENARIOS = [
             '规划器曾报告success': 'summary:planner_success_ever_true',
         },
         notes='dense_field 80圆柱+围墙, seed=42',
+        hold_at_goal=True,
     ),
     ScenarioSpec(
         id=5,
@@ -357,7 +368,8 @@ SCENARIOS = [
             '最小障碍距离>0.35m': 'summary:avoidance_pass_0.35m_true',
             '无A*失败日志': 'log_not:A* failed',
         },
-        notes='narrow_corridor 80圆柱+窄门+围墙',
+        notes='narrow_corridor S-bend: 3×1.6m doors + side clutter (PLAN §5.3)',
+        hold_at_goal=True,
     ),
     ScenarioSpec(
         id=6,
@@ -420,6 +432,8 @@ def write_report(results: List[Dict], merge_existing: bool = False) -> None:
             metrics.append(f"min_obs={summary['min_obstacle_distance']}")
         if 'planner_success_ever' in summary:
             metrics.append(f"planner_ok={summary['planner_success_ever']}")
+        if 'hold_at_goal_pass_0.3m' in summary:
+            metrics.append(f"hold={summary['hold_at_goal_pass_0.3m']}")
         wp = r.get('waypoint_visits')
         if wp:
             metrics.append(f"wp={wp['visited']}/{wp['total']}")
@@ -440,6 +454,12 @@ def write_report(results: List[Dict], merge_existing: bool = False) -> None:
         if checks:
             lines.append('- 检查项：')
             for k, v in checks.items():
+                mark = '✅' if v else '❌'
+                lines.append(f'  - {mark} {k}')
+        supp = r.get('supplementary_checks', {})
+        if supp:
+            lines.append('- 补充检查（不计入原六项通过判定）：')
+            for k, v in supp.items():
                 mark = '✅' if v else '❌'
                 lines.append(f'  - {mark} {k}')
         summary = r.get('summary', {})
@@ -513,8 +533,21 @@ def write_report(results: List[Dict], merge_existing: bool = False) -> None:
     ])
 
     (REPORT_DIR / 'acceptance_report.md').write_text('\n'.join(lines) + '\n')
+
+    rates = None
+    try:
+        sys.path.insert(0, str(WS / 'src' / 'drone_bringup'))
+        from drone_bringup.planner_registry import RATES as _RATES  # noqa: E402
+        rates = dict(_RATES)
+    except ImportError:
+        pass
+
+    payload = {'timestamp': ts, 'passed': passed, 'total': total, 'results': results}
+    if rates is not None:
+        payload['rates'] = rates
+
     (REPORT_DIR / 'acceptance_results.json').write_text(
-        json.dumps({'timestamp': ts, 'passed': passed, 'total': total, 'results': results}, indent=2)
+        json.dumps(payload, indent=2)
     )
 
 
@@ -524,29 +557,39 @@ def main() -> int:
     parser = argparse.ArgumentParser(description='Run PLAN.md six-scenario acceptance suite')
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--only', type=str, default='', help='Comma-separated scenario ids, e.g. 1,4')
+    parser.add_argument(
+        '--use-rviz', action='store_true',
+        help='Open RViz2 for each scenario (hands-on watch; slower / heavier)',
+    )
     args = parser.parse_args()
 
     only = {int(x.strip()) for x in args.only.split(',') if x.strip()} if args.only else None
     specs = [s for s in SCENARIOS if only is None or s.id in only]
 
-    # Scenario 6: check evaluation.png exists after run
     results = []
-    for spec in specs:
-        print(f'\n=== Scenario {spec.id}: {spec.name} ===', flush=True)
-        r = run_scenario(spec, dry_run=args.dry_run)
-        if spec.id == 6 and not args.dry_run:
-            png = OUTPUT_ROOT / 'scenario_06_stability_demo' / 'evaluation.png'
-            r['checks']['评测图已生成'] = png.is_file()
-            r['pass'] = all(r.get('checks', {}).values()) if r.get('checks') else False
-            r['status'] = 'pass' if r['pass'] else 'fail'
-        results.append(r)
-        print(f"  -> {r.get('status', 'unknown')} pass={r.get('pass')}", flush=True)
+    try:
+        for spec in specs:
+            print(f'\n=== Scenario {spec.id}: {spec.name} ===', flush=True)
+            if args.use_rviz:
+                print('  (RViz enabled — watch Fixed Frame=map)', flush=True)
+            r = run_scenario(spec, dry_run=args.dry_run, use_rviz=args.use_rviz)
+            if spec.id == 6 and not args.dry_run:
+                png = OUTPUT_ROOT / 'scenario_06_stability_demo' / 'evaluation.png'
+                r['checks']['评测图已生成'] = png.is_file()
+                r['pass'] = all(r.get('checks', {}).values()) if r.get('checks') else False
+                r['status'] = 'pass' if r['pass'] else 'fail'
+            results.append(r)
+            print(f"  -> {r.get('status', 'unknown')} pass={r.get('pass')}", flush=True)
+    except KeyboardInterrupt:
+        print('\n[acceptance] cancelled by user', flush=True)
+        cleanup_sim()
+        return 130
 
     if not args.dry_run:
         write_report(results, merge_existing=bool(only))
         print(f'\nReport written to {REPORT_DIR / "acceptance_report.md"}', flush=True)
 
-    return 0 if all(r.get('pass') for r in results) else 1
+    return 0 if results and all(r.get('pass') for r in results) else 1
 
 
 if __name__ == '__main__':

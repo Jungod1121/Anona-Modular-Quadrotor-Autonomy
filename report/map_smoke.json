@@ -1,0 +1,308 @@
+{
+  "total": 30,
+  "passed": 30,
+  "failed": 0,
+  "failures": [],
+  "results": [
+    {
+      "planner": "homemade",
+      "map": "dense_field",
+      "ok": true,
+      "width": 93706,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.4,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/homemade__dense_field.log"
+    },
+    {
+      "planner": "homemade",
+      "map": "ego_forest_port",
+      "ok": true,
+      "width": 17556,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/homemade__ego_forest_port.log"
+    },
+    {
+      "planner": "homemade",
+      "map": "ego_maze2d_port",
+      "ok": true,
+      "width": 209391,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/homemade__ego_maze2d_port.log"
+    },
+    {
+      "planner": "homemade",
+      "map": "narrow_corridor",
+      "ok": true,
+      "width": 92330,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/homemade__narrow_corridor.log"
+    },
+    {
+      "planner": "homemade",
+      "map": "official_forest",
+      "ok": true,
+      "width": 31782,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/homemade__official_forest.log"
+    },
+    {
+      "planner": "homemade",
+      "map": "official_maze2d",
+      "ok": true,
+      "width": 293760,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.3,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/homemade__official_maze2d.log"
+    },
+    {
+      "planner": "homemade",
+      "map": "official_maze3d",
+      "ok": true,
+      "width": 171372,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/homemade__official_maze3d.log"
+    },
+    {
+      "planner": "homemade",
+      "map": "official_perlin",
+      "ok": true,
+      "width": 95054,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/homemade__official_perlin.log"
+    },
+    {
+      "planner": "homemade",
+      "map": "official_posts",
+      "ok": true,
+      "width": 9916,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/homemade__official_posts.log"
+    },
+    {
+      "planner": "homemade",
+      "map": "sparse",
+      "ok": true,
+      "width": 139,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.8,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/homemade__sparse.log"
+    },
+    {
+      "planner": "ego",
+      "map": "dense_field",
+      "ok": true,
+      "width": 93706,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/ego__dense_field.log"
+    },
+    {
+      "planner": "ego",
+      "map": "ego_forest_port",
+      "ok": true,
+      "width": 17556,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/ego__ego_forest_port.log"
+    },
+    {
+      "planner": "ego",
+      "map": "ego_maze2d_port",
+      "ok": true,
+      "width": 209391,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/ego__ego_maze2d_port.log"
+    },
+    {
+      "planner": "ego",
+      "map": "narrow_corridor",
+      "ok": true,
+      "width": 92330,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/ego__narrow_corridor.log"
+    },
+    {
+      "planner": "ego",
+      "map": "official_forest",
+      "ok": true,
+      "width": 31782,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/ego__official_forest.log"
+    },
+    {
+      "planner": "ego",
+      "map": "official_maze2d",
+      "ok": true,
+      "width": 293760,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/ego__official_maze2d.log"
+    },
+    {
+      "planner": "ego",
+      "map": "official_maze3d",
+      "ok": true,
+      "width": 171372,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/ego__official_maze3d.log"
+    },
+    {
+      "planner": "ego",
+      "map": "official_perlin",
+      "ok": true,
+      "width": 95054,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/ego__official_perlin.log"
+    },
+    {
+      "planner": "ego",
+      "map": "official_posts",
+      "ok": true,
+      "width": 9916,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/ego__official_posts.log"
+    },
+    {
+      "planner": "ego",
+      "map": "sparse",
+      "ok": true,
+      "width": 139,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/ego__sparse.log"
+    },
+    {
+      "planner": "gcopter",
+      "map": "dense_field",
+      "ok": true,
+      "width": 93706,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/gcopter__dense_field.log"
+    },
+    {
+      "planner": "gcopter",
+      "map": "ego_forest_port",
+      "ok": true,
+      "width": 17556,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/gcopter__ego_forest_port.log"
+    },
+    {
+      "planner": "gcopter",
+      "map": "ego_maze2d_port",
+      "ok": true,
+      "width": 209391,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/gcopter__ego_maze2d_port.log"
+    },
+    {
+      "planner": "gcopter",
+      "map": "narrow_corridor",
+      "ok": true,
+      "width": 92330,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/gcopter__narrow_corridor.log"
+    },
+    {
+      "planner": "gcopter",
+      "map": "official_forest",
+      "ok": true,
+      "width": 31782,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.1,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/gcopter__official_forest.log"
+    },
+    {
+      "planner": "gcopter",
+      "map": "official_maze2d",
+      "ok": true,
+      "width": 293760,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/gcopter__official_maze2d.log"
+    },
+    {
+      "planner": "gcopter",
+      "map": "official_maze3d",
+      "ok": true,
+      "width": 171372,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/gcopter__official_maze3d.log"
+    },
+    {
+      "planner": "gcopter",
+      "map": "official_perlin",
+      "ok": true,
+      "width": 95054,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/gcopter__official_perlin.log"
+    },
+    {
+      "planner": "gcopter",
+      "map": "official_posts",
+      "ok": true,
+      "width": 9916,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/gcopter__official_posts.log"
+    },
+    {
+      "planner": "gcopter",
+      "map": "sparse",
+      "ok": true,
+      "width": 139,
+      "planner_alive": true,
+      "crashed": false,
+      "elapsed_s": 13.2,
+      "log": "/home/jungod/drone_ws/report/map_smoke_logs/gcopter__sparse.log"
+    }
+  ]
+}

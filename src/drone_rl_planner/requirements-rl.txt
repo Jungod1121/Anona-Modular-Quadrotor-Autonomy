@@ -1,0 +1,17 @@
+# Path G — PyTorch + Stable-Baselines3
+#
+# 1) Enable NVIDIA kernel driver (needed once; requires reboot):
+#      bash ~/drone_ws/scripts/setup_rl_gpu.sh
+#
+# 2) Or only reinstall the matching torch wheel (driver already working):
+#      pip install -U torch --index-url https://download.pytorch.org/whl/cu128
+#      # Domestic mirror for the rest:
+#      pip install -r requirements-rl.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+#
+numpy>=1.23
+gymnasium>=0.29
+stable-baselines3>=2.3
+sb3-contrib>=2.3
+tensorboard>=2.14
+tqdm>=4.66
+# torch: install via scripts/setup_rl_gpu.sh (cu128 for driver 570 / CUDA 12.8)

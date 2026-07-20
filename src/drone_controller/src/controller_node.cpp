@@ -48,9 +48,11 @@ public:
       prefix + "/planner/trajectory_cmd", 10,
       std::bind(&ControllerNode::onTrajectoryCmd, this, std::placeholders::_1));
 
-    goal_sub_ = create_subscription<geometry_msgs::msg::PoseStamped>(
-      prefix + "/drone/goal", 10,
-      std::bind(&ControllerNode::onGoal, this, std::placeholders::_1));
+    if (get_parameter("use_drone_goal_fallback").as_bool()) {
+      goal_sub_ = create_subscription<geometry_msgs::msg::PoseStamped>(
+        prefix + "/drone/goal", 10,
+        std::bind(&ControllerNode::onGoal, this, std::placeholders::_1));
+    }
 
     const double rate = get_parameter("control_rate").as_double();
     timer_ = create_wall_timer(
@@ -59,8 +61,9 @@ public:
 
     RCLCPP_INFO(
       get_logger(),
-      "drone_controller ready: %.0f Hz, mass=%.2f (cascade PID + mixer, self-developed)",
-      rate, params_.mass);
+      "drone_controller ready: %.0f Hz, mass=%.2f, goal_fallback=%s",
+      rate, params_.mass,
+      get_parameter("use_drone_goal_fallback").as_bool() ? "on" : "off");
   }
 
 private:
@@ -70,6 +73,9 @@ private:
     declare_parameter("control_rate", 100.0);
     declare_parameter("local_goal_timeout", 0.5);
     declare_parameter("trajectory_cmd_timeout", 0.25);
+    // When false, ignore /drone/goal ballistic fallback (multi/EGO-Swarm: goals
+    // must not bypass the planner).
+    declare_parameter("use_drone_goal_fallback", true);
 
     declare_parameter("mass", 1.0);
     declare_parameter("gravity", 9.81);
@@ -109,6 +115,7 @@ private:
     declare_parameter("max_thrust", 0.0);
     declare_parameter("rpm_min", 0.0);
     declare_parameter("rpm_max", 7000.0);
+    declare_parameter("max_motor_rpm_rate", 12000.0);
     declare_parameter("goal_slowdown_dist", 3.0);
 
     declare_parameter("disturbance_reject_enable", true);
@@ -151,6 +158,7 @@ private:
     params_.max_thrust = get_parameter("max_thrust").as_double();
     params_.rpm_min = get_parameter("rpm_min").as_double();
     params_.rpm_max = get_parameter("rpm_max").as_double();
+    params_.max_motor_rpm_rate = get_parameter("max_motor_rpm_rate").as_double();
     params_.goal_slowdown_dist = get_parameter("goal_slowdown_dist").as_double();
 
     params_.disturbance_reject_enable =

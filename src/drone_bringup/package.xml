@@ -12,12 +12,14 @@
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>sensor_msgs_py</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
   <exec_depend>drone_msgs</exec_depend>
   <exec_depend>drone_dynamics</exec_depend>
   <exec_depend>drone_controller</exec_depend>
   <exec_depend>drone_map</exec_depend>
   <exec_depend>drone_planner</exec_depend>
   <exec_depend>drone_visualization</exec_depend>
+  <exec_depend>drone_exploration</exec_depend>
   <exec_depend>ego_planner</exec_depend>
   <exec_depend>map_generator</exec_depend>
   <exec_depend>mockamap</exec_depend>

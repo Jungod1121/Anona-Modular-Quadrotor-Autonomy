@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>无人机项目新手入门指南 · drone_ws</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1f24;
+      --ink-soft: #3d4750;
+      --paper: #f3efe6;
+      --paper-2: #e8e2d4;
+      --line: #c9c0ae;
+      --accent: #c45c26;
+      --accent-2: #0d6e6e;
+      --code-bg: #1e262c;
+      --code-fg: #e8f0e9;
+      --ok: #2f6b4f;
+      --warn: #9a6b1f;
+      --bad: #8b2e2e;
+      --radius: 4px;
+      --max: 46rem;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Sans SC", system-ui, sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.75;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #dce8e4 0%, transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, #f0dcc8 0%, transparent 50%),
+        linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: calc(var(--max) + 14rem);
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    @media (min-width: 960px) {
+      .wrap {
+        grid-template-columns: 13rem 1fr;
+        padding-top: 2.5rem;
+      }
+    }
+
+    aside.toc {
+      position: sticky;
+      top: 1rem;
+      align-self: start;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+    aside.toc h2 {
+      font-family: Syne, sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin: 0 0 0.75rem;
+      font-weight: 700;
+    }
+    aside.toc a {
+      display: block;
+      color: var(--ink-soft);
+      text-decoration: none;
+      padding: 0.28rem 0;
+      border-left: 2px solid transparent;
+      padding-left: 0.65rem;
+    }
+    aside.toc a:hover,
+    aside.toc a:focus {
+      color: var(--accent-2);
+      border-left-color: var(--accent-2);
+    }
+    @media (max-width: 959px) {
+      aside.toc {
+        position: static;
+        background: rgba(255,255,255,0.45);
+        border: 1px solid var(--line);
+        padding: 1rem 1.1rem;
+        border-radius: var(--radius);
+      }
+    }
+
+    main { max-width: var(--max); min-width: 0; }
+
+    header.hero {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 1px solid var(--line);
+    }
+    header.hero .brand {
+      font-family: Syne, sans-serif;
+      font-weight: 800;
+      font-size: clamp(2rem, 5vw, 2.75rem);
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin: 0 0 0.75rem;
+      color: var(--ink);
+    }
+    header.hero .lede {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 1.08rem;
+      max-width: 36rem;
+    }
+    header.hero .meta {
+      margin-top: 1.25rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+    }
+
+    h2 {
+      font-family: Syne, sans-serif;
+      font-weight: 700;
+      font-size: 1.45rem;
+      letter-spacing: -0.02em;
+      margin: 2.75rem 0 0.9rem;
+      scroll-margin-top: 1.25rem;
+    }
+    h3 {
+      font-family: Syne, sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin: 1.75rem 0 0.6rem;
+      color: var(--ink);
+    }
+    p { margin: 0.7rem 0; }
+    strong { font-weight: 700; }
+    a { color: var(--accent-2); }
+
+    .diagram {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      line-height: 1.4;
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: 1.1rem 1.2rem;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      white-space: pre;
+      margin: 1.1rem 0;
+      border: 1px solid #2a343c;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0 1.4rem;
+      background: rgba(255,255,255,0.4);
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: rgba(13, 110, 110, 0.1);
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+    code, .mono {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.86em;
+    }
+    code {
+      background: rgba(0,0,0,0.06);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    .callout {
+      border-left: 4px solid var(--accent-2);
+      background: rgba(13, 110, 110, 0.08);
+      padding: 0.85rem 1rem;
+      margin: 1.2rem 0;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    .callout.warn {
+      border-left-color: var(--warn);
+      background: rgba(154, 107, 31, 0.1);
+    }
+    .callout.bad {
+      border-left-color: var(--bad);
+      background: rgba(139, 46, 46, 0.08);
+    }
+    .callout .title {
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 0.25rem;
+    }
+
+    ol.steps, ul.plain { padding-left: 1.25rem; }
+    ol.steps li { margin: 0.45rem 0; }
+    ul.plain li { margin: 0.35rem 0; }
+
+    .path-grid {
+      display: grid;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    @media (min-width: 640px) {
+      .path-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .path-card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.5);
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius);
+    }
+    .path-card h3 {
+      margin: 0 0 0.35rem;
+      font-size: 1rem;
+    }
+    .path-card p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+    }
+    .path-card .tag {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <aside class="toc" aria-label="目录">
+      <h2>目录</h2>
+      <a href="#what">1. 这是什么项目</a>
+      <a href="#picture">2. 一张图看懂</a>
+      <a href="#principles">3. 核心原则</a>
+      <a href="#topics">4. 话题契约</a>
+      <a href="#structure">5. 工程结构</a>
+      <a href="#functions">6. 各模块干什么</a>
+      <a href="#paths">7. 四条规划路径</a>
+      <a href="#flight">8. 一次飞行怎么发生</a>
+      <a href="#suicide">9. 「直线冲目标」是干什么的</a>
+      <a href="#web">10. 用网页怎么测</a>
+      <a href="#checklist">11. 自测清单</a>
+      <a href="#bugs">12. 发现问题怎么反馈</a>
+    </aside>
+
+    <main>
+      <header class="hero">
+        <p class="brand">无人机项目<br />新手入门指南</p>
+        <p class="lede">
+          面向完全初学者：用大白话讲清楚 <span class="mono">drone_ws</span> 在干什么、模块怎么拼、你该测什么。
+          读完后，你应该能独自打开网页面板，跑通一条路径，并看懂黄线 / 蓝线。
+        </p>
+        <div class="meta">
+          <span>ROS 2 Humble · Ubuntu 22.04</span>
+          <span>仓库：drone_ws</span>
+          <span>面板：http://127.0.0.1:8765/</span>
+        </div>
+      </header>
+
+      <section id="what">
+        <h2>1. 这是什么项目？</h2>
+        <p>
+          这是一个<strong>四旋翼无人机仿真工程</strong>：在电脑里模拟飞机飞、障碍物、规划路径，用 RViz / 网页面板观察结果。
+        </p>
+        <p>作业/项目的底线可以记成三句话：</p>
+        <ul class="plain">
+          <li><strong>自己写飞行物理（动力学）和控制器</strong>——不能拿别人的假飞机凑数；</li>
+          <li><strong>规划器可以参考/移植官方算法</strong>（EGO、GCOPTER 等），但要接到我们自己的「植物」上；</li>
+          <li><strong>模块拆开、一键启动</strong>——地图、规划、控制、可视化各干各的。</li>
+        </ul>
+        <div class="callout">
+          <div class="title">可以把它想成遥控赛车</div>
+          <p style="margin:0">
+            <strong>车身 + 电机</strong>＝动力学；
+            <strong>遥控器追随目标</strong>＝控制器；
+            <strong>导航 App 画路线绕过障碍</strong>＝规划器；
+            <strong>赛道</strong>＝地图。导航坏了不能换电机偷懒。
+          </p>
+        </div>
+      </section>
+
+      <section id="picture">
+        <h2>2. 一张图看懂整条链路</h2>
+        <div class="diagram" role="img" aria-label="系统数据流简图">你 / 网页 / RViz
+        │  「去这里」
+        ▼
+   ┌──────────┐   障碍点云    ┌────────┐
+   │  规划器   │ ◄─────────── │  地图  │
+   │ A/B/C/D  │               └────────┘
+   └────┬─────┘
+        │  下一步怎么飞
+        │  local_goal / trajectory_cmd
+        │  trajectory（黄线）
+        ▼
+   ┌──────────┐  电机转速   ┌──────────┐
+   │  控制器   │ ─────────► │  动力学   │
+   └────▲─────┘             └────┬─────┘
+        │  我在哪儿？            │  flown path（蓝线）
+        └────── odom ───────────┘</div>
+        <p>
+          <strong>黄线</strong>＝计划飞哪；
+          <strong>蓝线</strong>＝实际飞了哪。
+          理想情况：蓝线贴着黄线走，并且不穿树。
+        </p>
+      </section>
+
+      <section id="principles">
+        <h2>3. 三条核心原则</h2>
+        <h3>原则 A：植物（Plant）不变，规划器可换</h3>
+        <p>
+          「植物」= <strong>动力学 + 控制器</strong>。
+          Path A / B / C / D 换的是「大脑」写法，但都应该通过同一套输出去喂控制器。
+        </p>
+        <h3>原则 B：话题契约像电源插座</h3>
+        <p>
+          大家约定好话题名字，才能插在一起。合约坏了，就会出现「看得见飞机却不飞」「直穿障碍」这类怪事。
+        </p>
+        <h3>原则 C：不整库运行别人的模拟器</h3>
+        <p>
+          官方 EGO / GCOPTER 自带假飞机时，我们<strong>不用</strong>。
+          只借用规划 / 地图思想，仍驾驶自己的动力学。
+        </p>
+      </section>
+
+      <section id="topics">
+        <h2>4. 话题契约（最重要的表）</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>方向</th>
+              <th>话题</th>
+              <th>白话</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>动力学 → 大家</td>
+              <td><code>/drone/odom</code></td>
+              <td>飞机现在在哪、速度多少</td>
+            </tr>
+            <tr>
+              <td>你 → 规划器</td>
+              <td><code>/drone/goal</code></td>
+              <td>我想去的终点（RViz 2D Goal 也会发这个）</td>
+            </tr>
+            <tr>
+              <td>地图 → 规划器</td>
+              <td><code>/map/obstacles</code><br /><code>/map_generator/global_cloud</code></td>
+              <td>障碍点云（两个名字，bridge 会互相同步）</td>
+            </tr>
+            <tr>
+              <td>规划器 → 控制器</td>
+              <td><code>/planner/local_goal</code></td>
+              <td>近处滚动目标点</td>
+            </tr>
+            <tr>
+              <td>规划器 → 控制器</td>
+              <td><code>/planner/trajectory_cmd</code></td>
+              <td>位置 / 速度 / 加速度 / 航向（主流跟随对象）</td>
+            </tr>
+            <tr>
+              <td>规划器 → RViz</td>
+              <td><code>/planner/trajectory</code></td>
+              <td><strong>黄线</strong>计划轨迹</td>
+            </tr>
+            <tr>
+              <td>动力学 → RViz</td>
+              <td><code>/drone/path</code></td>
+              <td><strong>蓝线</strong>实际飞行轨迹</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout warn">
+          <div class="title">多机例外（EGO-Swarm）</div>
+          <p style="margin:0">
+            多机时，规划目标走 <code>/uavN/ego/goal</code>，故意<strong>不</strong>喂给控制器的「直线冲终点」接口，
+            以免还没规划好就穿森林。
+          </p>
+        </div>
+      </section>
+
+      <section id="structure">
+        <h2>5. 工程结构（文件夹地图）</h2>
+        <table>
+          <thead>
+            <tr><th>目录 / 包</th><th>干什么</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>src/drone_dynamics</code></td><td>物理仿真：电机 → 运动 → odom / imu / 蓝线</td></tr>
+            <tr><td><code>src/drone_controller</code></td><td>串级 PID + 混控：目标指令 → 电机转速</td></tr>
+            <tr><td><code>src/drone_map</code></td><td>自制障碍地图</td></tr>
+            <tr><td><code>src/drone_planner</code></td><td>Path A：自研规划器</td></tr>
+            <tr><td><code>src/drone_msgs</code></td><td>自定义消息类型</td></tr>
+            <tr><td><code>src/drone_visualization</code></td><td>机体 Marker、RViz 配置</td></tr>
+            <tr><td><code>src/drone_bringup</code></td><td>启动文件、参数、网页面板、bridge</td></tr>
+            <tr><td><code>src/drone_exploration</code></td><td>Path D：雾面感知 + 前沿探索</td></tr>
+            <tr><td><code>src/ego_vendor</code></td><td>官方 EGO 相关包</td></tr>
+            <tr><td><code>src/gcopter_vendor</code></td><td>GCOPTER / MINCO（Path C）</td></tr>
+            <tr><td><code>reference_repos/</code></td><td>上游完整克隆（只参考，整树不给 colcon 乱编）</td></tr>
+            <tr><td><code>scripts/</code></td><td>清理进程、烟雾测试、验收脚本</td></tr>
+            <tr><td><code>docs/</code></td><td>本指南所在目录</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="functions">
+        <h2>6. 各模块用一句话讲完</h2>
+        <ul class="plain">
+          <li><strong>动力学</strong>：假装地球上有一台真飞机在飞。</li>
+          <li><strong>控制器</strong>：努力跟上「当前应该飞到的参考点」；它本身<strong>不懂避障</strong>。</li>
+          <li><strong>地图</strong>：种一堆障碍点云；可用固定种子复现实验。</li>
+          <li><strong>规划器</strong>：看见障碍，画出绕行轨迹。</li>
+          <li><strong>Bridge（如 ego_cmd_bridge）</strong>：把官方 EGO 的指令翻译成我们的控制器听得懂的话题。</li>
+          <li><strong>云桥 cloud_bridge</strong>：让「自制地图名」和「官方地图名」两边都能看到同一片障碍。</li>
+          <li><strong>Dashboard</strong>：网页上选路径/地图、Start/Stop，少敲命令。</li>
+        </ul>
+      </section>
+
+      <section id="paths">
+        <h2>7. 四条规划路径（Path A–D）</h2>
+        <div class="path-grid">
+          <article class="path-card">
+            <div class="tag">Path A · homemade</div>
+            <h3>自研规划器</h3>
+            <p>自研 EGO 风格规划 + 自研 / 兼容地图。适合对照验收与调参。</p>
+          </article>
+          <article class="path-card">
+            <div class="tag">Path B · ego</div>
+            <h3>官方 EGO</h3>
+            <p>官方 ego_planner + 官方森林/地图生成器，经 bridge 驱动我们的植物。</p>
+          </article>
+          <article class="path-card">
+            <div class="tag">Path C · gcopter</div>
+            <h3>GCOPTER / MINCO</h3>
+            <p>更偏多项式轨迹优化的路径。植物仍是我们的。</p>
+          </article>
+          <article class="path-card">
+            <div class="tag">Path D · fuel_explore</div>
+            <h3>FUEL 式探索</h3>
+            <p>雾面 + 前沿选目标；真正飞路仍靠 EGO（Path B 后端）。不是整仓搬运 FUEL SO3。</p>
+          </article>
+        </div>
+        <h3>地图里你会看到的名字（举例）</h3>
+        <ul class="plain">
+          <li><code>dense_field</code> — 自制稠密障碍（Path A 默认口味）</li>
+          <li><code>official_forest</code> — 官方森林（Path B/C 常见默认）</li>
+          <li><code>official_maze2d</code> / <code>posts</code> / <code>perlin</code> … — 官方其它场景</li>
+        </ul>
+        <p>完整列表见仓库内 <code>src/drone_bringup/MAPS.md</code>。</p>
+      </section>
+
+      <section id="flight">
+        <h2>8. 一次正常飞行，按时间顺序</h2>
+        <ol class="steps">
+          <li>点网页 <strong>Start</strong>：地图、动力学、控制器、规划器都起来。</li>
+          <li>点云障碍出现（棕色/森林点之类）。</li>
+          <li>飞机出现在起点（odom 有效）。</li>
+          <li>目标到来：自动 goal、或 RViz「2D Goal Pose」、或 Path D「开始探索」。</li>
+          <li>规划器算路 → 发出黄线 + <code>trajectory_cmd</code>。</li>
+          <li>控制器跟随指令 → 动力学运动 → 蓝线变长。</li>
+          <li>你对比：黄/蓝是否贴合、是否撞障碍。</li>
+        </ol>
+      </section>
+
+      <section id="suicide">
+        <h2>9. 「直线冲目标」模式——是不是自杀？</h2>
+        <p><strong>拿来穿森林：是的，等于自杀模式。</strong>它和「要避障」的目标相反。</p>
+        <p>控制器里其实有优先级：</p>
+        <ol class="steps">
+          <li>优先跟 <code>/planner/trajectory_cmd</code>（正经规划结果）；</li>
+          <li>其次跟 <code>/planner/local_goal</code>；</li>
+          <li>实在什么都没有时，才可能直线冲 <code>/drone/goal</code>。</li>
+        </ol>
+        <p>第三条<strong>不看地图</strong>，只知道终点坐标。它存在的理由是：</p>
+        <ul class="plain">
+          <li>空旷场景验收（悬停、单点、没障碍）；</li>
+          <li>规划器还没出第一帧指令时，偶尔当「暂存目标」；</li>
+          <li>控制器本职是「跟踪参考」，不是「找路」——找路必须是规划器。</li>
+        </ul>
+        <div class="callout bad">
+          <div class="title">多机曾经踩过的坑</div>
+          <p style="margin:0">
+            目标若同时发给「规划器」和「控制器直线模式」，后面几架还在等 EGO 解锁时，
+            会已开始直线穿林。所以 Swarm 关掉了这条 fallback，目标改走 <code>/uavN/ego/goal</code>。
+          </p>
+        </div>
+      </section>
+
+      <section id="web">
+        <h2>10. 推荐：用网页面板操作（少敲命令）</h2>
+        <ol class="steps">
+          <li>终端里如需启动面板：<code>ros2 run drone_bringup dashboard</code></li>
+          <li>浏览器打开 <strong>http://127.0.0.1:8765/</strong></li>
+          <li><strong>Single</strong>：选 Path A/B/C/D + 地图 → Start</li>
+          <li><strong>Multi</strong>：选 EGO-Swarm / 同场 / 编队 → 设定机数 → Start</li>
+          <li>换场景前务必先 <strong>Stop</strong></li>
+          <li>机数很大时，可关掉 RViz，减轻电脑负担（规划主要吃 CPU，不是指望 GPU）</li>
+        </ol>
+        <div class="callout">
+          <div class="title">本指南也可以在面板旁打开</div>
+          <p style="margin:0">
+            若 dashboard 已启动，可访问
+            <a href="http://127.0.0.1:8765/guide.html"><code>http://127.0.0.1:8765/guide.html</code></a>
+            （需把本文件同步到 <code>dashboard_static/guide.html</code>）。
+          </p>
+        </div>
+      </section>
+
+      <section id="checklist">
+        <h2>11. 建议自测顺序（你测完把问题打给我）</h2>
+        <ol class="steps">
+          <li>Path A + <code>dense_field</code>：有黄线、蓝线，能到目标。</li>
+          <li>Path B + <code>official_forest</code>：能进林子且绕障。</li>
+          <li>Path C + <code>official_forest</code>：黄线可见（不应闪一下就没）。</li>
+          <li>Path D：点「开始探索」，会陆续换目标并飞。</li>
+          <li>Multi → EGO-Swarm：先 2～4 架，再 10 架；应多机起飞且不是直穿障碍。</li>
+        </ol>
+        <p>单机 RViz 提醒：<strong>Fixed Frame = map</strong>；黄线话题 <code>/planner/trajectory</code>；蓝线 <code>/drone/path</code>。</p>
+      </section>
+
+      <section id="bugs">
+        <h2>12. 发现问题怎么反馈最有用</h2>
+        <p>请尽量带上：</p>
+        <ul class="plain">
+          <li>模式：A / B / C / D / Swarm（机数）</li>
+          <li>地图：如 <code>official_forest</code></li>
+          <li>期望：例如「应绕树」</li>
+          <li>现象：例如「只有 2 架起飞」「蓝线穿树」「无黄线」</li>
+          <li>网页日志面板最后几行（如有 <code>process has died</code> / <code>exit code -11</code>）</li>
+        </ul>
+        <p>更技术的文档：</p>
+        <ul class="plain">
+          <li><code>src/drone_bringup/PLANNERS.md</code></li>
+          <li><code>src/drone_bringup/MAPS.md</code></li>
+          <li><code>src/drone_bringup/SWARM.md</code></li>
+          <li><code>README.md</code> · <code>PLAN.md</code></li>
+        </ul>
+      </section>
+
+      <footer>
+        <p>
+          《无人机项目新手入门指南》· 对应仓库 <span class="mono">drone_ws</span>。
+          内容面向操作理解与验收测试；细节以源码与 PLANNERS/MAPS 文档为准。
+        </p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

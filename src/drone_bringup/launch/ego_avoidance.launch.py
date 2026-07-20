@@ -48,9 +48,10 @@ def launch_setup(context, *args, **kwargs):
         'grid_map/map_size_x': 50.0,
         'grid_map/map_size_y': 30.0,
         'grid_map/map_size_z': 4.0,
-        'grid_map/local_update_range_x': 20.0,
-        'grid_map/local_update_range_y': 14.0,
-        'grid_map/local_update_range_z': 3.0,
+        # Official advanced_param (with local sensing, not full-map dump).
+        'grid_map/local_update_range_x': 5.5,
+        'grid_map/local_update_range_y': 5.5,
+        'grid_map/local_update_range_z': 4.5,
         'grid_map/obstacles_inflation': 0.12,
         'grid_map/local_map_margin': 10,
         'grid_map/ground_height': -0.01,
@@ -71,9 +72,9 @@ def launch_setup(context, *args, **kwargs):
         'grid_map/p_max': 0.90,
         'grid_map/p_occ': 0.80,
         'grid_map/min_ray_length': 0.1,
-        'grid_map/max_ray_length': 20.0,
+        'grid_map/max_ray_length': 4.5,
         'grid_map/virtual_ceil_height': 2.8,
-        'grid_map/visualization_truncate_height': 2.5,
+        'grid_map/visualization_truncate_height': 1.8,
         'grid_map/show_occ_time': False,
         'grid_map/pose_type': 2,
         'grid_map/frame_id': 'map',
@@ -119,10 +120,27 @@ def launch_setup(context, *args, **kwargs):
             ('optimal_list', '/drone_0_plan_vis/optimal_list'),
             ('a_star_list', '/drone_0_plan_vis/a_star_list'),
             ('grid_map/odom', '/drone/odom'),
-            ('grid_map/cloud', '/map_generator/global_cloud'),
+            # Official: local scan from sensing_horizon (same maps, cropped).
+            ('grid_map/cloud', '/drone_0_pcl_render_node/cloud'),
+            ('grid_map/occupancy', '/drone_0_grid/grid_map/occupancy'),
             ('grid_map/occupancy_inflate', '/drone_0_grid/grid_map/occupancy_inflate'),
         ],
         parameters=[ego_params],
+    )
+
+    local_sense = Node(
+        package='drone_bringup',
+        executable='local_sense_cloud',
+        name='drone_0_local_sense_cloud',
+        output='screen',
+        parameters=[{
+            'global_cloud_topic': '/map_generator/global_cloud',
+            'odom_topic': '/drone/odom',
+            'local_cloud_topic': '/drone_0_pcl_render_node/cloud',
+            'sensing_horizon': 5.0,
+            'sensing_rate': 10.0,
+            'frame_id': 'map',
+        }],
     )
 
     traj_server = Node(
@@ -173,6 +191,7 @@ def launch_setup(context, *args, **kwargs):
             'max_tilt': 0.40,
         }),
         ego_node,
+        local_sense,
         traj_server,
         bridge,
         visualization_node(),

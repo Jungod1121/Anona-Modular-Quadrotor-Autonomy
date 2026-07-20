@@ -3,23 +3,32 @@
     map_mode: dense_field
     seed: 42
     max_attempts: 200
-    start_x: 1.0
-    start_y: 5.0
+    # Near the west clutter — clearance is tight so pillars sit close.
+    start_x: 2.0
+    start_y: 12.0
     start_z: 1.5
-    goal_x: 17.0
-    goal_y: 5.0
+    goal_x: 40.0
+    goal_y: 12.0
     goal_z: 1.5
     safety_distance: 0.4
-    clearance_radius: 1.2
+    # ~body+inflate: free enough to plan/fly, still "next to" pillars.
+    clearance_radius: 0.55
     min_obstacle_spacing: 0.9
     min_obstacle_radius: 0.12
     max_obstacle_radius: 0.3
     point_resolution: 0.08
-    downsample_voxel: 0.0
+    # Larger field → downsample so RViz / planners stay responsive.
+    downsample_voxel: 0.10
     grid_resolution: 0.2
     corridor_gap_width: 1.5
     local_sense_radius: 6.0
     local_sense_rate: 10.0
-    boundary_marker_r: 0.2
-    boundary_marker_g: 0.4
+    # No perimeter cage — pillars fill the RViz frame.
+    add_boundary_walls: false
+    # Obstacle / wall markers in RViz (white).
+    obstacle_marker_r: 1.0
+    obstacle_marker_g: 1.0
+    obstacle_marker_b: 1.0
+    boundary_marker_r: 1.0
+    boundary_marker_g: 1.0
     boundary_marker_b: 1.0

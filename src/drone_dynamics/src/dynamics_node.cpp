@@ -85,8 +85,12 @@ private:
     declare_parameter("k_F", 3.0e-5);
     declare_parameter("k_M", 5.0e-7);
     declare_parameter("tau_motor", 0.02);
+    declare_parameter("tau_motor_up", 0.012);
+    declare_parameter("tau_motor_down", 0.025);
     declare_parameter("omega_min", 0.0);
     declare_parameter("omega_max", 800.0);
+    declare_parameter("enable_state_clamps", true);
+    declare_parameter("ground_friction", 2.5);
 
     declare_parameter("wind_enable", false);
     declare_parameter("wind_const_x", 0.0);
@@ -110,8 +114,12 @@ private:
     params_.k_F = get_parameter("k_F").as_double();
     params_.k_M = get_parameter("k_M").as_double();
     params_.tau_motor = get_parameter("tau_motor").as_double();
+    params_.tau_motor_up = get_parameter("tau_motor_up").as_double();
+    params_.tau_motor_down = get_parameter("tau_motor_down").as_double();
     params_.omega_min = get_parameter("omega_min").as_double();
     params_.omega_max = get_parameter("omega_max").as_double();
+    params_.enable_state_clamps = get_parameter("enable_state_clamps").as_bool();
+    params_.ground_friction = get_parameter("ground_friction").as_double();
     params_.wind_enable = get_parameter("wind_enable").as_bool();
     params_.wind_const_x = get_parameter("wind_const_x").as_double();
     params_.wind_const_y = get_parameter("wind_const_y").as_double();

@@ -4,8 +4,38 @@ log/
 *.pyc
 __pycache__/
 .vscode/
+.cursor/
 *.bag
 *.csv
 scripts/output/
+third_party/
 
 .ros_log_tmp/
+.ros_logs/
+
+# Path H / G training artifacts (large; regenerate locally)
+*.pt
+src/drone_rl_planner/checkpoints/*.log
+src/drone_rl_planner/checkpoints/*status*.json
+src/drone_rl_planner/checkpoints/*.zip
+
+# Local UI assets / heavy caches
+src/drone_bringup/drone_bringup/dashboard_static/backgrounds/
+src/drone_bringup/drone_bringup/dashboard_static/vendor/
+src/drone_bringup/drone_bringup/dashboard_static/bg-15-sequoia-sunrise.png
+report/map_smoke_logs/
+report/batch_matrix/
+report/*.log
+report/acceptance_runs/**/launch.log
+report/baseline/*.log
+
+# Large third-party mirrors (clone separately if needed)
+reference_repos/FUEL/
+
+# Extra RL weight dumps
+src/drone_rl_planner/checkpoints/*.npz
+src/drone_rl_planner/runs/
+
+# Vendor notebooks (large)
+src/mighty_vendor/**/*.ipynb
+

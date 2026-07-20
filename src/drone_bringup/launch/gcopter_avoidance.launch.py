@@ -58,13 +58,17 @@ def launch_setup(context, *args, **kwargs):
             'max_vel': 1.2,
             'max_acc': 1.8,
             'max_tilt': 0.40,
+            # Wait for GCOPTER traj — ballistic /drone/goal causes "straight first goal".
+            'use_drone_goal_fallback': False,
         }),
         gcopter_node,
         visualization_node(),
         send_goal_process(
-            goal_x, goal_y, goal_z, yaw=0.0, delay_sec=8.0,
-            topic='/drone/goal', repeats=1),
-        rviz_node(condition=IfCondition(use_rviz), config='ego_avoidance.rviz'),
+            goal_x, goal_y, goal_z, yaw=0.0, delay_sec=15.0,
+            topic='/drone/goal', repeats=4),
+        # Path C must not use ego_avoidance.rviz (InflatedOcc is EGO-only and
+        # looks like a blank "wallpaper"). Use Obstacles on /map/obstacles.
+        rviz_node(condition=IfCondition(use_rviz), config='gcopter_avoidance.rviz'),
     ])
     return actions
 

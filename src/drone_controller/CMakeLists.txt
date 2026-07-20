@@ -33,6 +33,10 @@ install(TARGETS cascade_pid controller_node
   RUNTIME DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY include/ DESTINATION include)
 
+ament_export_include_directories(include)
+ament_export_libraries(cascade_pid)
+ament_export_dependencies(Eigen3)
+
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   ament_add_gtest(test_mixer test/test_mixer.cpp)

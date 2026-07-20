@@ -32,6 +32,20 @@ public:
     body_scale_ = get_parameter("body_scale").as_double();
     rotor_radius_ = get_parameter("rotor_radius").as_double();
 
+    // Namespaced multi-UAV markers are easy to miss at 30 m orbit — enlarge.
+    const std::string ns0 = get_parameter("namespace").as_string();
+    if (!ns0.empty()) {
+      if (body_scale_ < 0.28) {
+        body_scale_ = 0.28;
+      }
+      if (arm_length_ < 0.32) {
+        arm_length_ = 0.32;
+      }
+      if (rotor_radius_ < 0.12) {
+        rotor_radius_ = 0.12;
+      }
+    }
+
     const std::string prefix = topicPrefix();
     marker_pub_ = create_publisher<visualization_msgs::msg::MarkerArray>(
       prefix + "/drone/body_markers", 10);
@@ -71,6 +85,19 @@ private:
     body.color.g = 0.62f;
     body.color.b = 0.95f;
     body.color.a = 0.95f;
+    // Distinct colors per UAV so multi-drone RViz is readable.
+    {
+      const std::string ns = get_parameter("namespace").as_string();
+      if (ns == "uav1") {
+        body.color.r = 0.20f;
+        body.color.g = 0.85f;
+        body.color.b = 0.35f;
+      } else if (ns == "uav2") {
+        body.color.r = 0.95f;
+        body.color.g = 0.45f;
+        body.color.b = 0.20f;
+      }
+    }
     array.markers.push_back(body);
 
     // Four arms + rotors (X configuration)
@@ -141,6 +168,28 @@ private:
     arrow.color.b = 0.1f;
     arrow.color.a = 0.9f;
     array.markers.push_back(arrow);
+
+    // Floating name so uav0 / uav1 are obvious in multi RViz.
+    {
+      const std::string ns = get_parameter("namespace").as_string();
+      if (!ns.empty()) {
+        visualization_msgs::msg::Marker label;
+        label.header = msg->header;
+        label.ns = "drone_label";
+        label.id = id++;
+        label.type = visualization_msgs::msg::Marker::TEXT_VIEW_FACING;
+        label.action = visualization_msgs::msg::Marker::ADD;
+        label.pose = pose;
+        label.pose.position.z += 0.45;
+        label.scale.z = 0.45;
+        label.color.r = body.color.r;
+        label.color.g = body.color.g;
+        label.color.b = body.color.b;
+        label.color.a = 1.0f;
+        label.text = ns;
+        array.markers.push_back(label);
+      }
+    }
 
     marker_pub_->publish(array);
   }

@@ -9,14 +9,18 @@
     k_F: 3.0e-5
     k_M: 5.0e-7
     tau_motor: 0.02
+    tau_motor_up: 0.012
+    tau_motor_down: 0.025
     omega_min: 0.0
     omega_max: 800.0
+    enable_state_clamps: true
+    ground_friction: 2.5
     integration_rate: 500.0
     publish_rate: 100.0
     cmd_timeout: 0.5
     init_x: 0.0
     init_y: 0.0
-    init_z: 0.0
+    init_z: 0.15
     init_yaw: 0.0
     wind_enable: false
     wind_const_x: 0.3

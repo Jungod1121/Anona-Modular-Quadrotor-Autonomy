@@ -1,0 +1,2 @@
+# Unused duplicate adapter — production Path F uses fast_planner_vendor directly.
+# Kept for reference; excluded from colcon builds.

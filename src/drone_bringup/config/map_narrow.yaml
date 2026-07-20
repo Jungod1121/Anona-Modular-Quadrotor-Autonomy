@@ -1,3 +1,8 @@
+# Scenario 5 — narrow corridor (PLAN §5.3).
+# Teacher intent: dense clutter + deterministic walls that leave only a
+# 1.2~1.8 m slit; the drone must thread the passage (绕行), not cruise a
+# wide clear highway. Layout: staggered doors (S-bend). Use
+# corridor_gate_count: 5 or 7 for more 通道墙 (was 3).
 /**:
   ros__parameters:
     map_mode: narrow_corridor
@@ -17,9 +22,16 @@
     point_resolution: 0.08
     downsample_voxel: 0.0
     grid_resolution: 0.2
-    corridor_gap_width: 1.8
+    # PLAN §5.3: 1.2~1.8 m (≈2.5~3.5× airframe). Was 2.2 m — too wide to stress planning.
+    corridor_gap_width: 1.6
+    # Number of N–S 通道墙 / doors (3, 5, or 7). Default 5.
+    corridor_gate_count: 5
     local_sense_radius: 6.0
     local_sense_rate: 10.0
-    boundary_marker_r: 0.2
-    boundary_marker_g: 0.4
+    # Obstacle / wall markers in RViz (white).
+    obstacle_marker_r: 1.0
+    obstacle_marker_g: 1.0
+    obstacle_marker_b: 1.0
+    boundary_marker_r: 1.0
+    boundary_marker_g: 1.0
     boundary_marker_b: 1.0

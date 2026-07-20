@@ -64,6 +64,17 @@ public:
     const std::vector<Eigen::Vector3d> & hits,
     bool clear_free_along_ray = false);
 
+  /**
+   * EGO GridMap::publishMapInflate style: emit inflate (or raw) voxels inside an
+   * axis-aligned window around `center` (half-extents = range).
+   */
+  void appendOccupiedCloud(
+    std::vector<Eigen::Vector3d> & out,
+    const Eigen::Vector3d & center,
+    const Eigen::Vector3d & range,
+    bool use_inflate,
+    double truncate_height) const;
+
   /** Deep copy for multi-drone peer overlays without full remesh. */
   OccupancyGrid clone() const
   {

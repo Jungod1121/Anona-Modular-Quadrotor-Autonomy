@@ -1,0 +1,3 @@
+<launch>
+  <node name="rvizvisualisation" pkg="rviz2" exec="rviz2" output="log" args="../rviz2_fastplanner.rviz" />
+</launch>

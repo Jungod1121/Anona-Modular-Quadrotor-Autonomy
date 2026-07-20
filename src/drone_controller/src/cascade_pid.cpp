@@ -55,6 +55,8 @@ void CascadePid::reset()
 {
   pos_integral_.setZero();
   disturbance_acc_.setZero();
+  last_rpm_.setZero();
+  rpm_initialized_ = false;
   yaw_initialized_ = false;
 }
 
@@ -250,6 +252,18 @@ Eigen::Vector4d CascadePid::compute(
     rpm(i) = Mixer::radToRpm(std::sqrt(omega_sq(i)));
     rpm(i) = clamp(rpm(i), params_.rpm_min, params_.rpm_max);
   }
+
+  // RPM slew limit (pengyu_sim design pattern; independent implementation).
+  if (params_.max_motor_rpm_rate > 0.0 && rpm_initialized_) {
+    const double max_step = params_.max_motor_rpm_rate * dt;
+    for (int i = 0; i < 4; ++i) {
+      const double lo = last_rpm_(i) - max_step;
+      const double hi = last_rpm_(i) + max_step;
+      rpm(i) = clamp(rpm(i), lo, hi);
+    }
+  }
+  last_rpm_ = rpm;
+  rpm_initialized_ = true;
 
   return rpm;
 }

@@ -1,0 +1,31 @@
+# FUEL-style exploration defaults (Path D). Does not alter plant YAML.
+/**:
+  ros__parameters:
+    # Exploration bounding box (map frame).
+    box_min_x: -1.0
+    box_min_y: -1.0
+    box_min_z: 0.0
+    box_max_x: 21.0
+    box_max_y: 11.0
+    box_max_z: 3.0
+    resolution: 0.4
+    sensing_radius: 4.0
+    sensing_z_half: 1.2
+    obstacle_inflate: 0.35
+    cruise_z: 1.5
+    arrive_tol: 0.70
+    replan_period: 1.5
+    min_goal_sep: 2.5
+    min_travel_m: 1.5
+    goal_cooldown: 4.0
+    prefer_forward_weight: 2.5
+    prefer_size_weight: 0.12
+    frontier_min_size: 4
+    max_goals: 40
+    global_cloud_topic: /map/obstacles
+    local_cloud_topic: /map/obstacles_local
+    odom_topic: /drone/odom
+    trigger_topic: /drone/goal
+    nav_goal_topic: /exploration/nav_goal
+    frontiers_topic: /exploration/frontiers
+    frame_id: map

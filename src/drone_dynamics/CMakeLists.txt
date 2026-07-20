@@ -42,8 +42,13 @@ install(DIRECTORY include/ DESTINATION include)
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
+  find_package(drone_controller REQUIRED)
   ament_add_gtest(test_allocation test/test_allocation.cpp)
   target_link_libraries(test_allocation quadrotor_model)
+
+  ament_add_gtest(test_closed_loop test/test_closed_loop.cpp)
+  target_link_libraries(test_closed_loop quadrotor_model)
+  ament_target_dependencies(test_closed_loop drone_controller)
 endif()
 
 ament_package()

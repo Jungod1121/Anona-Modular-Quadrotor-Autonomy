@@ -1,0 +1,23 @@
+/**:
+  ros__parameters:
+    n_rings: 16
+    n_sectors: 36
+    ray_max: 6.0
+    robot_r: 0.28
+    safety: 0.30
+    max_speed: 1.0
+    world_scale: 40.0
+    cruise_z: 1.5
+    goal_tol: 0.70
+    hold_exit_m: 1.6
+    approach_m: 2.5
+    control_hz: 20.0
+    action_ema: 0.35
+    fallback_clear_m: 0.40
+    path_horizon_m: 8.0
+    path_step_m: 0.45
+    blend_clear_m: 1.4
+    map_topic: /map/obstacles
+    odom_topic: /drone/odom
+    goal_topic: /drone/goal
+    checkpoint: ""

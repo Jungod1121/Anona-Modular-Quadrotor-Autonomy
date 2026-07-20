@@ -25,6 +25,8 @@ struct AStarOptions
   /// Live peer drones (shared-field): treat as cylindrical keep-out.
   std::vector<Eigen::Vector3d> peer_centers;
   double peer_radius{0.75};
+  /// Cell radius for start/goal free-space snap (mazes need larger).
+  int free_snap_radius{8};
 };
 
 class GridAStar
@@ -57,7 +59,8 @@ public:
     start.z() = opt.cruise_z;
     goal.z() = opt.cruise_z;
 
-    if (!grid.findFreeNearby(start) || !grid.findFreeNearby(goal)) {
+    if (!grid.findFreeNearby(start, opt.free_snap_radius) ||
+        !grid.findFreeNearby(goal, opt.free_snap_radius)) {
       return false;
     }
     // Keep cruise after free-space snap (findFreeNearby may drift in z).
@@ -70,7 +73,8 @@ public:
     for (int k = 0; k < 12 && blockedByPeer(goal); ++k) {
       goal.y() += (k % 2 == 0 ? 1 : -1) * (0.3 + 0.1 * k);
     }
-    if (!grid.findFreeNearby(start) || !grid.findFreeNearby(goal)) {
+    if (!grid.findFreeNearby(start, opt.free_snap_radius) ||
+        !grid.findFreeNearby(goal, opt.free_snap_radius)) {
       return false;
     }
     start.z() = opt.cruise_z;
