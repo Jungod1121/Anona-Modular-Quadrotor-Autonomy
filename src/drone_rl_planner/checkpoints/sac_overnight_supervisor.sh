@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Overnight Path H supervisor: keep dense-heavy SAC training until
-# best_success >= TARGET or MAX_ROUNDS chunks are spent.
+# Path H supervisor: continuous dense-heavy SAC until best_success >= TARGET.
+# Replay buffer is mmap-persisted — restarts continue the same foundation.
 set -uo pipefail
 
 WS=/home/jungod/drone_ws
@@ -8,14 +8,15 @@ CKPT="$WS/src/drone_rl_planner/checkpoints"
 STATUS="$CKPT/sac_training_status.json"
 LOG="$CKPT/sac_overnight_supervisor.log"
 TRAIN_LOG="$CKPT/train_sac_overnight.log"
-TARGET="${SAC_TARGET:-0.95}"
-CHUNK="${SAC_CHUNK:-800000}"
-MAX_ROUNDS="${SAC_MAX_ROUNDS:-8}"
+TARGET="${SAC_TARGET:-0.90}"
+# One long run; early-stops when target hit. Re-attach if process dies.
+CHUNK="${SAC_CHUNK:-5000000}"
+MAX_ROUNDS="${SAC_MAX_ROUNDS:-20}"
 POLL_SEC="${SAC_POLL_SEC:-90}"
 
 mkdir -p "$CKPT"
 exec >>"$LOG" 2>&1
-echo "==== supervisor start $(date -Is) target=$TARGET chunk=$CHUNK max_rounds=$MAX_ROUNDS ===="
+echo "==== supervisor start $(date -Is) target=$TARGET chunk=$CHUNK max_rounds=$MAX_ROUNDS persist=mmap ===="
 
 trainer_pids() {
   local pid cmd
@@ -50,7 +51,8 @@ total = int(st.get("total_steps") or 0)
 state = str(st.get("state") or "unknown")
 sr = float(st.get("success_rate") or best)
 cr = float(st.get("collision_rate") or 0.0)
-print(f"{state}\t{best:.6f}\t{score:.6f}\t{steps}\t{total}\t{sr:.6f}\t{cr:.6f}")
+buf = int(st.get("buf") or 0)
+print(f"{state}\t{best:.6f}\t{score:.6f}\t{steps}\t{total}\t{sr:.6f}\t{cr:.6f}\tbuf={buf}")
 PY
 }
 
@@ -59,6 +61,7 @@ best_from_status() {
 }
 
 pick_resume() {
+  # Prefer best foundation; last is only a fallback.
   local best="$CKPT/sac_polar_local_best.pt"
   local last="$CKPT/sac_polar_local.pt"
   if [[ -f "$best" ]]; then
@@ -93,12 +96,27 @@ start_chunk() {
   local steps="$2"
   export PYTHONPATH="$WS/src/drone_rl_planner:${PYTHONPATH:-}"
   cd "$WS"
-  echo "$(date -Is) START chunk steps=$steps resume=$resume target=$TARGET"
-  # Append separator to overnight train log
+  echo "$(date -Is) START continuous steps=$steps resume=$resume target=$TARGET lr=1e-4 n_envs=4 persist_buffer"
   {
     echo ""
-    echo "===== chunk $(date -Is) steps=$steps ====="
+    echo "===== continuous $(date -Is) steps=$steps target=$TARGET ====="
   } >>"$TRAIN_LOG"
+  # Popup monitor if a display is available (Mission Console / desktop).
+  if [[ -n "${DISPLAY:-}" ]] || [[ -S /tmp/.X11-unix/X0 ]]; then
+    export DISPLAY="${DISPLAY:-:0}"
+    if ! ps -eo cmd | grep -F 'drone_rl_planner.train_sac_monitor' | grep -qv grep; then
+      (
+        export PYTHONPATH="$WS/src/drone_rl_planner:${PYTHONPATH:-}"
+        cd "$WS"
+        setsid python3 -m drone_rl_planner.train_sac_monitor \
+          </dev/null >>"$CKPT/sac_monitor_gui.log" 2>&1 &
+        disown || true
+      )
+      echo "$(date -Is) launched train_sac_monitor on DISPLAY=$DISPLAY"
+    fi
+  fi
+  # Efficient continue: fine-tune LR, more envs to refill/keep buffer warm,
+  # mmap replay so crashes/restarts do NOT wipe the foundation.
   setsid python3 -m drone_rl_planner.train_sac_polar \
     --steps "$steps" \
     --eval-every 5000 \
@@ -108,17 +126,20 @@ start_chunk() {
     --target "$TARGET" \
     --batch-size 128 \
     --updates-per-step 2 \
-    --n-envs 2 \
+    --n-envs 4 \
+    --buffer-size 250000 \
+    --persist-buffer \
+    --finetune-lr 1e-4 \
     --resume "$resume" \
     </dev/null >>"$TRAIN_LOG" 2>&1 &
   disown || true
-  sleep 10
+  sleep 12
   if trainer_running; then
     echo "$(date -Is) trainer up pids=$(trainer_pids | tr '\n' ' ')"
     return 0
   fi
   echo "$(date -Is) ERROR trainer failed to start"
-  tail -50 "$TRAIN_LOG" || true
+  tail -80 "$TRAIN_LOG" || true
   return 1
 }
 
@@ -126,7 +147,6 @@ rounds=0
 echo "$(date -Is) initial status: $(status_line)"
 echo "$(date -Is) trainer_running=$(trainer_running && echo yes || echo no)"
 
-# Do not kill the in-flight 250k job — wait for it, then continue.
 while true; do
   if trainer_running; then
     echo "$(date -Is) RUNNING $(status_line)"
@@ -157,7 +177,7 @@ while true; do
   fi
 
   rounds=$((rounds + 1))
-  echo "$(date -Is) CONTINUE round=$rounds/$MAX_ROUNDS best=$best < $TARGET"
+  echo "$(date -Is) CONTINUE round=$rounds/$MAX_ROUNDS best=$best < $TARGET (mmap replay kept)"
   if ! start_chunk "$resume" "$CHUNK"; then
     echo "$(date -Is) retry in 60s"
     sleep 60

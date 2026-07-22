@@ -15,9 +15,13 @@ third_party/
 
 # Path H / G training artifacts (large; regenerate locally)
 *.pt
+*.pid
 src/drone_rl_planner/checkpoints/*.log
 src/drone_rl_planner/checkpoints/*status*.json
 src/drone_rl_planner/checkpoints/*.zip
+src/drone_rl_planner/checkpoints/*_replay/
+src/drone_rl_planner/checkpoints/_restart_*.txt
+src/drone_rl_planner/checkpoints/_restart_*.sh
 
 # Local UI assets / heavy caches
 src/drone_bringup/drone_bringup/dashboard_static/backgrounds/
