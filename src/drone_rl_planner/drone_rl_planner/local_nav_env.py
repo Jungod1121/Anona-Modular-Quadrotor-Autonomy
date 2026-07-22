@@ -42,6 +42,10 @@ class EnvConfig:
     cruise_z: float = 1.5
     cruise_z_jitter: float = 0.25  # randomize ∈ [cruise_z±jitter]
     use_voxel: bool = True
+    # dense_field catalog has no perimeter cage — keep False for Path H dense.
+    add_boundary_walls: bool = True
+    # Min center-to-center spacing hint for dense pillars (map uses ~0.9 m).
+    min_obstacle_spacing: float = 0.0
 
 
 class LocalNavEnv:
@@ -108,14 +112,33 @@ class LocalNavEnv:
         ], dtype=np.float64)
 
     def _spawn_dense(self, n_scale: float = 1.0) -> None:
-        """dense_field-like: many cylinders + outer walls, ~16 m goals."""
+        """dense_field-like: many cylinders, long E–W goals (catalog style)."""
         c = self.cfg
         half = 0.5 * c.world_size
         n = max(20, int(c.n_obstacles * n_scale * self.rng.uniform(0.85, 1.15)))
-        self.obs_xy = self.rng.uniform(-half + 2.0, half - 2.0, size=(n, 2))
-        self.obs_r = self.rng.uniform(c.obstacle_r[0], c.obstacle_r[1], size=n)
-        self.wall_segs = self._boundary_box(half)
-        # Prefer E–W crossings like catalog poses
+        spacing = float(getattr(c, 'min_obstacle_spacing', 0.0) or 0.0)
+        pts: list = []
+        radii: list = []
+        # Rejection sample so pillars aren't fused tighter than the catalog.
+        for _ in range(n * 40):
+            if len(pts) >= n:
+                break
+            p = self.rng.uniform(-half + 2.0, half - 2.0, size=2)
+            r = float(self.rng.uniform(c.obstacle_r[0], c.obstacle_r[1]))
+            if spacing > 0 and pts:
+                d = np.linalg.norm(np.asarray(pts) - p[None, :], axis=1)
+                if np.any(d < spacing + r):
+                    continue
+            pts.append(p)
+            radii.append(r)
+        self.obs_xy = np.asarray(pts, dtype=np.float64) if pts else np.zeros((0, 2))
+        self.obs_r = np.asarray(radii, dtype=np.float64) if radii else np.zeros(0)
+        if getattr(c, 'add_boundary_walls', True):
+            self.wall_segs = self._boundary_box(half)
+        else:
+            # Match map_dense.yaml: add_boundary_walls: false
+            self.wall_segs = np.zeros((0, 4), dtype=np.float64)
+        # Prefer E–W crossings like catalog poses (start~west → goal~east)
         y_lane = float(self.rng.uniform(-half * 0.25, half * 0.25))
         self.pos = np.array([-half + 2.5, y_lane])
         self.goal = np.array([half - 2.5, y_lane + float(self.rng.uniform(-1.5, 1.5))])

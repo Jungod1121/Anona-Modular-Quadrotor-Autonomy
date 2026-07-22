@@ -131,9 +131,11 @@ def decode_action(
 ) -> Tuple[float, float, float]:
     """Map a∈[-1,1]^3 → (heading_rad, lookahead_m, speed_mps).
 
+    Keep mapping stable across curriculum stages — changing speed_min/heading
+    span invalidates prior checkpoints (mid→dense looked like random).
     a[0]: heading offset from goal bearing (±90°)
     a[1]: lookahead
-    a[2]: cruise speed
+    a[2]: cruise speed ∈ [speed_min, speed_max]
     """
     a = np.clip(np.asarray(action, dtype=np.float64).ravel()[:3], -1.0, 1.0)
     to_g = goal_xy - pos_xy

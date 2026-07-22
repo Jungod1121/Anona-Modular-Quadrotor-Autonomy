@@ -31,6 +31,7 @@ setup(
             'train_sb3_ppo = drone_rl_planner.train_sb3_ppo:main',
             'train_sb3_mappo = drone_rl_planner.train_sb3_mappo:main',
             'train_sac_polar = drone_rl_planner.train_sac_polar:main',
+            'train_sac_monitor = drone_rl_planner.train_sac_monitor:main',
         ],
     },
 )

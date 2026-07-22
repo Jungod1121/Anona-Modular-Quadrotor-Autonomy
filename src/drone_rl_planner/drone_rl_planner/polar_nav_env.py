@@ -53,6 +53,10 @@ class PolarNavEnv:
         seed: int = 0,
         forest_heavy: bool = False,
         dense_heavy: bool = False,
+        easy: bool = False,
+        medium: bool = False,
+        mix_mid_dense: bool = False,
+        mix_dense_p: float = 0.15,
     ) -> None:
         self.cfg = cfg or PolarEnvConfig()
         # Reuse scenario spawner from LocalNavEnv
@@ -66,7 +70,20 @@ class PolarNavEnv:
             max_steps=self.cfg.max_steps,
             n_obstacles=55 if forest_heavy else (70 if dense_heavy else 40),
         )
-        if forest_heavy:
+        self._mix_mid_dense = bool(mix_mid_dense)
+        self._mix_dense_p = float(np.clip(mix_dense_p, 0.05, 0.95))
+        self._profile = 'default'
+        if easy:
+            self._apply_easy(base)
+            self._profile = 'easy'
+        elif mix_mid_dense:
+            # Start medium; reset() randomly swaps medium ↔ dense_heavy.
+            self._apply_medium(base)
+            self._profile = 'medium'
+        elif medium:
+            self._apply_medium(base)
+            self._profile = 'medium'
+        elif forest_heavy:
             # Bias toward official_forest-like scenes
             base.p_forest = 0.55
             base.p_dense = 0.20
@@ -74,26 +91,87 @@ class PolarNavEnv:
             base.p_corridor = 0.07
             base.p_maze = 0.05
             base.world_size = 30.0
+            self._profile = 'forest'
         elif dense_heavy:
-            # Match drone_map DENSE_FIELD pillar density ≈ 80 / (24×14 m²)
-            # and radius range from map_dense.yaml — prior 75/30m was far too sparse,
-            # so reported success (~90%+) did not transfer to the real map.
-            area = 36.0 * 36.0
-            catalog_n = int(round(80.0 * area / (24.0 * 14.0)))
-            base.p_dense = 0.90
-            base.p_forest = 0.05
-            base.p_gate = 0.03
-            base.p_corridor = 0.01
-            base.p_maze = 0.01
-            base.n_obstacles = max(160, catalog_n)
-            base.world_size = 36.0
-            base.obstacle_r = (0.12, 0.30)
-            base.max_steps = max(base.max_steps, 650)
-            self.cfg.max_steps = max(self.cfg.max_steps, 650)
+            self._apply_dense(base)
+            self._profile = 'dense'
         self._base = LocalNavEnv(base, seed=seed)
         self.rng = self._base.rng
         self.prev_action = np.zeros(3, dtype=np.float64)
         self.cmd_vel = np.zeros(2, dtype=np.float64)
+        self._easy = bool(easy)
+        self._dense_heavy = bool(dense_heavy) or (
+            self._mix_mid_dense and self._profile == 'dense')
+
+    def _apply_easy(self, base: EnvConfig) -> None:
+        # Short-horizon sparse scenes — SACPlanner-like "dummy" difficulty.
+        base.p_dense = 0.08
+        base.p_forest = 0.05
+        base.p_gate = 0.05
+        base.p_corridor = 0.07
+        base.p_maze = 0.05
+        base.n_obstacles = 18
+        base.world_size = 20.0
+        base.obstacle_r = (0.18, 0.40)
+        base.max_steps = 280
+        base.goal_tol = 0.85
+        base.add_boundary_walls = True
+        base.min_obstacle_spacing = 0.0
+        self.cfg.max_steps = 280
+        self.cfg.goal_tol = 0.85
+        self.cfg.safety = POLAR_DEFAULTS['safety']
+        self.cfg.collide_penalty = -12.0
+        self.cfg.goal_bonus = 35.0
+        self.cfg.progress_scale = 5.0
+        self.cfg.unsafe_penalty = -1.2
+        self.cfg.step_penalty = -0.005
+
+    def _apply_medium(self, base: EnvConfig) -> None:
+        # Bridge easy → dense_field. Catalog-ish but not full pillar density.
+        base.p_dense = 0.45
+        base.p_forest = 0.15
+        base.p_gate = 0.12
+        base.p_corridor = 0.10
+        base.p_maze = 0.08
+        base.n_obstacles = 48
+        base.world_size = 28.0
+        base.obstacle_r = (0.15, 0.35)
+        base.max_steps = 420
+        base.goal_tol = 0.75
+        base.add_boundary_walls = True
+        base.min_obstacle_spacing = 0.0
+        self.cfg.max_steps = 420
+        self.cfg.goal_tol = 0.75
+        self.cfg.safety = POLAR_DEFAULTS['safety']
+        self.cfg.collide_penalty = -12.0
+        self.cfg.goal_bonus = 32.0
+        self.cfg.progress_scale = 4.5
+        self.cfg.unsafe_penalty = -1.0
+        self.cfg.step_penalty = -0.005
+
+    def _apply_dense(self, base: EnvConfig) -> None:
+        # Learnable dense matching catalog density — NOT forced min-spacing packing.
+        area = 36.0 * 36.0
+        catalog_n = int(round(80.0 * area / (24.0 * 14.0)))
+        base.p_dense = 0.92
+        base.p_forest = 0.04
+        base.p_gate = 0.02
+        base.p_corridor = 0.01
+        base.p_maze = 0.01
+        base.n_obstacles = max(160, catalog_n)
+        base.world_size = 36.0
+        base.obstacle_r = (0.12, 0.30)
+        base.add_boundary_walls = False
+        base.min_obstacle_spacing = 0.0
+        base.max_steps = max(base.max_steps, 650)
+        self.cfg.max_steps = max(self.cfg.max_steps, 650)
+        self.cfg.safety = 0.35
+        self.cfg.collide_penalty = -18.0
+        self.cfg.goal_bonus = 30.0
+        self.cfg.progress_scale = 3.5
+        self.cfg.unsafe_penalty = -1.4
+        self.cfg.step_penalty = -0.005
+        self.cfg.goal_tol = 0.70
 
     @property
     def image_shape(self) -> Tuple[int, int, int]:
@@ -108,6 +186,16 @@ class PolarNavEnv:
         return 3
 
     def reset(self) -> Dict[str, np.ndarray]:
+        if self._mix_mid_dense:
+            use_dense = bool(self.rng.random() < self._mix_dense_p)
+            if use_dense:
+                self._apply_dense(self._base.cfg)
+                self._profile = 'dense'
+                self._dense_heavy = True
+            else:
+                self._apply_medium(self._base.cfg)
+                self._profile = 'medium'
+                self._dense_heavy = False
         self._base.reset()
         self.prev_action[:] = 0.0
         self.cmd_vel[:] = 0.0
@@ -162,15 +250,28 @@ class PolarNavEnv:
 
         half = 0.5 * b.cfg.world_size
         out = bool(np.any(np.abs(b.pos) > half))
-        hit = b._collision(b.pos, c.robot_r) or out
+        # Inflate collision toward sensing safety so "near miss" isn't free.
+        collide_r = c.robot_r + (0.5 * c.safety if self._dense_heavy else 0.0)
+        hit = b._collision(b.pos, collide_r) or out
         dist = float(np.linalg.norm(b.goal - b.pos))
         progress = b._prev_dist - dist
         b._prev_dist = dist
 
-        reward = c.step_penalty + c.progress_scale * progress
+        reward = c.step_penalty
+        # SACPlanner-style asymmetric progress: regress costs 2× advance reward.
+        if progress >= 0:
+            reward += c.progress_scale * progress
+        else:
+            reward += (2.0 * c.progress_scale) * progress
         if not safe:
             reward += c.unsafe_penalty
         reward += 0.05 * min(1.0, min_clear / c.ray_max)
+        clear_soft = 1.2
+        clear_w = 0.35
+        if min_clear < clear_soft:
+            reward -= clear_w * (clear_soft - min_clear)
+        if self._dense_heavy and min_clear < 0.9 and spd > 0.45:
+            reward -= 0.12 * (spd - 0.45)
 
         # Prefer goal alignment when clear
         if spd > 0.1:
@@ -181,9 +282,11 @@ class PolarNavEnv:
                 reward += 0.03 * max(0.0, align)
 
         done = False
+        truncated = False
         info = {
             'success': False,
             'collision': False,
+            'truncated': False,
             'scenario': b.scenario,
             'safe': safe,
             'min_clear': min_clear,
@@ -201,5 +304,9 @@ class PolarNavEnv:
             done = True
             info['success'] = True
         elif b.t >= c.max_steps:
-            done = True
+            # Episode ends for the env, but do NOT mark terminal for SAC bootstrap.
+            truncated = True
+            info['truncated'] = True
+        # Training loop resets on done|truncated; buffer stores only true terminals.
+        info['episode_end'] = bool(done or truncated)
         return self.observation(), float(reward), done, info
