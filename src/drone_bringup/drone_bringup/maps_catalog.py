@@ -22,6 +22,8 @@ POSE_HOMEMADE = {
 # Stays inside catalog envelope (~±17 x, ±11 y) with flyable gaps among cylinders/rings.
 #
 # Lap 1 — axis-aligned rectangle (NW→NE→SE→SW):
+# Seed-1 forest: outer rectangle along proven open corridors (±8×±6).
+# Smaller inward squares put Path C spawn inside DilateRadius ("Start nudged").
 OFFICIAL_FOREST_RECT_WAYPOINTS = (
     (-8.0, 6.0, 1.0),
     (8.0, 6.0, 1.0),
@@ -50,12 +52,51 @@ def official_forest_mission_waypoints(cycles: int = 2):
     return mission
 
 # Legacy dense_field loop (kept for scripts / older notes).
+# Slightly inward of the prior dense square; keeps Path C/FP goals free.
 DENSE_FIELD_LOOP_WAYPOINTS = (
-    (12.0, 8.0, 1.5),
-    (35.0, 8.0, 1.5),
-    (35.0, 18.0, 1.5),
-    (12.0, 18.0, 1.5),
+    (15.0, 11.0, 1.5),
+    (32.0, 11.0, 1.5),
+    (32.0, 15.0, 1.5),
+    (15.0, 15.0, 1.5),
 )
+
+# Planner comparative benchmark: one closed square per map (spawn at corner 0).
+# Forest envelope ~±17×±11; dense_field span ~48×32 — sizes must differ.
+BENCHMARK_SQUARE_CORNERS = {
+    'official_forest': OFFICIAL_FOREST_RECT_WAYPOINTS,
+    'dense_field': DENSE_FIELD_LOOP_WAYPOINTS,
+}
+
+
+def benchmark_square_corners(map_id: str):
+    """Four corners of the benchmark square for a map (CCW / CW consistent)."""
+    mid = normalize_map_id(map_id)
+    corners = BENCHMARK_SQUARE_CORNERS.get(mid)
+    if corners is None:
+        raise KeyError(
+            f'no benchmark square for map={mid!r}; '
+            f'known={sorted(BENCHMARK_SQUARE_CORNERS)}')
+    return corners
+
+
+def benchmark_square_waypoints(map_id: str):
+    """Goals that close the square when the vehicle already spawns at corner 0."""
+    corners = benchmark_square_corners(map_id)
+    # Publish corners 1→2→3→0 so the flown path is four edges, not a diagonal.
+    return [corners[1], corners[2], corners[3], corners[0]]
+
+
+def pose_for_benchmark_square(map_id: str) -> Dict[str, float]:
+    """Spawn on corner 0; final goal is return to corner 0 after the square."""
+    c0 = benchmark_square_corners(map_id)[0]
+    return {
+        'init_x': float(c0[0]),
+        'init_y': float(c0[1]),
+        'init_z': float(c0[2]),
+        'goal_x': float(c0[0]),
+        'goal_y': float(c0[1]),
+        'goal_z': float(c0[2]),
+    }
 POSE_OFFICIAL = {
     'init_x': -15.0, 'init_y': 0.0, 'init_z': 1.0,
     'goal_x': 15.0, 'goal_y': 0.0, 'goal_z': 1.0,
@@ -106,7 +147,10 @@ def bounds_from_box(box: tuple) -> Dict[str, float]:
 FUEL_EXPLORE_POSE: Dict[str, Dict[str, float]] = {
     'dense_field': dict(POSE_HOMEMADE),
     'sparse': dict(POSE_SPARSE),
-    'narrow_corridor': dict(POSE_HOMEMADE),
+    'narrow_corridor': {
+            'init_x': 1.0, 'init_y': 5.0, 'init_z': 1.5,
+            'goal_x': 17.0, 'goal_y': 5.0, 'goal_z': 1.5,
+        },
     'ego_maze2d_port': dict(POSE_HOMEMADE),
     'ego_forest_port': dict(POSE_HOMEMADE),
     # Inside clear_y corridor (not outside at x=-15).
@@ -183,7 +227,11 @@ MAPS: Dict[str, Dict[str, Any]] = {
         'family': 'homemade',
         'backend': 'drone_map',
         'config': 'map_narrow.yaml',
-        'pose': POSE_HOMEMADE,
+        # Match map_narrow.yaml start/goal and map_generator NARROW_CORRIDOR envelope.
+        'pose': {
+            'init_x': 1.0, 'init_y': 5.0, 'init_z': 1.5,
+            'goal_x': 17.0, 'goal_y': 5.0, 'goal_z': 1.5,
+        },
         'label_en': 'Narrow corridor',
         'label_zh': '狭窄通道',
         'desc_en': 'S-bend: 3×1.6 m staggered doors + side clutter (PLAN §5.3)',
@@ -193,7 +241,8 @@ MAPS: Dict[str, Dict[str, Any]] = {
         'seed': 42,
         'obstacle_family': 's_bend_gates',
         'safety_radius': 0.4,
-        'bounds': bounds_dict(0.5, 3.0, 0.0, 19.5, 7.0, 3.0),
+        # Full flyable envelope from MapGenerator::boundsForMode(NARROW_CORRIDOR).
+        'bounds': bounds_dict(-2.0, -2.0, 0.0, 22.0, 12.0, 4.0),
     },
     'ego_maze2d_port': {
         'family': 'homemade',
@@ -329,7 +378,10 @@ MAPS: Dict[str, Dict[str, Any]] = {
         'family': 'homemade',
         'backend': 'drone_map',
         'config': 'map_narrow.yaml',
-        'pose': POSE_HOMEMADE,
+        'pose': {
+            'init_x': 1.0, 'init_y': 5.0, 'init_z': 1.5,
+            'goal_x': 17.0, 'goal_y': 5.0, 'goal_z': 1.5,
+        },
         'based_on': 'narrow_corridor',
         'label_en': 'Tier — medium corridor',
         'label_zh': '难度档 — 通道',
@@ -340,7 +392,7 @@ MAPS: Dict[str, Dict[str, Any]] = {
         'seed': 42,
         'obstacle_family': 'gate_walls',
         'safety_radius': 0.4,
-        'bounds': bounds_dict(0.5, 3.0, 0.0, 19.5, 7.0, 3.0),
+        'bounds': bounds_dict(-2.0, -2.0, 0.0, 22.0, 12.0, 4.0),
     },
     'tier_complex_forest': {
         'family': 'official',
@@ -428,7 +480,7 @@ DEFAULT_MAP_BY_PLANNER = {
 EXPLORE_BOX: Dict[str, tuple] = {
     'dense_field': (-8.0, -8.0, 0.0, 48.0, 32.0, 4.0),
     'sparse': (-6.0, -6.0, 0.0, 8.0, 8.0, 3.0),
-    'narrow_corridor': (0.5, 3.0, 0.0, 19.5, 7.0, 3.0),
+    'narrow_corridor': (-2.0, -2.0, 0.0, 22.0, 12.0, 4.0),
     'ego_maze2d_port': (-1.0, -1.0, 0.0, 21.0, 11.0, 3.0),
     'ego_forest_port': (-1.0, -1.0, 0.0, 21.0, 11.0, 3.0),
     # official_forest cloud ~26×20; init x=-15 sits outside.
@@ -439,7 +491,7 @@ EXPLORE_BOX: Dict[str, tuple] = {
     'official_maze2d': (-11.0, -11.0, 0.0, 11.0, 11.0, 2.5),
     'official_maze3d': (-11.0, -11.0, 0.0, 11.0, 11.0, 4.0),
     'tier_simple_open': (-6.0, -6.0, 0.0, 8.0, 8.0, 3.0),
-    'tier_medium_corridor': (0.5, 3.0, 0.0, 19.5, 7.0, 3.0),
+    'tier_medium_corridor': (-2.0, -2.0, 0.0, 22.0, 12.0, 4.0),
     'tier_complex_forest': (-17.0, -11.0, 0.0, 17.0, 11.0, 3.5),
     'tier_extreme_maze': (-11.0, -11.0, 0.0, 11.0, 11.0, 2.5),
     'forest_wide': (-1.0, -1.0, 0.0, 21.0, 11.0, 3.0),

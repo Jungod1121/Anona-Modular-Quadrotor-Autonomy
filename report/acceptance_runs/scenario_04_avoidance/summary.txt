@@ -1,18 +1,18 @@
 samples: 5602
-mean_pos_err: 9.3207 m
-max_pos_err: 19.6749 m
-final_pos_err: 0.1027 m
+mean_pos_err: 28.1727 m
+max_pos_err: 53.8350 m
+final_pos_err: 19.1843 m
 hover_pass_0.3m: False
-goal_pass_0.3m: True
-hold_at_goal_pass_0.3m: True
+goal_pass_0.3m: False
+hold_at_goal_pass_0.3m: False
 hold_at_goal_samples: 30
 planner_success_ever: True
 final_planner_state: TRAJ_CMD
-min_obstacle_distance: 0.3132 m
+min_obstacle_distance: 0.3161 m
 avoidance_safety_distance: 0.3000 m
 avoidance_pass: True
 avoidance_pass_0.35m: False
-flown_path_length: 122.4693 m
-detour_ratio: 13.4077
-mean_jerk: 3.8788 m/s^3
-planned_tracking_error_mean: 7.9707 m
+flown_path_length: 668.8094 m
+detour_ratio: 73.2308
+mean_jerk: 10.8349 m/s^3
+planned_tracking_error_mean: 30.0222 m

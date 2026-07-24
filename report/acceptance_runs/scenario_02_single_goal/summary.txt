@@ -1,5 +1,5 @@
 samples: 1002
-mean_pos_err: 0.0064 m
+mean_pos_err: 0.0069 m
 max_pos_err: 0.1096 m
 final_pos_err: 0.0013 m
 hover_pass_0.3m: True
@@ -8,6 +8,6 @@ hold_at_goal_pass_0.3m: True
 hold_at_goal_samples: 30
 planner_success_ever: False
 final_planner_state: 
-flown_path_length: 0.3900 m
-detour_ratio: 4.0990
-mean_jerk: 1.3907 m/s^3
+flown_path_length: 0.4400 m
+detour_ratio: 8.6979
+mean_jerk: 1.3899 m/s^3

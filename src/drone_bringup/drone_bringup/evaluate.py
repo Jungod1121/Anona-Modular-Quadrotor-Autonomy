@@ -285,6 +285,20 @@ class EvaluateNode(Node):
                 for e in self.state.fallback_events:
                     w.writerow([f'{e.t:.3f}', str(e.active), e.reason, e.source])
 
+        if self.state.obstacles:
+            obs_path = os.path.join(self.output_dir, 'obstacles.csv')
+            pts = self.state.obstacles
+            # Cap file size for dense clouds while keeping plot coverage.
+            max_pts = 50000
+            if len(pts) > max_pts:
+                step = max(1, len(pts) // max_pts)
+                pts = pts[::step]
+            with open(obs_path, 'w', newline='') as f:
+                w = csv.writer(f)
+                w.writerow(['x', 'y', 'z'])
+                for x, y, z in pts:
+                    w.writerow([f'{x:.4f}', f'{y:.4f}', f'{z:.4f}'])
+
         errs = [s.err for s in self.state.samples]
         mins = [s.min_obs for s in self.state.samples if math.isfinite(s.min_obs)]
         ts = np.array([s.t for s in self.state.samples])

@@ -10,13 +10,20 @@ from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
-from drone_bringup.maps_catalog import ego_planner_overrides
+from drone_bringup.maps_catalog import (
+    benchmark_square_waypoints,
+    ego_planner_overrides,
+)
 from drone_bringup.launch_utils import (
     controller_node,
     dynamics_node,
     map_stack,
+    resolve_mission_pose,
     rviz_node,
     send_goal_process,
+    square_mission_process,
+    square_planner_speed_params,
+    square_speed_params,
     visualization_node,
 )
 
@@ -25,10 +32,15 @@ def launch_setup(context, *args, **kwargs):
     use_rviz = LaunchConfiguration('use_rviz')
     seed = int(float(LaunchConfiguration('seed').perform(context)))
     map_id = LaunchConfiguration('map').perform(context)
+    mission = LaunchConfiguration('mission').perform(context).strip().lower()
 
     map_nodes, pose = map_stack(map_id, seed=seed, planner='ego')
+    pose = resolve_mission_pose(map_id, pose, mission)
     init_x, init_y, init_z = pose['init_x'], pose['init_y'], pose['init_z']
     goal_x, goal_y, goal_z = pose['goal_x'], pose['goal_y'], pose['goal_z']
+    square_wps = (
+        benchmark_square_waypoints(map_id) if mission == 'square' else [])
+    first_goal = square_wps[0] if square_wps else (goal_x, goal_y, goal_z)
 
     ego_params = {
         'fsm/flight_type': 1,
@@ -41,9 +53,9 @@ def launch_setup(context, *args, **kwargs):
         'fsm/fail_safe': True,
         'fsm/cruise_height': 1.0,
         'fsm/waypoint_num': 1,
-        'fsm/waypoint0_x': goal_x,
-        'fsm/waypoint0_y': goal_y,
-        'fsm/waypoint0_z': goal_z,
+        'fsm/waypoint0_x': float(first_goal[0]),
+        'fsm/waypoint0_y': float(first_goal[1]),
+        'fsm/waypoint0_z': float(first_goal[2]),
         'grid_map/resolution': 0.15,
         'grid_map/map_size_x': 50.0,
         'grid_map/map_size_y': 30.0,
@@ -102,6 +114,15 @@ def launch_setup(context, *args, **kwargs):
         'prediction/predict_rate': 1.0,
     }
     ego_params.update(ego_planner_overrides(map_id))
+    ego_params.update(square_planner_speed_params(mission))
+    ctrl_extra = {
+        'trajectory_cmd_timeout': 0.40,
+        'local_goal_timeout': 1.5,
+        'max_vel': 1.2,
+        'max_acc': 1.8,
+        'max_tilt': 0.40,
+    }
+    ctrl_extra.update(square_speed_params(mission))
 
     ego_node = Node(
         package='ego_planner',
@@ -155,6 +176,7 @@ def launch_setup(context, *args, **kwargs):
         parameters=[{'traj_server/time_forward': 1.0}],
     )
 
+    use_auto_goal = mission != 'square'
     bridge = Node(
         package='drone_bringup',
         executable='ego_cmd_bridge',
@@ -162,10 +184,10 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
         parameters=[{
             'cmd_topic': '/drone_0_planning/pos_cmd',
-            'auto_goal_enable': True,
-            'auto_goal_x': goal_x,
-            'auto_goal_y': goal_y,
-            'auto_goal_z': goal_z,
+            'auto_goal_enable': use_auto_goal,
+            'auto_goal_x': float(first_goal[0]),
+            'auto_goal_y': float(first_goal[1]),
+            'auto_goal_z': float(first_goal[2]),
             'auto_goal_delay': 8.0,
             'auto_goal_repeats': 1,
             'auto_goal_period': 0.5,
@@ -183,23 +205,21 @@ def launch_setup(context, *args, **kwargs):
             },
             param_files=['dynamics.yaml'],
         ),
-        controller_node(extra_params={
-            'trajectory_cmd_timeout': 0.40,
-            'local_goal_timeout': 1.5,
-            'max_vel': 1.2,
-            'max_acc': 1.8,
-            'max_tilt': 0.40,
-        }),
+        controller_node(extra_params=ctrl_extra),
         ego_node,
         local_sense,
         traj_server,
         bridge,
         visualization_node(),
-        send_goal_process(
-            goal_x, goal_y, goal_z, yaw=0.0, delay_sec=9.0,
-            topic='/drone/goal', repeats=1),
-        rviz_node(condition=IfCondition(use_rviz), config='ego_avoidance.rviz'),
     ])
+    if mission == 'square':
+        actions.append(square_mission_process(square_wps, delay_sec=9.0))
+    else:
+        actions.append(send_goal_process(
+            goal_x, goal_y, goal_z, yaw=0.0, delay_sec=9.0,
+            topic='/drone/goal', repeats=1))
+    actions.append(
+        rviz_node(condition=IfCondition(use_rviz), config='ego_avoidance.rviz'))
     return actions
 
 
@@ -210,5 +230,8 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'map', default_value='official_forest',
             description='Map id — see MAPS.md / maps_catalog.py'),
+        DeclareLaunchArgument(
+            'mission', default_value='catalog',
+            description='catalog = single catalog goal; square = map-specific square'),
         OpaqueFunction(function=launch_setup),
     ])

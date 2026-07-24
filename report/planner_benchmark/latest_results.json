@@ -1,0 +1,2444 @@
+{
+  "updated_at": "2026-07-24T17:56:32+08:00",
+  "matrix_size": 14,
+  "completed_cases": 14,
+  "planners": [
+    "homemade",
+    "ego",
+    "gcopter",
+    "mighty",
+    "fast_planner",
+    "vfh",
+    "sac"
+  ],
+  "maps": [
+    "official_forest",
+    "dense_field"
+  ],
+  "rates": {
+    "dynamics_integration_hz": 500.0,
+    "state_publish_hz": 100.0,
+    "control_hz": 100.0,
+    "planner_default_hz": 20.0
+  },
+  "results": [
+    {
+      "key": "homemade__official_forest",
+      "planner": "homemade",
+      "planner_label": "Path A \u2014 Grid A* + B-spline",
+      "planner_class": "weak",
+      "map_id": "official_forest",
+      "map_label": "Random Forest",
+      "seed": 1,
+      "mission": "square",
+      "start": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "goal": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "corners": [
+        [
+          -8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ]
+      ],
+      "waypoints": [
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          6.0,
+          1.0
+        ]
+      ],
+      "ideal_path_m": 56.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T171522",
+      "started_at": "2026-07-24T17:15:22+08:00",
+      "status": "fail",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/homemade__official_forest/20260724T171522",
+      "duration_s": 180.0,
+      "raw_summary": {},
+      "success": false,
+      "safety_pass": false,
+      "error": "metrics.csv is missing required samples",
+      "evaluate_exit_code": 247,
+      "completed_at": "2026-07-24T17:15:32+08:00"
+    },
+    {
+      "key": "homemade__dense_field",
+      "planner": "homemade",
+      "planner_label": "Path A \u2014 Grid A* + B-spline",
+      "planner_class": "weak",
+      "map_id": "dense_field",
+      "map_label": "Dense Obstacle Field",
+      "seed": 42,
+      "mission": "square",
+      "start": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "goal": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "corners": [
+        [
+          15.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ]
+      ],
+      "waypoints": [
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          11.0,
+          1.5
+        ]
+      ],
+      "ideal_path_m": 42.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T171532",
+      "started_at": "2026-07-24T17:15:32+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/homemade__dense_field/20260724T171532",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "2775",
+        "mean_pos_err": "2.0939 m",
+        "max_pos_err": "17.0956 m",
+        "final_pos_err": "0.0019 m",
+        "hover_pass_0.3m": "True",
+        "goal_pass_0.3m": "True",
+        "hold_at_goal_pass_0.3m": "True",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "True",
+        "final_planner_state": "EXEC_TRAJ",
+        "min_obstacle_distance": "0.1924 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "True",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "42.9572 m",
+        "detour_ratio": "28.6498",
+        "mean_jerk": "12.7314 m/s^3",
+        "planned_tracking_error_mean": "2.2990 m"
+      },
+      "success": true,
+      "safety_pass": true,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": 40.510999999999996,
+      "final_error_m": 0.0019,
+      "min_clearance_m": 0.1924,
+      "path_length_m": 41.160094301614066,
+      "direct_distance_m": 42.0,
+      "path_efficiency": 1.0,
+      "mean_speed_mps": 1.0163221918247176,
+      "max_speed_mps": 1.4393045658011743,
+      "mean_jerk_mps3": 52.59683331622054,
+      "mean_motor_rpm": 2715.084099099099,
+      "peak_motor_rpm": 2961.1,
+      "planner_success_ever": true,
+      "fallback_trigger_count": 0,
+      "overall_score": 91.57852490185613,
+      "sample_count": 2775,
+      "waypoints_visited": 4,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 4,
+        "total": 4,
+        "pass": true,
+        "stages_pass": true,
+        "post_mission_pass": true,
+        "last_hit_index": 694,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": 0.0019131126469708508,
+        "max_post_home_error_m": 0.4330060161244875,
+        "fail_reason": "",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              32.0,
+              11.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 21.089,
+            "dwell_end_t": 22.147,
+            "dwell_speed_mps": 1.0036503980363254
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              32.0,
+              15.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 25.022,
+            "dwell_end_t": 26.053,
+            "dwell_speed_mps": 0.8698759007339729
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              15.0,
+              15.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 41.225,
+            "dwell_end_t": 42.248,
+            "dwell_speed_mps": 0.863107573142706
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              15.0,
+              11.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 44.485,
+            "dwell_end_t": 45.516,
+            "dwell_speed_mps": 1.0258490003881384
+          }
+        ]
+      },
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:18:40+08:00",
+      "chart_path": "charts/trials/homemade__dense_field.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/homemade__dense_field/20260724T171532/trajectory.png"
+    },
+    {
+      "key": "ego__official_forest",
+      "planner": "ego",
+      "planner_label": "Path B \u2014 EGO rebound B-spline",
+      "planner_class": "strong",
+      "map_id": "official_forest",
+      "map_label": "Random Forest",
+      "seed": 1,
+      "mission": "square",
+      "start": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "goal": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "corners": [
+        [
+          -8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ]
+      ],
+      "waypoints": [
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          6.0,
+          1.0
+        ]
+      ],
+      "ideal_path_m": 56.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T171840",
+      "started_at": "2026-07-24T17:18:40+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/ego__official_forest/20260724T171840",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "3602",
+        "mean_pos_err": "75.4489 m",
+        "max_pos_err": "247.1583 m",
+        "final_pos_err": "247.1583 m",
+        "hover_pass_0.3m": "False",
+        "goal_pass_0.3m": "False",
+        "hold_at_goal_pass_0.3m": "False",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "True",
+        "final_planner_state": "TRAJ_CMD",
+        "min_obstacle_distance": "0.0905 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "True",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "746.8364 m",
+        "detour_ratio": "752.7354",
+        "mean_jerk": "22.0966 m/s^3",
+        "planned_tracking_error_mean": "74.5916 m"
+      },
+      "success": false,
+      "safety_pass": true,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": NaN,
+      "final_error_m": 247.1583,
+      "min_clearance_m": 0.0905,
+      "path_length_m": 746.6752575928135,
+      "direct_distance_m": 56.0,
+      "path_efficiency": 0.0749991370820789,
+      "mean_speed_mps": 4.354360973885917,
+      "max_speed_mps": 12.120810978205043,
+      "mean_jerk_mps3": 22.453059573235976,
+      "mean_motor_rpm": 2720.1705788450863,
+      "peak_motor_rpm": 3202.7,
+      "planner_success_ever": true,
+      "fallback_trigger_count": 0,
+      "overall_score": 19.289693958498212,
+      "sample_count": 3602,
+      "waypoints_visited": 2,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 2,
+        "total": 4,
+        "pass": false,
+        "stages_pass": false,
+        "post_mission_pass": false,
+        "last_hit_index": 1451,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": NaN,
+        "max_post_home_error_m": NaN,
+        "fail_reason": "stage 3/4: no 1.0s near-stop within 1.50 m",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 43.321,
+            "dwell_end_t": 44.322,
+            "dwell_speed_mps": 0.4931421233273422
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 71.521,
+            "dwell_end_t": 72.521,
+            "dwell_speed_mps": 0.4355111152042161
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              -8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              -8.0,
+              6.0,
+              1.0
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          }
+        ]
+      },
+      "success_fail_reason": "stage 3/4: no 1.0s near-stop within 1.50 m",
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:21:51+08:00",
+      "chart_path": "charts/trials/ego__official_forest.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/ego__official_forest/20260724T171840/trajectory.png"
+    },
+    {
+      "key": "ego__dense_field",
+      "planner": "ego",
+      "planner_label": "Path B \u2014 EGO rebound B-spline",
+      "planner_class": "strong",
+      "map_id": "dense_field",
+      "map_label": "Dense Obstacle Field",
+      "seed": 42,
+      "mission": "square",
+      "start": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "goal": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "corners": [
+        [
+          15.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ]
+      ],
+      "waypoints": [
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          11.0,
+          1.5
+        ]
+      ],
+      "ideal_path_m": 42.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T172151",
+      "started_at": "2026-07-24T17:21:51+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/ego__dense_field/20260724T172151",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "2865",
+        "mean_pos_err": "2.0270 m",
+        "max_pos_err": "25.6469 m",
+        "final_pos_err": "0.0005 m",
+        "hover_pass_0.3m": "True",
+        "goal_pass_0.3m": "True",
+        "hold_at_goal_pass_0.3m": "True",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "False",
+        "final_planner_state": "",
+        "min_obstacle_distance": "0.0697 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "False",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "85.4471 m",
+        "detour_ratio": "56.9648",
+        "mean_jerk": "18.0633 m/s^3",
+        "planned_tracking_error_mean": "2.4480 m"
+      },
+      "success": false,
+      "safety_pass": false,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": NaN,
+      "final_error_m": 0.0005,
+      "min_clearance_m": 0.0697,
+      "path_length_m": 85.2848180881723,
+      "direct_distance_m": 42.0,
+      "path_efficiency": 0.4924674864942317,
+      "mean_speed_mps": 0.5009632818878981,
+      "max_speed_mps": 5.752153408373316,
+      "mean_jerk_mps3": 19.69536784584481,
+      "mean_motor_rpm": 2716.6565794066314,
+      "peak_motor_rpm": 2904.6,
+      "planner_success_ever": false,
+      "fallback_trigger_count": 0,
+      "overall_score": 22.371207546959532,
+      "sample_count": 2865,
+      "waypoints_visited": 0,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 0,
+        "total": 4,
+        "pass": false,
+        "stages_pass": false,
+        "post_mission_pass": false,
+        "last_hit_index": null,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": NaN,
+        "max_post_home_error_m": NaN,
+        "fail_reason": "stage 1/4: no 1.0s near-stop within 1.50 m",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              32.0,
+              11.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              32.0,
+              15.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              15.0,
+              15.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              15.0,
+              11.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          }
+        ]
+      },
+      "success_fail_reason": "stage 1/4: no 1.0s near-stop within 1.50 m",
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:24:59+08:00",
+      "chart_path": "charts/trials/ego__dense_field.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/ego__dense_field/20260724T172151/trajectory.png"
+    },
+    {
+      "key": "gcopter__official_forest",
+      "planner": "gcopter",
+      "planner_label": "Path C \u2014 GCOPTER / MINCO",
+      "planner_class": "strong",
+      "map_id": "official_forest",
+      "map_label": "Random Forest",
+      "seed": 1,
+      "mission": "square",
+      "start": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "goal": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "corners": [
+        [
+          -8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ]
+      ],
+      "waypoints": [
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          6.0,
+          1.0
+        ]
+      ],
+      "ideal_path_m": 56.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T172459",
+      "started_at": "2026-07-24T17:24:59+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/gcopter__official_forest/20260724T172459",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "3602",
+        "mean_pos_err": "8.1585 m",
+        "max_pos_err": "19.2385 m",
+        "final_pos_err": "0.0655 m",
+        "hover_pass_0.3m": "False",
+        "goal_pass_0.3m": "True",
+        "hold_at_goal_pass_0.3m": "True",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "True",
+        "final_planner_state": "TRAJ_CMD",
+        "min_obstacle_distance": "0.2563 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "True",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "57.5835 m",
+        "detour_ratio": "480.7250",
+        "mean_jerk": "22.0952 m/s^3",
+        "planned_tracking_error_mean": "5.3677 m"
+      },
+      "success": true,
+      "safety_pass": true,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": 124.54999999999998,
+      "final_error_m": 0.0655,
+      "min_clearance_m": 0.2563,
+      "path_length_m": 56.190869322316416,
+      "direct_distance_m": 56.0,
+      "path_efficiency": 0.9966031968428612,
+      "mean_speed_mps": 0.4524263130734348,
+      "max_speed_mps": 1.183232859584265,
+      "mean_jerk_mps3": 30.790365575172554,
+      "mean_motor_rpm": 2714.700388672959,
+      "peak_motor_rpm": 3195.5,
+      "planner_success_ever": true,
+      "fallback_trigger_count": 0,
+      "overall_score": 86.24179352134855,
+      "sample_count": 3602,
+      "waypoints_visited": 4,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 4,
+        "total": 4,
+        "pass": true,
+        "stages_pass": true,
+        "post_mission_pass": true,
+        "last_hit_index": 2883,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": 0.06550099235889473,
+        "max_post_home_error_m": 1.0332368218370853,
+        "fail_reason": "",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 50.997,
+            "dwell_end_t": 51.997,
+            "dwell_speed_mps": 0.3825589261393355
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 79.497,
+            "dwell_end_t": 80.497,
+            "dwell_speed_mps": 0.3179052378336924
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              -8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 114.897,
+            "dwell_end_t": 115.897,
+            "dwell_speed_mps": 0.345203450872483
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              -8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 143.147,
+            "dwell_end_t": 144.147,
+            "dwell_speed_mps": 0.47110432490391896
+          }
+        ]
+      },
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:28:07+08:00",
+      "chart_path": "charts/trials/gcopter__official_forest.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/gcopter__official_forest/20260724T172459/trajectory.png"
+    },
+    {
+      "key": "gcopter__dense_field",
+      "planner": "gcopter",
+      "planner_label": "Path C \u2014 GCOPTER / MINCO",
+      "planner_class": "strong",
+      "map_id": "dense_field",
+      "map_label": "Dense Obstacle Field",
+      "seed": 42,
+      "mission": "square",
+      "start": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "goal": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "corners": [
+        [
+          15.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ]
+      ],
+      "waypoints": [
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          11.0,
+          1.5
+        ]
+      ],
+      "ideal_path_m": 42.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T172807",
+      "started_at": "2026-07-24T17:28:07+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/gcopter__dense_field/20260724T172807",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "2704",
+        "mean_pos_err": "43.5337 m",
+        "max_pos_err": "116.1035 m",
+        "final_pos_err": "116.1035 m",
+        "hover_pass_0.3m": "False",
+        "goal_pass_0.3m": "False",
+        "hold_at_goal_pass_0.3m": "False",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "True",
+        "final_planner_state": "TRAJ_CMD",
+        "min_obstacle_distance": "0.0956 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "True",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "653.1765 m",
+        "detour_ratio": "435.4510",
+        "mean_jerk": "223.3152 m/s^3",
+        "planned_tracking_error_mean": "38.7823 m"
+      },
+      "success": false,
+      "safety_pass": true,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": NaN,
+      "final_error_m": 116.1035,
+      "min_clearance_m": 0.0956,
+      "path_length_m": 653.0034459155847,
+      "direct_distance_m": 42.0,
+      "path_efficiency": 0.0643181904516771,
+      "mean_speed_mps": 4.129834021191432,
+      "max_speed_mps": 11.764439886699185,
+      "mean_jerk_mps3": 254.46796215878976,
+      "mean_motor_rpm": 2718.559587647929,
+      "peak_motor_rpm": 3208.3,
+      "planner_success_ever": true,
+      "fallback_trigger_count": 0,
+      "overall_score": 17.27622382365368,
+      "sample_count": 2704,
+      "waypoints_visited": 2,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 2,
+        "total": 4,
+        "pass": false,
+        "stages_pass": false,
+        "post_mission_pass": false,
+        "last_hit_index": 1028,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": NaN,
+        "max_post_home_error_m": NaN,
+        "fail_reason": "stage 3/4: no 1.0s near-stop within 1.50 m",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              32.0,
+              11.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 60.883,
+            "dwell_end_t": 61.947,
+            "dwell_speed_mps": 0.3443889334642208
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              32.0,
+              15.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 67.137,
+            "dwell_end_t": 68.18,
+            "dwell_speed_mps": 0.15741940729816403
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              15.0,
+              15.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              15.0,
+              11.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          }
+        ]
+      },
+      "success_fail_reason": "stage 3/4: no 1.0s near-stop within 1.50 m",
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:31:16+08:00",
+      "chart_path": "charts/trials/gcopter__dense_field.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/gcopter__dense_field/20260724T172807/trajectory.png"
+    },
+    {
+      "key": "mighty__official_forest",
+      "planner": "mighty",
+      "planner_label": "Path E \u2014 MIGHTY HGP",
+      "planner_class": "strong",
+      "map_id": "official_forest",
+      "map_label": "Random Forest",
+      "seed": 1,
+      "mission": "square",
+      "start": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "goal": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "corners": [
+        [
+          -8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ]
+      ],
+      "waypoints": [
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          6.0,
+          1.0
+        ]
+      ],
+      "ideal_path_m": 56.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T173116",
+      "started_at": "2026-07-24T17:31:16+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/mighty__official_forest/20260724T173116",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "3601",
+        "mean_pos_err": "40.1262 m",
+        "max_pos_err": "124.0007 m",
+        "final_pos_err": "122.5219 m",
+        "hover_pass_0.3m": "False",
+        "goal_pass_0.3m": "False",
+        "hold_at_goal_pass_0.3m": "False",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "True",
+        "final_planner_state": "TRAJ_CMD",
+        "min_obstacle_distance": "0.0301 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "False",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "598.6480 m",
+        "detour_ratio": "608.1676",
+        "mean_jerk": "106.0339 m/s^3",
+        "planned_tracking_error_mean": "38.3804 m"
+      },
+      "success": false,
+      "safety_pass": false,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": NaN,
+      "final_error_m": 122.5219,
+      "min_clearance_m": 0.0301,
+      "path_length_m": 598.4811107961558,
+      "direct_distance_m": 56.0,
+      "path_efficiency": 0.09357020462267145,
+      "mean_speed_mps": 3.527631053066892,
+      "max_speed_mps": 9.795842899367837,
+      "mean_jerk_mps3": 110.43606690020896,
+      "mean_motor_rpm": 2717.486059427936,
+      "peak_motor_rpm": 3239.3,
+      "planner_success_ever": true,
+      "fallback_trigger_count": 0,
+      "overall_score": 7.2505357914360316,
+      "sample_count": 3601,
+      "waypoints_visited": 4,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 4,
+        "total": 4,
+        "pass": false,
+        "stages_pass": true,
+        "post_mission_pass": false,
+        "last_hit_index": 2131,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": 122.52187695938224,
+        "max_post_home_error_m": 124.00071277529013,
+        "fail_reason": "post-mission: final pose 122.52 m from home (tol 1.50 m)",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 31.95,
+            "dwell_end_t": 32.95,
+            "dwell_speed_mps": 0.6712039375800163
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 65.1,
+            "dwell_end_t": 66.11,
+            "dwell_speed_mps": 1.1679627038249372
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              -8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 88.85,
+            "dwell_end_t": 89.85,
+            "dwell_speed_mps": 0.6757753249386569
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              -8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 105.55,
+            "dwell_end_t": 106.55,
+            "dwell_speed_mps": 0.6686768172290019
+          }
+        ]
+      },
+      "success_fail_reason": "post-mission: final pose 122.52 m from home (tol 1.50 m)",
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:34:24+08:00",
+      "chart_path": "charts/trials/mighty__official_forest.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/mighty__official_forest/20260724T173116/trajectory.png"
+    },
+    {
+      "key": "mighty__dense_field",
+      "planner": "mighty",
+      "planner_label": "Path E \u2014 MIGHTY HGP",
+      "planner_class": "strong",
+      "map_id": "dense_field",
+      "map_label": "Dense Obstacle Field",
+      "seed": 42,
+      "mission": "square",
+      "start": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "goal": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "corners": [
+        [
+          15.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ]
+      ],
+      "waypoints": [
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          11.0,
+          1.5
+        ]
+      ],
+      "ideal_path_m": 42.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T173424",
+      "started_at": "2026-07-24T17:34:24+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/mighty__dense_field/20260724T173424",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "2786",
+        "mean_pos_err": "6.2201 m",
+        "max_pos_err": "21.0848 m",
+        "final_pos_err": "3.9261 m",
+        "hover_pass_0.3m": "False",
+        "goal_pass_0.3m": "False",
+        "hold_at_goal_pass_0.3m": "False",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "True",
+        "final_planner_state": "TRAJ_CMD",
+        "min_obstacle_distance": "0.0927 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "True",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "62.6636 m",
+        "detour_ratio": "85.4581",
+        "mean_jerk": "18.7194 m/s^3",
+        "planned_tracking_error_mean": "2.7463 m"
+      },
+      "success": false,
+      "safety_pass": true,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": NaN,
+      "final_error_m": 3.9261,
+      "min_clearance_m": 0.0927,
+      "path_length_m": 62.52955351573179,
+      "direct_distance_m": 42.0,
+      "path_efficiency": 0.6716823907823559,
+      "mean_speed_mps": 0.3403936655298228,
+      "max_speed_mps": 2.884043605691693,
+      "mean_jerk_mps3": 19.194435728970653,
+      "mean_motor_rpm": 2711.2946518305816,
+      "peak_motor_rpm": 3198.9,
+      "planner_success_ever": true,
+      "fallback_trigger_count": 0,
+      "overall_score": 28.950546113605235,
+      "sample_count": 2786,
+      "waypoints_visited": 3,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 3,
+        "total": 4,
+        "pass": false,
+        "stages_pass": false,
+        "post_mission_pass": false,
+        "last_hit_index": 1158,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": NaN,
+        "max_post_home_error_m": NaN,
+        "fail_reason": "stage 4/4: no 1.0s near-stop within 1.50 m",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              32.0,
+              11.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 37.198,
+            "dwell_end_t": 38.21,
+            "dwell_speed_mps": 0.6719936797944643
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              32.0,
+              15.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 52.756,
+            "dwell_end_t": 53.812,
+            "dwell_speed_mps": 0.9466013700186074
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              15.0,
+              15.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 78.313,
+            "dwell_end_t": 79.326,
+            "dwell_speed_mps": 0.6339258870808813
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              15.0,
+              11.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          }
+        ]
+      },
+      "success_fail_reason": "stage 4/4: no 1.0s near-stop within 1.50 m",
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:37:32+08:00",
+      "chart_path": "charts/trials/mighty__dense_field.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/mighty__dense_field/20260724T173424/trajectory.png"
+    },
+    {
+      "key": "fast_planner__official_forest",
+      "planner": "fast_planner",
+      "planner_label": "Optional F \u2014 Fast-Planner kino (lineage)",
+      "planner_class": "optional",
+      "map_id": "official_forest",
+      "map_label": "Random Forest",
+      "seed": 1,
+      "mission": "square",
+      "start": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "goal": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "corners": [
+        [
+          -8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ]
+      ],
+      "waypoints": [
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          6.0,
+          1.0
+        ]
+      ],
+      "ideal_path_m": 56.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T173732",
+      "started_at": "2026-07-24T17:37:32+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/fast_planner__official_forest/20260724T173732",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "3582",
+        "mean_pos_err": "16.4199 m",
+        "max_pos_err": "21.8561 m",
+        "final_pos_err": "16.8794 m",
+        "hover_pass_0.3m": "False",
+        "goal_pass_0.3m": "False",
+        "hold_at_goal_pass_0.3m": "False",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "True",
+        "final_planner_state": "TRAJ_CMD",
+        "min_obstacle_distance": "0.2813 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "True",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "46.1979 m",
+        "detour_ratio": "46.5311",
+        "mean_jerk": "109.4497 m/s^3",
+        "planned_tracking_error_mean": "11.2743 m"
+      },
+      "success": false,
+      "safety_pass": true,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": NaN,
+      "final_error_m": 16.8794,
+      "min_clearance_m": 0.2813,
+      "path_length_m": 46.05533204813358,
+      "direct_distance_m": 56.0,
+      "path_efficiency": 1.0,
+      "mean_speed_mps": 0.28735577053836336,
+      "max_speed_mps": 3.1013579368775575,
+      "mean_jerk_mps3": 111.4080943958925,
+      "mean_motor_rpm": 2698.1466638749303,
+      "peak_motor_rpm": 3282.9,
+      "planner_success_ever": true,
+      "fallback_trigger_count": 0,
+      "overall_score": 35.823668310565154,
+      "sample_count": 3582,
+      "waypoints_visited": 2,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 2,
+        "total": 4,
+        "pass": false,
+        "stages_pass": false,
+        "post_mission_pass": false,
+        "last_hit_index": 3072,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": NaN,
+        "max_post_home_error_m": NaN,
+        "fail_reason": "stage 3/4: no 1.0s near-stop within 1.50 m",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 45.292,
+            "dwell_end_t": 46.292,
+            "dwell_speed_mps": 1.0535603367415844
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 153.342,
+            "dwell_end_t": 154.342,
+            "dwell_speed_mps": 0.32129018113091035
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              -8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              -8.0,
+              6.0,
+              1.0
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          }
+        ]
+      },
+      "success_fail_reason": "stage 3/4: no 1.0s near-stop within 1.50 m",
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:40:40+08:00",
+      "chart_path": "charts/trials/fast_planner__official_forest.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/fast_planner__official_forest/20260724T173732/trajectory.png"
+    },
+    {
+      "key": "fast_planner__dense_field",
+      "planner": "fast_planner",
+      "planner_label": "Optional F \u2014 Fast-Planner kino (lineage)",
+      "planner_class": "optional",
+      "map_id": "dense_field",
+      "map_label": "Dense Obstacle Field",
+      "seed": 42,
+      "mission": "square",
+      "start": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "goal": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "corners": [
+        [
+          15.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ]
+      ],
+      "waypoints": [
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          11.0,
+          1.5
+        ]
+      ],
+      "ideal_path_m": 42.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T174040",
+      "started_at": "2026-07-24T17:40:40+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/fast_planner__dense_field/20260724T174040",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "2899",
+        "mean_pos_err": "378.8854 m",
+        "max_pos_err": "916.4842 m",
+        "final_pos_err": "916.4842 m",
+        "hover_pass_0.3m": "False",
+        "goal_pass_0.3m": "False",
+        "hold_at_goal_pass_0.3m": "False",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "True",
+        "final_planner_state": "TRAJ_CMD",
+        "min_obstacle_distance": "0.1815 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "True",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "1206.3686 m",
+        "detour_ratio": "808.1028",
+        "mean_jerk": "213.2888 m/s^3",
+        "planned_tracking_error_mean": "382.2987 m"
+      },
+      "success": false,
+      "safety_pass": true,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": NaN,
+      "final_error_m": 916.4842,
+      "min_clearance_m": 0.1815,
+      "path_length_m": 1206.2125440174107,
+      "direct_distance_m": 42.0,
+      "path_efficiency": 0.034819734057908926,
+      "mean_speed_mps": 7.24208534281519,
+      "max_speed_mps": 9.334600806794505,
+      "mean_jerk_mps3": 235.92845916431904,
+      "mean_motor_rpm": 2721.9696274577436,
+      "peak_motor_rpm": 3258.9,
+      "planner_success_ever": true,
+      "fallback_trigger_count": 0,
+      "overall_score": 20.928918328349933,
+      "sample_count": 2899,
+      "waypoints_visited": 0,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 0,
+        "total": 4,
+        "pass": false,
+        "stages_pass": false,
+        "post_mission_pass": false,
+        "last_hit_index": null,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": NaN,
+        "max_post_home_error_m": NaN,
+        "fail_reason": "stage 1/4: no 1.0s near-stop within 1.50 m",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              32.0,
+              11.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              32.0,
+              15.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              15.0,
+              15.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              15.0,
+              11.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          }
+        ]
+      },
+      "success_fail_reason": "stage 1/4: no 1.0s near-stop within 1.50 m",
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:43:48+08:00",
+      "chart_path": "charts/trials/fast_planner__dense_field.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/fast_planner__dense_field/20260724T174040/trajectory.png"
+    },
+    {
+      "key": "vfh__official_forest",
+      "planner": "vfh",
+      "planner_label": "Path G \u2014 VFH+ histogram",
+      "planner_class": "weak",
+      "map_id": "official_forest",
+      "map_label": "Random Forest",
+      "seed": 1,
+      "mission": "square",
+      "start": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "goal": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "corners": [
+        [
+          -8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ]
+      ],
+      "waypoints": [
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          6.0,
+          1.0
+        ]
+      ],
+      "ideal_path_m": 56.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T174348",
+      "started_at": "2026-07-24T17:43:48+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/vfh__official_forest/20260724T174348",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "3602",
+        "mean_pos_err": "2.9824 m",
+        "max_pos_err": "21.4691 m",
+        "final_pos_err": "0.8308 m",
+        "hover_pass_0.3m": "False",
+        "goal_pass_0.3m": "False",
+        "hold_at_goal_pass_0.3m": "False",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "True",
+        "final_planner_state": "HOLD",
+        "min_obstacle_distance": "0.0628 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "False",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "89.3033 m",
+        "detour_ratio": "90.6590",
+        "mean_jerk": "2.3216 m/s^3",
+        "planned_tracking_error_mean": "2.2995 m"
+      },
+      "success": false,
+      "safety_pass": false,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": NaN,
+      "final_error_m": 0.8308,
+      "min_clearance_m": 0.0628,
+      "path_length_m": 89.1154809362752,
+      "direct_distance_m": 56.0,
+      "path_efficiency": 0.6283981123329687,
+      "mean_speed_mps": 0.5106958589417075,
+      "max_speed_mps": 4.281228945384635,
+      "mean_jerk_mps3": 2.9692369944001653,
+      "mean_motor_rpm": 2712.1536507495834,
+      "peak_motor_rpm": 3327.1,
+      "planner_success_ever": true,
+      "fallback_trigger_count": 0,
+      "overall_score": 27.603192183253434,
+      "sample_count": 3602,
+      "waypoints_visited": 1,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 1,
+        "total": 4,
+        "pass": false,
+        "stages_pass": false,
+        "post_mission_pass": false,
+        "last_hit_index": 294,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": NaN,
+        "max_post_home_error_m": NaN,
+        "fail_reason": "stage 2/4: no 1.0s near-stop within 1.50 m",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 13.691,
+            "dwell_end_t": 14.691,
+            "dwell_speed_mps": 0.9558037790531155
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              -8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              -8.0,
+              6.0,
+              1.0
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          }
+        ]
+      },
+      "success_fail_reason": "stage 2/4: no 1.0s near-stop within 1.50 m",
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:46:56+08:00",
+      "chart_path": "charts/trials/vfh__official_forest.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/vfh__official_forest/20260724T174348/trajectory.png"
+    },
+    {
+      "key": "vfh__dense_field",
+      "planner": "vfh",
+      "planner_label": "Path G \u2014 VFH+ histogram",
+      "planner_class": "weak",
+      "map_id": "dense_field",
+      "map_label": "Dense Obstacle Field",
+      "seed": 42,
+      "mission": "square",
+      "start": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "goal": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "corners": [
+        [
+          15.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ]
+      ],
+      "waypoints": [
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          11.0,
+          1.5
+        ]
+      ],
+      "ideal_path_m": 42.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T174656",
+      "started_at": "2026-07-24T17:46:56+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/vfh__dense_field/20260724T174656",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "2906",
+        "mean_pos_err": "2.1277 m",
+        "max_pos_err": "17.8271 m",
+        "final_pos_err": "0.8164 m",
+        "hover_pass_0.3m": "False",
+        "goal_pass_0.3m": "False",
+        "hold_at_goal_pass_0.3m": "False",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "True",
+        "final_planner_state": "HOLD",
+        "min_obstacle_distance": "0.0495 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "False",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "59.2461 m",
+        "detour_ratio": "39.7621",
+        "mean_jerk": "12.3932 m/s^3",
+        "planned_tracking_error_mean": "1.4996 m"
+      },
+      "success": false,
+      "safety_pass": false,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": NaN,
+      "final_error_m": 0.8164,
+      "min_clearance_m": 0.0495,
+      "path_length_m": 59.07648739729433,
+      "direct_distance_m": 42.0,
+      "path_efficiency": 0.7109427430501492,
+      "mean_speed_mps": 0.3365261480734774,
+      "max_speed_mps": 2.347757489720048,
+      "mean_jerk_mps3": 13.142473143558494,
+      "mean_motor_rpm": 2705.4880935994493,
+      "peak_motor_rpm": 3327.1,
+      "planner_success_ever": true,
+      "fallback_trigger_count": 0,
+      "overall_score": 23.235200497519667,
+      "sample_count": 2906,
+      "waypoints_visited": 0,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 0,
+        "total": 4,
+        "pass": false,
+        "stages_pass": false,
+        "post_mission_pass": false,
+        "last_hit_index": null,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": NaN,
+        "max_post_home_error_m": NaN,
+        "fail_reason": "stage 1/4: no 1.0s near-stop within 1.50 m",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              32.0,
+              11.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              32.0,
+              15.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              15.0,
+              15.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              15.0,
+              11.0,
+              1.5
+            ],
+            "visited": false,
+            "first_hit_t": NaN,
+            "dwell_end_t": NaN,
+            "dwell_speed_mps": NaN
+          }
+        ]
+      },
+      "success_fail_reason": "stage 1/4: no 1.0s near-stop within 1.50 m",
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:50:05+08:00",
+      "chart_path": "charts/trials/vfh__dense_field.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/vfh__dense_field/20260724T174656/trajectory.png"
+    },
+    {
+      "key": "sac__official_forest",
+      "planner": "sac",
+      "planner_label": "Path H \u2014 Polar DrQ-SAC",
+      "planner_class": "strong",
+      "map_id": "official_forest",
+      "map_label": "Random Forest",
+      "seed": 1,
+      "mission": "square",
+      "start": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "goal": [
+        -8.0,
+        6.0,
+        1.0
+      ],
+      "corners": [
+        [
+          -8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ]
+      ],
+      "waypoints": [
+        [
+          8.0,
+          6.0,
+          1.0
+        ],
+        [
+          8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          -6.0,
+          1.0
+        ],
+        [
+          -8.0,
+          6.0,
+          1.0
+        ]
+      ],
+      "ideal_path_m": 56.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T175005",
+      "started_at": "2026-07-24T17:50:05+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/sac__official_forest/20260724T175005",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "3601",
+        "mean_pos_err": "297.6571 m",
+        "max_pos_err": "916.0643 m",
+        "final_pos_err": "916.0643 m",
+        "hover_pass_0.3m": "False",
+        "goal_pass_0.3m": "False",
+        "hold_at_goal_pass_0.3m": "False",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "True",
+        "final_planner_state": "OK",
+        "min_obstacle_distance": "0.0434 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "False",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "1043.8762 m",
+        "detour_ratio": "1043.8762",
+        "mean_jerk": "56.2951 m/s^3",
+        "planned_tracking_error_mean": "148.8481 m",
+        "fallback_trigger_count": "13",
+        "fallback_trigger_rate_hz": "0.0722"
+      },
+      "success": false,
+      "safety_pass": false,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": NaN,
+      "final_error_m": 916.0643,
+      "min_clearance_m": 0.0434,
+      "path_length_m": 1043.7159271958753,
+      "direct_distance_m": 56.0,
+      "path_efficiency": 0.05365444613885864,
+      "mean_speed_mps": 5.9229939423595654,
+      "max_speed_mps": 12.498650317759825,
+      "mean_jerk_mps3": 52.06639849897879,
+      "mean_motor_rpm": 2723.612024437656,
+      "peak_motor_rpm": 3250.8,
+      "planner_success_ever": true,
+      "fallback_trigger_count": 13,
+      "overall_score": 9.64932777083744,
+      "sample_count": 3601,
+      "waypoints_visited": 4,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 4,
+        "total": 4,
+        "pass": false,
+        "stages_pass": true,
+        "post_mission_pass": false,
+        "last_hit_index": 1007,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": 916.064370279267,
+        "max_post_home_error_m": 916.064370279267,
+        "fail_reason": "post-mission: final pose 916.06 m from home (tol 1.50 m)",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 13.35,
+            "dwell_end_t": 14.35,
+            "dwell_speed_mps": 1.1827950201768815
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 28.85,
+            "dwell_end_t": 29.85,
+            "dwell_speed_mps": 1.1999900891624848
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              -8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 41.0,
+            "dwell_end_t": 42.0,
+            "dwell_speed_mps": 1.1521612233467657
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              -8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true,
+            "first_hit_t": 49.35,
+            "dwell_end_t": 50.35,
+            "dwell_speed_mps": 1.1656769250969465
+          }
+        ]
+      },
+      "success_fail_reason": "post-mission: final pose 916.06 m from home (tol 1.50 m)",
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:53:15+08:00",
+      "chart_path": "charts/trials/sac__official_forest.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/sac__official_forest/20260724T175005/trajectory.png"
+    },
+    {
+      "key": "sac__dense_field",
+      "planner": "sac",
+      "planner_label": "Path H \u2014 Polar DrQ-SAC",
+      "planner_class": "strong",
+      "map_id": "dense_field",
+      "map_label": "Dense Obstacle Field",
+      "seed": 42,
+      "mission": "square",
+      "start": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "goal": [
+        15.0,
+        11.0,
+        1.5
+      ],
+      "corners": [
+        [
+          15.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ]
+      ],
+      "waypoints": [
+        [
+          32.0,
+          11.0,
+          1.5
+        ],
+        [
+          32.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          15.0,
+          1.5
+        ],
+        [
+          15.0,
+          11.0,
+          1.5
+        ]
+      ],
+      "ideal_path_m": 42.0,
+      "safety_distance_m": 0.08,
+      "run_id": "20260724T175315",
+      "started_at": "2026-07-24T17:53:15+08:00",
+      "status": "ok",
+      "output_dir": "/home/jungod/drone_ws/report/planner_benchmark/runs/sac__dense_field/20260724T175315",
+      "duration_s": 180.0,
+      "raw_summary": {
+        "samples": "1940",
+        "mean_pos_err": "3.1534 m",
+        "max_pos_err": "17.9784 m",
+        "final_pos_err": "0.3805 m",
+        "hover_pass_0.3m": "False",
+        "goal_pass_0.3m": "False",
+        "hold_at_goal_pass_0.3m": "False",
+        "hold_at_goal_samples": "30",
+        "planner_success_ever": "True",
+        "final_planner_state": "FALLBACK",
+        "min_obstacle_distance": "0.1629 m",
+        "avoidance_safety_distance": "0.0800 m",
+        "avoidance_pass": "True",
+        "avoidance_pass_0.35m": "False",
+        "flown_path_length": "126.8184 m",
+        "detour_ratio": "84.5456",
+        "mean_jerk": "10.2207 m/s^3",
+        "planned_tracking_error_mean": "3.1306 m",
+        "fallback_trigger_count": "11",
+        "fallback_trigger_rate_hz": "0.0611"
+      },
+      "success": true,
+      "safety_pass": true,
+      "goal_tolerance_m": 1.5,
+      "time_to_goal_s": 53.019,
+      "final_error_m": 0.3805,
+      "min_clearance_m": 0.1629,
+      "path_length_m": 46.32514933391859,
+      "direct_distance_m": 42.0,
+      "path_efficiency": 0.9066349618704461,
+      "mean_speed_mps": 0.8802741291565157,
+      "max_speed_mps": 2.038018183898667,
+      "mean_jerk_mps3": 11.738354859959687,
+      "mean_motor_rpm": 2659.2816108247425,
+      "peak_motor_rpm": 3234.2,
+      "planner_success_ever": true,
+      "fallback_trigger_count": 11,
+      "overall_score": 87.31637699685426,
+      "sample_count": 1940,
+      "waypoints_visited": 4,
+      "waypoints_total": 4,
+      "waypoint_visits": {
+        "visited": 4,
+        "total": 4,
+        "pass": true,
+        "stages_pass": true,
+        "post_mission_pass": true,
+        "last_hit_index": 634,
+        "dwell_s": 1.0,
+        "dwell_speed_mps": 1.2,
+        "post_mission_radius_m": 3.0,
+        "final_home_error_m": 0.3805667615543964,
+        "max_post_home_error_m": 0.8516198095394446,
+        "fail_reason": "",
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              32.0,
+              11.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 26.259,
+            "dwell_end_t": 27.274,
+            "dwell_speed_mps": 1.166926338300008
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              32.0,
+              15.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 31.38,
+            "dwell_end_t": 32.454,
+            "dwell_speed_mps": 0.8217484995294086
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              15.0,
+              15.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 52.683,
+            "dwell_end_t": 53.711,
+            "dwell_speed_mps": 0.8746015312371693
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              15.0,
+              11.0,
+              1.5
+            ],
+            "visited": true,
+            "first_hit_t": 57.549,
+            "dwell_end_t": 58.616,
+            "dwell_speed_mps": 1.0403509866948568
+          }
+        ]
+      },
+      "evaluate_exit_code": 254,
+      "completed_at": "2026-07-24T17:56:23+08:00",
+      "chart_path": "charts/trials/sac__dense_field.png",
+      "run_chart_path": "/home/jungod/drone_ws/report/planner_benchmark/runs/sac__dense_field/20260724T175315/trajectory.png"
+    }
+  ]
+}
