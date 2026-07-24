@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style.css?v=fpviz1" />
+  <link rel="stylesheet" href="/style.css?v=benchmark1" />
   <script>
     (function () {
       try {
@@ -167,6 +167,74 @@
             <!-- Path G PPO training docks here when that planner is selected -->
             <div id="rlTrainSlot" class="rl-train-slot" hidden></div>
           </section>
+
+          <div class="single-benchmark-row" id="singleBenchmarkRow">
+            <section class="mission-shell benchmark-panel mission-feather" id="benchmarkBatchPanel" data-liquid="1" data-liquid-role="panel" data-no-drag>
+              <header class="block-head">
+                <h2 data-i18n="benchBatchTitle">七规划器完整对比</h2>
+                <p class="muted" data-i18n="benchBatchHint">一键运行 7 个规划器 × 随机森林/密集障碍场，共 14 组独立测试。</p>
+              </header>
+              <label class="benchmark-duration">
+                <span data-i18n="benchDuration">单组评测时长（秒）</span>
+                <input type="number" id="benchBatchDuration" value="90" min="10" max="600" step="10" />
+              </label>
+              <div class="btn-row">
+                <button type="button" class="btn btn--go" id="btnBenchmarkAll" data-i18n="benchRunAll">运行全部 14 组</button>
+                <button type="button" class="btn btn--warn" id="btnBenchmarkStop" data-i18n="benchStop">停止评测</button>
+              </div>
+              <div class="progress" id="benchmarkProgress" hidden>
+                <div class="progress__meta">
+                  <span data-i18n="benchProgress">执行进度</span>
+                  <span class="mono" id="benchmarkProgressLabel">—</span>
+                </div>
+                <div class="progress__track" aria-hidden="true">
+                  <div class="progress__fill progress__fill--accent" id="benchmarkProgressFill" style="width:0%"></div>
+                </div>
+              </div>
+              <dl class="metrics metrics--glass">
+                <div><dt data-i18n="benchState">评测状态</dt><dd id="benchmarkState">—</dd></div>
+                <div><dt data-i18n="benchLatest">最新汇总</dt><dd id="benchmarkLatest">—</dd></div>
+              </dl>
+              <pre id="benchmarkLog" class="mono log-pane" hidden></pre>
+            </section>
+
+            <section class="mission-shell benchmark-panel mission-feather" id="benchmarkSinglePanel" data-liquid="1" data-liquid-role="panel" data-no-drag>
+              <header class="block-head">
+                <h2 data-i18n="benchSingleTitle">单项独立测试</h2>
+                <p class="muted" data-i18n="benchSingleHint">手动指定一个规划器和一张基准地图；结果会合并进综合报告。</p>
+              </header>
+              <div class="benchmark-fields">
+                <label>
+                  <span data-i18n="planner">规划器</span>
+                  <select id="benchmarkPlanner">
+                    <option value="homemade">A · Grid A* + B-spline</option>
+                    <option value="ego">B · EGO-Planner</option>
+                    <option value="gcopter">C · GCOPTER / MINCO</option>
+                    <option value="mighty">E · MIGHTY HGP</option>
+                    <option value="fast_planner">F · Fast-Planner</option>
+                    <option value="vfh">G · VFH+</option>
+                    <option value="sac">H · Polar DrQ-SAC</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="map">地图</span>
+                  <select id="benchmarkMap">
+                    <option value="official_forest" data-i18n="benchMapForest">随机森林</option>
+                    <option value="dense_field" data-i18n="benchMapDense">密集障碍场</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="benchDuration">单组评测时长（秒）</span>
+                  <input type="number" id="benchSingleDuration" value="90" min="10" max="600" step="10" />
+                </label>
+              </div>
+              <div class="btn-row">
+                <button type="button" class="btn btn--go" id="btnBenchmarkSingle" data-i18n="benchRunSingle">运行所选组合</button>
+              </div>
+              <p class="muted tiny" data-i18n="benchOutputHint">输出：report/planner_benchmark/（原始 CSV、JSON、Markdown 和图表）</p>
+              <code class="mono benchmark-command" id="benchmarkCommand">python3 scripts/run_planner_benchmark.py</code>
+            </section>
+          </div>
         </div>
       </section>
 
@@ -492,7 +560,7 @@
     </div>
   </div>
 
-  <script src="/app.js?v=fpviz1"></script>
+  <script src="/app.js?v=benchmark1"></script>
   <script type="module" src="/liquid-boot.js?v=fpviz1"></script>
 </body>
 </html>

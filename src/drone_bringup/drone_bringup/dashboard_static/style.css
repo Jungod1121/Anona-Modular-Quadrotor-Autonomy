@@ -1500,6 +1500,56 @@ html[data-ambiance="day"] .mission-feather::before {
   overflow: hidden;
   box-sizing: border-box;
 }
+.single-benchmark-row {
+  grid-column: 1 / 3;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
+}
+.single-benchmark-row .benchmark-panel {
+  grid-column: auto;
+  min-width: 0;
+  background: rgba(8, 16, 30, 0.55);
+}
+.benchmark-duration {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 100px;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.benchmark-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+.benchmark-fields label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.benchmark-fields label:last-child {
+  grid-column: 1 / -1;
+}
+.benchmark-command {
+  display: block;
+  margin-top: 10px;
+  padding: 10px 12px;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  background: var(--mono-bg);
+  color: var(--ink);
+  font-size: 10px;
+}
+@media (max-width: 1280px) {
+  .single-benchmark-row {
+    grid-template-columns: 1fr;
+  }
+}
 /* Planner / multi / map: one LiquidGlass shell + nested CSS option cards.
  * Do not sticky the whole shell — it would cover the map column while scrolling. */
 #plannerShell,
@@ -1696,6 +1746,9 @@ html[data-ambiance="day"] #xyTrackPanel.map-panel--calc {
     position: relative;
     top: auto;
     order: -1;
+  }
+  .single-benchmark-row {
+    grid-column: 1 / -1;
   }
 }
 .liquid-panel > *:not(canvas),
@@ -2191,7 +2244,7 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
 }
 .report-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; font-size: 12px; }
 
-.log-pane, #logView, #rlTrainLog, #accLog {
+.log-pane, #logView, #rlTrainLog, #accLog, #benchmarkLog {
   margin: 10px 0 0; padding: 12px; max-height: 220px; overflow: auto;
   background: var(--log-bg); color: var(--log-fg); border: 1px solid var(--glass-border);
   border-radius: 16px; font-family: var(--mono); font-size: 11px; line-height: 1.45;

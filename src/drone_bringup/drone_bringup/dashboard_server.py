@@ -679,6 +679,8 @@ class LaunchManager:
             return self.proc is not None and self.proc.poll() is None
 
     def start(self, cfg: Dict[str, Any]) -> Dict[str, Any]:
+        if 'BENCHMARK' in globals() and BENCHMARK.is_running():
+            return {'ok': False, 'error': 'stop planner benchmark first'}
         with self.lock:
             if self.proc is not None and self.proc.poll() is None:
                 return {'ok': False, 'error': 'Already running — stop first'}
@@ -827,6 +829,7 @@ class LaunchManager:
             'rl_train': RL_TRAIN.status(),
             'sac_train': SAC_TRAIN.status(),
             'acceptance': ACCEPTANCE.status(),
+            'benchmark': BENCHMARK.status(),
         }
 
 
@@ -891,6 +894,9 @@ class AcceptanceManager:
         if MANAGER.is_running():
             MANAGER.stop()
             time.sleep(1.0)
+        if 'BENCHMARK' in globals() and BENCHMARK.is_running():
+            BENCHMARK.stop()
+            time.sleep(0.8)
         if RL_TRAIN.is_running():
             return {'ok': False, 'error': 'stop RL training first'}
         if SAC_TRAIN.is_running():
@@ -1034,6 +1040,226 @@ class AcceptanceManager:
 ACCEPTANCE = AcceptanceManager()
 
 
+BENCHMARK_PLANNERS = (
+    'homemade', 'ego', 'gcopter', 'mighty', 'fast_planner', 'vfh', 'sac',
+)
+BENCHMARK_MAPS = ('official_forest', 'dense_field')
+
+
+class PlannerBenchmarkManager:
+    """Background runner for the seven-planner comparative benchmark."""
+
+    def __init__(self) -> None:
+        self.lock = threading.Lock()
+        self.proc: Optional[subprocess.Popen] = None
+        self.log_lines: List[str] = []
+        self.started_at: Optional[float] = None
+        self.last_exit: Optional[int] = None
+        self.cfg: Dict[str, Any] = {
+            'mode': 'all',
+            'planner': '',
+            'map': '',
+            'duration': 90.0,
+        }
+        self.current = 0
+        self.total = 14
+        self.current_case = ''
+
+    def is_running(self) -> bool:
+        with self.lock:
+            return self.proc is not None and self.proc.poll() is None
+
+    def _append(self, line: str) -> None:
+        clean = line.rstrip('\n')
+        progress = re.search(
+            r'^BENCHMARK_PROGRESS\s+(\d+)\s+(\d+)\s+(\S+)\s+(\S+)', clean)
+        with self.lock:
+            if progress:
+                self.current = max(0, int(progress.group(1)) - 1)
+                self.total = int(progress.group(2))
+                self.current_case = f'{progress.group(3)} × {progress.group(4)}'
+            elif clean.startswith('BENCHMARK_RESULT '):
+                self.current = min(self.total, self.current + 1)
+            self.log_lines.append(clean)
+            self.log_lines = self.log_lines[-240:]
+
+    def _reader(self, proc: subprocess.Popen) -> None:
+        assert proc.stdout is not None
+        for raw in proc.stdout:
+            with self.lock:
+                if self.proc is not None and self.proc is not proc:
+                    continue
+            self._append(raw)
+        code = proc.wait()
+        with self.lock:
+            if self.proc is proc:
+                self.proc = None
+                self.last_exit = code
+        self._append(
+            '[benchmark] cancelled' if code in (-2, 130)
+            else f'[benchmark] exited code={code}')
+
+    def build_cmd(self, cfg: Optional[Dict[str, Any]] = None) -> List[str]:
+        data = {**self.cfg, **dict(cfg or {})}
+        mode = str(data.get('mode', 'all')).strip().lower()
+        if mode not in ('all', 'single'):
+            raise ValueError("benchmark mode must be 'all' or 'single'")
+        duration = max(10.0, min(float(data.get('duration', 90.0)), 600.0))
+        script = ws_root() / 'scripts' / 'run_planner_benchmark.py'
+        if not script.is_file():
+            raise FileNotFoundError(f'missing {script}')
+        cmd = [
+            'python3', '-u', str(script),
+            '--mode', mode,
+            '--duration', str(duration),
+            '--output-dir', str(ws_root() / 'report' / 'planner_benchmark'),
+        ]
+        if mode == 'single':
+            planner = normalize_planner_id(str(data.get('planner', '')))
+            map_id = normalize_map_id(str(data.get('map', '')), planner=planner)
+            if planner not in BENCHMARK_PLANNERS:
+                raise ValueError(
+                    f'unsupported benchmark planner: {planner}; '
+                    f'choose from {list(BENCHMARK_PLANNERS)}')
+            if map_id not in BENCHMARK_MAPS:
+                raise ValueError(
+                    f'unsupported benchmark map: {map_id}; '
+                    f'choose from {list(BENCHMARK_MAPS)}')
+            cmd.extend(['--planner', planner, '--map', map_id])
+        return cmd
+
+    def start(self, cfg: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        if self.is_running():
+            self.stop()
+            time.sleep(0.8)
+        if MANAGER.is_running():
+            MANAGER.stop()
+            time.sleep(1.0)
+        if ACCEPTANCE.is_running():
+            ACCEPTANCE.stop()
+            time.sleep(0.8)
+        if RL_TRAIN.is_running():
+            return {'ok': False, 'error': 'stop Path G training first'}
+        if SAC_TRAIN.is_running():
+            return {'ok': False, 'error': 'stop Path H training first'}
+
+        data = dict(cfg or {})
+        try:
+            cmd = self.build_cmd(data)
+        except (ValueError, FileNotFoundError, TypeError) as exc:
+            return {'ok': False, 'error': str(exc)}
+        mode = str(data.get('mode', 'all')).strip().lower()
+        duration = max(10.0, min(float(data.get('duration', 90.0)), 600.0))
+        normalized = {
+            'mode': mode,
+            'planner': normalize_planner_id(str(data.get('planner', ''))) if mode == 'single' else '',
+            'map': normalize_map_id(
+                str(data.get('map', '')),
+                planner=normalize_planner_id(str(data.get('planner', ''))),
+            ) if mode == 'single' else '',
+            'duration': duration,
+        }
+
+        env = os.environ.copy()
+        env['PYTHONUNBUFFERED'] = '1'
+        env.setdefault('PYTHONNOUSERSITE', '1')
+        env['PYTHONPATH'] = '/usr/lib/python3/dist-packages:' + env.get('PYTHONPATH', '')
+        install = ws_root() / 'install' / 'setup.bash'
+        bash_cmd = (
+            'source /opt/ros/humble/setup.bash; '
+            f'[ -f "{install}" ] && source "{install}"; '
+            + ' '.join(shlex.quote(part) for part in cmd)
+        )
+        with self.lock:
+            self.cfg = normalized
+            self.log_lines = [f'[benchmark] starting: {" ".join(cmd)}']
+            self.started_at = time.time()
+            self.last_exit = None
+            self.current = 0
+            self.total = 14 if mode == 'all' else 1
+            self.current_case = ''
+            self.proc = subprocess.Popen(
+                ['bash', '-lc', bash_cmd],
+                cwd=str(ws_root()),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1,
+                preexec_fn=os.setsid,
+                env=env,
+            )
+            proc = self.proc
+        threading.Thread(target=self._reader, args=(proc,), daemon=True).start()
+        return {'ok': True, 'pid': proc.pid, 'cmd': cmd, 'config': normalized}
+
+    def stop(self) -> Dict[str, Any]:
+        with self.lock:
+            proc = self.proc
+            self.proc = None
+        if proc is not None:
+            _signal_process_group(proc, signal.SIGINT)
+            try:
+                proc.wait(timeout=15)
+            except subprocess.TimeoutExpired:
+                _signal_process_group(proc, signal.SIGKILL)
+        cleanup = ws_root() / 'scripts' / 'cleanup_sim.sh'
+        if cleanup.is_file():
+            subprocess.run(['bash', str(cleanup)], check=False)
+        self._append('[benchmark] stopped')
+        return {'ok': True, 'stopped': proc is not None}
+
+    def status(self) -> Dict[str, Any]:
+        running = self.is_running()
+        with self.lock:
+            logs = list(self.log_lines[-160:])
+            cfg = dict(self.cfg)
+            started = self.started_at
+            last_exit = self.last_exit
+            current = self.current
+            total = self.total
+            current_case = self.current_case
+        summary: Dict[str, Any] = {}
+        results_path = ws_root() / 'report' / 'planner_benchmark' / 'latest_results.json'
+        if results_path.is_file():
+            try:
+                payload = json.loads(results_path.read_text())
+                results = payload.get('results', [])
+                scores = [
+                    float(row['overall_score']) for row in results
+                    if isinstance(row.get('overall_score'), (int, float))
+                    and math.isfinite(float(row['overall_score']))
+                ]
+                summary = {
+                    'completed_cases': payload.get('completed_cases', len(results)),
+                    'matrix_size': payload.get('matrix_size', 14),
+                    'successes': sum(bool(row.get('success')) for row in results),
+                    'safety_passes': sum(bool(row.get('safety_pass')) for row in results),
+                    'mean_score': sum(scores) / len(scores) if scores else None,
+                    'updated_at': payload.get('updated_at'),
+                }
+            except (json.JSONDecodeError, OSError, TypeError, ValueError):
+                pass
+        return {
+            'running': running,
+            'pid': self.proc.pid if running and self.proc else None,
+            'uptime_s': (time.time() - started) if running and started else 0.0,
+            'config': cfg,
+            'last_exit': last_exit,
+            'current': current,
+            'total': total,
+            'current_case': current_case,
+            'logs': logs,
+            'summary': summary,
+            'planners': list(BENCHMARK_PLANNERS),
+            'maps': list(BENCHMARK_MAPS),
+            'report_md': 'report/planner_benchmark/comparison_report.md',
+            'results_json': 'report/planner_benchmark/latest_results.json',
+        }
+
+
+BENCHMARK = PlannerBenchmarkManager()
+
+
 def list_reports() -> Dict[str, Any]:
     """Recent acceptance / batch artifacts under workspace report/."""
     root = ws_root() / 'report'
@@ -1056,6 +1282,8 @@ def list_reports() -> Dict[str, Any]:
     _add(root / 'acceptance_results.json', 'acceptance')
     _add(root / 'acceptance_report.md', 'acceptance')
     _add(root / 'batch_matrix' / 'manifest.json', 'batch')
+    _add(root / 'planner_benchmark' / 'comparison_report.md', 'planner-benchmark')
+    _add(root / 'planner_benchmark' / 'latest_results.json', 'planner-benchmark')
     for md in sorted(root.glob('*.md'), key=lambda p: p.stat().st_mtime, reverse=True):
         if md.name == 'acceptance_report.md':
             continue
@@ -1522,6 +1750,9 @@ class Handler(BaseHTTPRequestHandler):
         if u.path == '/api/sac/status':
             self._json(200, SAC_TRAIN.status())
             return
+        if u.path == '/api/benchmark/status':
+            self._json(200, BENCHMARK.status())
+            return
         if u.path == '/api/map/occupancy':
             with ROS.lock:
                 occ = ROS.occupancy
@@ -1631,6 +1862,12 @@ class Handler(BaseHTTPRequestHandler):
         if u.path == '/api/acceptance/stop':
             self._json(200, ACCEPTANCE.stop())
             return
+        if u.path == '/api/benchmark/start':
+            self._json(200, BENCHMARK.start(data))
+            return
+        if u.path == '/api/benchmark/stop':
+            self._json(200, BENCHMARK.stop())
+            return
         if u.path == '/api/config':
             MANAGER.cfg.update(data)
             # When map changes and goals not explicitly sent, apply recommended pose.
@@ -1689,6 +1926,7 @@ def serve_httpd(httpd: ThreadingHTTPServer) -> None:
     try:
         httpd.serve_forever()
     finally:
+        BENCHMARK.stop()
         MANAGER.stop()
         ROS.stop()
         httpd.server_close()
