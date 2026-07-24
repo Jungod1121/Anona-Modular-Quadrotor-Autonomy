@@ -18,6 +18,7 @@ def launch_setup(context, *args, **kwargs):
     use_rviz = LaunchConfiguration('use_rviz').perform(context)
     seed = LaunchConfiguration('seed').perform(context)
     map_raw = LaunchConfiguration('map').perform(context)
+    mission = LaunchConfiguration('mission').perform(context)
 
     share = get_package_share_directory('drone_bringup')
     mapping = {
@@ -77,14 +78,19 @@ def launch_setup(context, *args, **kwargs):
     else:
         map_id = normalize_map_id(map_raw, planner=planner_key)
 
+    launch_args = {
+        'use_rviz': use_rviz,
+        'seed': seed,
+        'map': map_id,
+    }
+    # Exploration Path D has no catalog/square goal switch.
+    if planner_key != 'fuel_explore':
+        launch_args['mission'] = mission
+
     return [
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(share, 'launch', launch_file)),
-            launch_arguments={
-                'use_rviz': use_rviz,
-                'seed': seed,
-                'map': map_id,
-            }.items(),
+            launch_arguments=launch_args.items(),
         )
     ]
 
@@ -99,5 +105,8 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'map', default_value='auto',
             description='Map id (auto = planner default). See MAPS.md'),
+        DeclareLaunchArgument(
+            'mission', default_value='catalog',
+            description='catalog = single catalog goal; square = map-specific square'),
         OpaqueFunction(function=launch_setup),
     ])

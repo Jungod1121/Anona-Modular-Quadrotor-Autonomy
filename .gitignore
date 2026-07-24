@@ -43,3 +43,18 @@ src/drone_rl_planner/runs/
 # Vendor notebooks (large)
 src/mighty_vendor/**/*.ipynb
 
+# Planner benchmark raw trial dumps (charts/summaries are enough)
+report/planner_benchmark/runs/
+report/planner_benchmark/live_*.log
+report/planner_benchmark/watch_status.txt
+
+# LaTeX build intermediates (keep .tex/.pdf/figures)
+report/final_paper/*.aux
+report/final_paper/*.log
+report/final_paper/*.fls
+report/final_paper/*.fdb_latexmk
+report/final_paper/*.xdv
+report/final_paper/*.toc
+report/final_paper/*.out
+report/final_paper/*.synctex.gz
+

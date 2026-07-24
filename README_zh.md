@@ -12,21 +12,18 @@
 
 ---
 
-<!-- 媒体：将文件放入 docs/media/（见 docs/media/README.md） -->
-
-<!-- ![Anona banner](docs/media/banner.png) -->
 <p align="center">
-  <em>横幅占位 — 请添加 <code>docs/media/banner.png</code>（建议 1600×480）</em>
+  <em>横幅占位 — 可选添加 <code>docs/media/banner.png</code>（建议 1600×480）</em>
 </p>
 
-<!-- [![Watch the demo](docs/media/demo-poster.png)](docs/media/demo.mp4) -->
 <p align="center">
   <em>演示视频占位 — 请添加 <code>docs/media/demo.mp4</code> + <code>demo-poster.png</code></em>
 </p>
 
-<!-- ![Dense-field flight](docs/media/hero-dense-field.gif) -->
 <p align="center">
-  <em>动图占位 — 请添加 <code>docs/media/hero-dense-field.gif</code></em>
+  <img src="docs/media/forest-frame.png" alt="Random forest single-UAV loop (static frame)" width="720"/>
+  <br/>
+  <em>单机随机森林循环（静态帧）。完整动图见 <a href="docs/media/forest.gif"><code>forest.gif</code></a>（约 38 MB，建议压缩后再作 README 主图）。非 dense_field。</em>
 </p>
 
 ---
@@ -37,25 +34,39 @@
 |---|---|
 | **统一植物层** | 原生 ROS 2 刚体动力学 + 级联 PID + 混控器 — 不是 SO3 / MAVROS / fake_drone 的薄封装 |
 | **规划矩阵** | 六种活跃后端（弱 / 强）共用**同一**话题契约，便于公平 A/B 对照 |
-| **学习栈** | 路径 H：极坐标 DrQ-SAC + 外置 VFH 安全监督；课程式逼近密集场 |
+| **学习栈** | 路径 H：极坐标 DrQ-SAC + 外置 VFH 安全监督；**dense_field staged 对照未通过**（见下文） |
 | **任务控制台** | 浏览器 / Linux 原生应用：单机与多机、地图、启停、板载 RL 训练卡 |
 | **多机** | EGO-Swarm、同场密集场、编队（一字 / 纵队 / V） |
-| **验收** | 六项一键场景 + 规划器×地图批量矩阵 + 报告 |
+| **验收** | 六项一键场景（6/6 PASS）+ 规划器×地图批量矩阵 + [正式报告稿](report/final_paper/) |
 
 ---
 
 ## 图库
 
-素材就绪后，替换 [`docs/media/`](docs/media/) 下的占位文件。
+| 槽位 | 文件 | 状态 |
+|------|------|------|
+| 架构 | [`architecture.png`](docs/media/architecture.png) | 已嵌入 |
+| 话题流 | [`topic-dataflow.png`](docs/media/topic-dataflow.png) | 已嵌入 |
+| 控制台 | [`console-ui.png`](docs/media/console-ui.png) / [`console-multi.png`](docs/media/console-multi.png) | 已嵌入 |
+| 单机演示 | [`forest.gif`](docs/media/forest.gif)（随机森林；非 dense） | 已就绪（体积大） |
+| 集群 | [`swarm-or-formation.png`](docs/media/swarm-or-formation.png) / [`.gif`](docs/media/swarm-or-formation.gif) | 已就绪 |
+| RViz | [`rviz-overview.png`](docs/media/rviz-overview.png) | 已嵌入 |
+| 训练 | [`sac-training.png`](docs/media/sac-training.png) | 静态截图（非 GIF） |
+| 场景 1–6 | `scenario_0*_*.png` | 已就绪 |
+| 演示成片 | `demo.mp4` + `demo-poster.png` | **仍缺** |
+| 横幅 | `banner.png` | 可选，仍缺 |
 
-| 槽位 | 文件 | 建议内容 |
-|------|------|----------|
-| 架构 | `architecture.png` | 植物层 ↔ 规划器契约示意 |
-| 控制台 UI | `console-ui.png` / `console-ui.gif` | 任务控制台截图 |
-| 密集场 | `dense-field.gif` / `.mp4` | 路径 H 在 `dense_field` 中飞行 |
-| 集群 | `swarm.gif` / `.mp4` | EGO-Swarm 或编队 |
-| RViz | `rviz-overview.png` | 规范 RViz 布局 |
-| 训练 | `sac-training.gif` | 训练卡 / 评测曲线 |
+<p align="center">
+  <img src="docs/media/architecture.png" alt="Architecture" width="640"/>
+</p>
+<p align="center">
+  <img src="docs/media/console-ui.png" alt="Mission console" width="480"/>
+  &nbsp;
+  <img src="docs/media/rviz-overview.png" alt="RViz overview" width="480"/>
+</p>
+<p align="center">
+  <img src="docs/media/sac-training.png" alt="SAC training desktop" width="560"/>
+</p>
 
 ---
 
@@ -71,6 +82,8 @@
 | 世界 | 可复现点云地图 | `drone_map`, `map_adapter` |
 | 规划 | 路径 A–H 后端 | `drone_planner`、各 vendor、`drone_rl_planner` 等 |
 | 运维 | 启动、控制台、验收 | `drone_bringup`、`scripts/`、任务控制台 |
+
+正式中文技术报告（LaTeX）：[`report/final_paper/`](report/final_paper/)（`main-arxiv.tex`）。
 
 ---
 
@@ -92,11 +105,17 @@
 **公平对照集合：** A / B / C / E / G / H。
 
 ```bash
-ros2 launch drone_bringup planner_sim.launch.py planner:=sac map:=dense_field
+ros2 launch drone_bringup planner_sim.launch.py planner:=sac map:=official_forest
 ros2 launch drone_bringup planner_sim.launch.py planner:=ego map:=official_forest
 ```
 
 地图目录：[`MAPS.md`](src/drone_bringup/MAPS.md)。
+
+### Path H / dense_field（诚实说明）
+
+在规划器正方形对照基准中，Path H（极坐标 DrQ-SAC）**未能以策略本体完成 `dense_field` 的 staged 成功判定（失败）**。矩阵中若出现「完成」行，终态多为安全监督 `FALLBACK`（VFH 接管），不得记为纯 SAC 通过。单机循环演示使用 **随机森林**（`forest.gif` / `official_forest`），**不是** dense 场。
+
+对照报告：[`report/planner_benchmark/comparison_report.md`](report/planner_benchmark/comparison_report.md)。
 
 ---
 
@@ -137,22 +156,36 @@ ros2 run drone_bringup dashboard   # http://127.0.0.1:8765/
 
 ---
 
-## 场景
+## 六项验收场景（复现）
 
-| # | 场景 | 启动文件 |
-|---|------|----------|
-| 1 | 悬停 | `hover.launch.py` |
-| 2 | 单目标 | `single_goal.launch.py` |
-| 3 | 多航点 | `multi_goal.launch.py` |
-| 4 | 静态避障 | `avoidance.launch.py`（Path B · official_forest · 矩形后漏斗） |
-| 5 | 窄通道 | `narrow_passage.launch.py` |
-| 6 | 稳定性（+ 风扰 / IMU 噪声） | `stability_demo.launch.py` |
+| # | 场景 | 启动 |
+|---|------|------|
+| 1 | 悬停 | `ros2 launch drone_bringup hover.launch.py` |
+| 2 | 单目标 | `ros2 launch drone_bringup single_goal.launch.py` |
+| 3 | 多航点 | `ros2 launch drone_bringup multi_goal.launch.py` |
+| 4 | 静态避障 | `ros2 launch drone_bringup avoidance.launch.py` |
+| 5 | 窄通道 | `ros2 launch drone_bringup narrow_passage.launch.py` |
+| 6 | 稳定性 | `ros2 launch drone_bringup stability_demo.launch.py` |
+
+批量验收：
+
+```bash
+python3 scripts/run_acceptance.py
+```
+
+结果摘要：[`report/acceptance_report.md`](report/acceptance_report.md)（当前 **6/6 PASS**）。规划器矩阵：[`report/planner_benchmark/comparison_report.md`](report/planner_benchmark/comparison_report.md)。
+
+<p align="center">
+  <img src="docs/media/scenario_04_avoid_rviz.png" alt="Scenario 4 avoidance" width="360"/>
+  &nbsp;
+  <img src="docs/media/scenario_05_narrow_rviz.png" alt="Scenario 5 narrow" width="360"/>
+</p>
 
 ---
 
 ## 学习 · 路径 H（极坐标 DrQ-SAC）
 
-课程（easy → medium → 更密混合）与最新阶段结果：
+课程（easy → medium → 更密混合）与阶段结果：
 
 - 中文结果：[`src/drone_rl_planner/CURRICULUM_RESULTS_zh.md`](src/drone_rl_planner/CURRICULUM_RESULTS_zh.md)
 - 训练说明：[`src/drone_rl_planner/README_zh.md`](src/drone_rl_planner/README_zh.md)
@@ -160,11 +193,10 @@ ros2 run drone_bringup dashboard   # http://127.0.0.1:8765/
 ```bash
 cd ~/drone_ws
 export PYTHONPATH=src/drone_rl_planner:$PYTHONPATH
-# 示例：轻量混合爬坡阶段
 python3 -m drone_rl_planner.train_sac_polar --stage4 --device cuda
 ```
 
-检查点（`*.pt`）已被 gitignore。辅助脚本位于 `src/drone_rl_planner/checkpoints/`。
+检查点（`*.pt`）已被 gitignore。
 
 ---
 
@@ -186,6 +218,17 @@ python3 -m drone_rl_planner.train_sac_polar --stage4 --device cuda
 
 ---
 
+## 开源引用（节选）
+
+- 本仓库：<https://github.com/Jungod1121/drone_ws>
+- [EGO-Planner Swarm](https://github.com/ZJU-FAST-Lab/ego-planner-swarm)
+- [GCOPTER](https://github.com/ZJU-FAST-Lab/GCOPTER)
+- [MIGHTY](https://github.com/mit-acl/mighty)
+- [Fast-Planner](https://github.com/HKUST-Aerial-Robotics/Fast-Planner)
+- [DrQ](https://github.com/denisyarats/drq) / [DrQ-v2](https://github.com/facebookresearch/drqv2)
+
+---
+
 ## 仓库结构
 
 ```
@@ -194,7 +237,7 @@ drone_ws/
 ├── docs/media/          # 截图 / 视频 / GIF
 ├── packaging/           # Linux 原生控制台
 ├── scripts/             # 目标、评测、验收
-└── report/              # 验收与基线报告
+└── report/              # 验收、基线与正式报告稿
 ```
 
 ---
@@ -205,6 +248,7 @@ drone_ws/
 2. 悬停指标需用 `evaluate.py` / `stability_demo`，不能仅靠 RViz。
 3. 后端 A 默认 `enable_bspline_opt: false`，以便在密集场景得到稳定 A* 折线。
 4. 用户级 setuptools 83+ → 在 `colcon build` 前设置 `PYTHONNOUSERSITE=1`。
+5. Path H 在 `dense_field` staged 对照中**未通过**（见上文）。
 
 ---
 

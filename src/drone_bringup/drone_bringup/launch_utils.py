@@ -366,6 +366,84 @@ def waypoint_publisher_process(
     )
 
 
+def wp_list_arg(waypoints) -> str:
+    """Serialize (x,y,z) tuples for waypoint_publisher --list=…."""
+    return ';'.join(f'{float(x)},{float(y)},{float(z)}' for x, y, z in waypoints)
+
+
+def square_mission_process(
+    waypoints,
+    delay_sec: float = 8.0,
+    arrival_tol: float = 1.2,
+    max_hold: float = 60.0,
+) -> TimerAction:
+    """Publish a sequential closed square (or any list) on /drone/goal."""
+    return waypoint_publisher_process(
+        pattern='list',
+        delay_sec=delay_sec,
+        hold_sec=1.0,
+        extra_args=[
+            f'--list={wp_list_arg(waypoints)}',
+            '--cycles', '1',
+            '--wait-arrival',
+            '--arrival-tol', str(arrival_tol),
+            '--max-hold', str(max_hold),
+        ],
+    )
+
+
+def resolve_mission_pose(map_id: str, pose: dict, mission: str) -> dict:
+    """Override spawn/goal when mission:=square; otherwise keep catalog pose."""
+    if str(mission or 'catalog').strip().lower() != 'square':
+        return dict(pose)
+    from drone_bringup.maps_catalog import pose_for_benchmark_square
+    out = dict(pose)
+    out.update(pose_for_benchmark_square(map_id))
+    return out
+
+
+# Closed-square comparative benchmark: lower speed so tracking/clearance holds.
+SQUARE_MISSION_MAX_VEL = 0.65
+SQUARE_MISSION_MAX_ACC = 1.1
+# Planners that still overshoot / fail square missions need a stricter plant cap.
+SQUARE_MISSION_MAX_VEL_STRICT = 0.50
+SQUARE_MISSION_MAX_ACC_STRICT = 0.85
+
+
+def square_speed_params(mission: str, strict: bool = False) -> Dict[str, float]:
+    """Controller speed caps used when mission:=square (empty for catalog)."""
+    if str(mission or 'catalog').strip().lower() != 'square':
+        return {}
+    if strict:
+        return {
+            'max_vel': float(SQUARE_MISSION_MAX_VEL_STRICT),
+            'max_acc': float(SQUARE_MISSION_MAX_ACC_STRICT),
+        }
+    return {
+        'max_vel': float(SQUARE_MISSION_MAX_VEL),
+        'max_acc': float(SQUARE_MISSION_MAX_ACC),
+    }
+
+
+def square_planner_speed_params(mission: str) -> Dict[str, float]:
+    """Planner-side speed caps aligned with the square-mission controller."""
+    if str(mission or 'catalog').strip().lower() != 'square':
+        return {}
+    v = float(SQUARE_MISSION_MAX_VEL)
+    a = float(SQUARE_MISSION_MAX_ACC)
+    return {
+        'max_vel': v,
+        'max_acc': a,
+        'manager/max_vel': v,
+        'manager/max_acc': a,
+        'optimization/max_vel': v,
+        'optimization/max_acc': a,
+        'bspline/limit_vel': v,
+        'bspline/limit_acc': a,
+        'search/max_vel': v,
+        'search/max_acc': a,
+    }
+
 def evaluate_process(
     delay_sec: float = 8.0,
     duration_sec: float = 60.0,

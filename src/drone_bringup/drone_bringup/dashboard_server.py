@@ -1059,7 +1059,7 @@ class PlannerBenchmarkManager:
             'mode': 'all',
             'planner': '',
             'map': '',
-            'duration': 90.0,
+            'duration': 120.0,
         }
         self.current = 0
         self.total = 14

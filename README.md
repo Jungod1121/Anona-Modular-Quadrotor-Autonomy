@@ -12,21 +12,18 @@
 
 ---
 
-<!-- Media: drop files into docs/media/ (see docs/media/README.md) -->
-
-<!-- ![Anona banner](docs/media/banner.png) -->
 <p align="center">
-  <em>Banner placeholder — add <code>docs/media/banner.png</code> (recommended 1600×480)</em>
+  <em>Banner placeholder — optional <code>docs/media/banner.png</code> (recommended 1600×480)</em>
 </p>
 
-<!-- [![Watch the demo](docs/media/demo-poster.png)](docs/media/demo.mp4) -->
 <p align="center">
   <em>Demo video placeholder — add <code>docs/media/demo.mp4</code> + <code>demo-poster.png</code></em>
 </p>
 
-<!-- ![Dense-field flight](docs/media/hero-dense-field.gif) -->
 <p align="center">
-  <em>Animation placeholder — add <code>docs/media/hero-dense-field.gif</code></em>
+  <img src="docs/media/forest-frame.png" alt="Random forest single-UAV loop (static frame)" width="720"/>
+  <br/>
+  <em>Single-UAV random-forest loop (static frame). Full animation: <a href="docs/media/forest.gif"><code>forest.gif</code></a> (~38 MB; compress before using as README hero). Not dense_field.</em>
 </p>
 
 ---
@@ -37,25 +34,39 @@
 |---|---|
 | **Unified plant** | Native ROS 2 rigid-body dynamics + cascade PID + mixer — not a thin wrapper around SO3 / MAVROS / fake_drone |
 | **Planner matrix** | Six active backends (weak & strong) on the **same** topic contract for fair A/B comparison |
-| **Learning stack** | Path H: Polar DrQ-SAC + external VFH safety supervisor; curriculum toward dense-field |
+| **Learning stack** | Path H: Polar DrQ-SAC + external VFH safety supervisor; **failed staged success on `dense_field`** (see below) |
 | **Mission Console** | Browser / native Linux app: single & multi-UAV, maps, Start/Stop, onboard RL train cards |
 | **Multi-agent** | EGO-Swarm, shared dense field, formation (line / column / V) |
-| **Acceptance** | Six one-click scenarios + batch planner×map matrix + reports |
+| **Acceptance** | Six one-click scenarios (6/6 PASS) + planner×map matrix + [formal report draft](report/final_paper/) |
 
 ---
 
 ## Gallery
 
-Replace placeholders when assets are ready under [`docs/media/`](docs/media/).
+| Slot | File | Status |
+|------|------|--------|
+| Architecture | [`architecture.png`](docs/media/architecture.png) | Embedded |
+| Topic flow | [`topic-dataflow.png`](docs/media/topic-dataflow.png) | Embedded |
+| Console | [`console-ui.png`](docs/media/console-ui.png) / [`console-multi.png`](docs/media/console-multi.png) | Embedded |
+| Single-UAV demo | [`forest.gif`](docs/media/forest.gif) (random forest; not dense) | Ready (large) |
+| Swarm | [`swarm-or-formation.png`](docs/media/swarm-or-formation.png) / [`.gif`](docs/media/swarm-or-formation.gif) | Ready |
+| RViz | [`rviz-overview.png`](docs/media/rviz-overview.png) | Embedded |
+| Training | [`sac-training.png`](docs/media/sac-training.png) | Static screenshot (not GIF) |
+| Scenarios 1–6 | `scenario_0*_*.png` | Ready |
+| Demo reel | `demo.mp4` + `demo-poster.png` | **Still missing** |
+| Banner | `banner.png` | Optional, missing |
 
-| Slot | File | Suggested content |
-|------|------|-------------------|
-| Architecture | `architecture.png` | Plant ↔ planner contract diagram |
-| Console UI | `console-ui.png` / `console-ui.gif` | Mission Console screenshots |
-| Dense field | `dense-field.gif` / `.mp4` | Path H in `dense_field` |
-| Swarm | `swarm.gif` / `.mp4` | EGO-Swarm or formation |
-| RViz | `rviz-overview.png` | Canonical RViz layout |
-| Training | `sac-training.gif` | Train-card / eval curve |
+<p align="center">
+  <img src="docs/media/architecture.png" alt="Architecture" width="640"/>
+</p>
+<p align="center">
+  <img src="docs/media/console-ui.png" alt="Mission console" width="480"/>
+  &nbsp;
+  <img src="docs/media/rviz-overview.png" alt="RViz overview" width="480"/>
+</p>
+<p align="center">
+  <img src="docs/media/sac-training.png" alt="SAC training desktop" width="560"/>
+</p>
 
 ---
 
@@ -71,6 +82,8 @@ It separates a **fixed plant** (dynamics + controller) from **swappable planning
 | World | Seeded point-cloud maps | `drone_map`, `map_adapter` |
 | Planning | Path A–H backends | `drone_planner`, vendors, `drone_rl_planner`, … |
 | Ops | Launch, dashboard, acceptance | `drone_bringup`, `scripts/`, Mission Console |
+
+Formal Chinese technical report (LaTeX): [`report/final_paper/`](report/final_paper/) (`main-arxiv.tex`).
 
 ---
 
@@ -92,11 +105,17 @@ Canonical registry: [`PLANNERS.md`](src/drone_bringup/PLANNERS.md).
 **Fair comparison set:** A / B / C / E / G / H.
 
 ```bash
-ros2 launch drone_bringup planner_sim.launch.py planner:=sac map:=dense_field
+ros2 launch drone_bringup planner_sim.launch.py planner:=sac map:=official_forest
 ros2 launch drone_bringup planner_sim.launch.py planner:=ego map:=official_forest
 ```
 
 Maps catalog: [`MAPS.md`](src/drone_bringup/MAPS.md).
+
+### Path H / dense_field (honest note)
+
+In the square-mission planner benchmark, Path H (Polar DrQ-SAC) **did not complete staged success on `dense_field` as a policy (FAIL)**. Rows that look “complete” typically end in safety-supervisor `FALLBACK` (VFH takeover) and must not be counted as pure SAC success. The single-UAV loop demo uses **random forest** (`forest.gif` / `official_forest`), **not** the dense field.
+
+Benchmark report: [`report/planner_benchmark/comparison_report.md`](report/planner_benchmark/comparison_report.md).
 
 ---
 
@@ -137,22 +156,34 @@ ros2 run drone_bringup dashboard   # http://127.0.0.1:8765/
 
 ---
 
-## Scenarios
+## Six acceptance scenarios (reproduce)
 
 | # | Scenario | Launch |
 |---|----------|--------|
-| 1 | Hover | `hover.launch.py` |
-| 2 | Single goal | `single_goal.launch.py` |
-| 3 | Multi-waypoint | `multi_goal.launch.py` |
-| 4 | Static avoidance | `avoidance.launch.py` (Path B · official_forest · rect then funnel) |
-| 5 | Narrow passage | `narrow_passage.launch.py` |
-| 6 | Stability (+ wind / IMU noise) | `stability_demo.launch.py` |
+| 1 | Hover | `ros2 launch drone_bringup hover.launch.py` |
+| 2 | Single goal | `ros2 launch drone_bringup single_goal.launch.py` |
+| 3 | Multi-waypoint | `ros2 launch drone_bringup multi_goal.launch.py` |
+| 4 | Static avoidance | `ros2 launch drone_bringup avoidance.launch.py` |
+| 5 | Narrow passage | `ros2 launch drone_bringup narrow_passage.launch.py` |
+| 6 | Stability | `ros2 launch drone_bringup stability_demo.launch.py` |
+
+```bash
+python3 scripts/run_acceptance.py
+```
+
+Summary: [`report/acceptance_report.md`](report/acceptance_report.md) (6/6 PASS). Planner matrix: [`report/planner_benchmark/comparison_report.md`](report/planner_benchmark/comparison_report.md).
+
+<p align="center">
+  <img src="docs/media/scenario_04_avoid_rviz.png" alt="Scenario 4 avoidance" width="360"/>
+  &nbsp;
+  <img src="docs/media/scenario_05_narrow_rviz.png" alt="Scenario 5 narrow" width="360"/>
+</p>
 
 ---
 
 ## Learning · Path H (Polar DrQ-SAC)
 
-Curriculum (easy → medium → denser mixes) and latest stage results:
+Curriculum (easy → medium → denser mixes) and stage results:
 
 - English: [`src/drone_rl_planner/CURRICULUM_RESULTS.md`](src/drone_rl_planner/CURRICULUM_RESULTS.md)
 - Training how-to: [`src/drone_rl_planner/README.md`](src/drone_rl_planner/README.md)
@@ -160,11 +191,10 @@ Curriculum (easy → medium → denser mixes) and latest stage results:
 ```bash
 cd ~/drone_ws
 export PYTHONPATH=src/drone_rl_planner:$PYTHONPATH
-# Example: light mix ramp stage
 python3 -m drone_rl_planner.train_sac_polar --stage4 --device cuda
 ```
 
-Checkpoints (`*.pt`) are gitignored. Helpers under `src/drone_rl_planner/checkpoints/`.
+Checkpoints (`*.pt`) are gitignored.
 
 ---
 
@@ -186,6 +216,17 @@ Frames: `map` (ENU) → `base_link` (x forward, y left, z up).
 
 ---
 
+## Open-source citations (selected)
+
+- This repo: <https://github.com/Jungod1121/drone_ws>
+- [EGO-Planner Swarm](https://github.com/ZJU-FAST-Lab/ego-planner-swarm)
+- [GCOPTER](https://github.com/ZJU-FAST-Lab/GCOPTER)
+- [MIGHTY](https://github.com/mit-acl/mighty)
+- [Fast-Planner](https://github.com/HKUST-Aerial-Robotics/Fast-Planner)
+- [DrQ](https://github.com/denisyarats/drq) / [DrQ-v2](https://github.com/facebookresearch/drqv2)
+
+---
+
 ## Repository layout
 
 ```
@@ -194,7 +235,7 @@ drone_ws/
 ├── docs/media/          # Screenshots / video / GIFs
 ├── packaging/           # Native Linux console
 ├── scripts/             # Goals, eval, acceptance
-└── report/              # Acceptance & baseline reports
+└── report/              # Acceptance, baseline, formal report draft
 ```
 
 ---
@@ -205,6 +246,7 @@ drone_ws/
 2. Hover metrics need `evaluate.py` / `stability_demo`, not RViz alone.
 3. Backend A defaults `enable_bspline_opt: false` for stable dense A* polylines.
 4. User setuptools 83+ → set `PYTHONNOUSERSITE=1` before `colcon build`.
+5. Path H **failed** staged success on `dense_field` (see above).
 
 ---
 

@@ -1,0 +1,174 @@
+%% Anona / drone_ws 正式技术报告
+%% 版式：复用 arxiv-cjk-preprint 字体、段距、页眉页脚；不用「论文 picture」图题
+%% 编译：latexmk -xelatex -shell-escape main-arxiv.tex
+\documentclass[twocolumn]{article}
+
+\usepackage{preprint}
+
+%% 正文字号 12pt；行距 12/14
+\makeatletter
+\renewcommand{\normalsize}{%
+  \@setfontsize\normalsize{12}{14}%
+  \abovedisplayskip      8.5\p@ \@plus 2.5\p@ \@minus 5\p@
+  \abovedisplayshortskip \z@ \@plus 3\p@
+  \belowdisplayskip      \abovedisplayskip
+  \belowdisplayshortskip 5\p@ \@plus 3\p@ \@minus 3\p@
+}
+\normalsize
+\renewcommand{\small}{%
+  \@setfontsize\small{10.5}{12.5}%
+  \abovedisplayskip      7\p@ \@plus 2\p@ \@minus 4\p@
+  \abovedisplayshortskip \z@  \@plus 2\p@
+  \belowdisplayskip      \abovedisplayskip
+  \belowdisplayshortskip 3.5\p@ \@plus 2\p@ \@minus 2\p@
+}
+\renewcommand{\footnotesize}{\@setfontsize\footnotesize{10}{12}}
+\renewcommand{\scriptsize}{\@setfontsize\scriptsize{8.5}{10}}
+\renewcommand{\tiny}{\@setfontsize\tiny{7}{8.5}}
+\renewcommand{\large}{\@setfontsize\large{14}{16}}
+\renewcommand{\Large}{\@setfontsize\Large{16}{19}}
+\renewcommand{\LARGE}{\@setfontsize\LARGE{20}{24}}
+\renewcommand{\huge}{\@setfontsize\huge{24}{28}}
+\renewcommand{\Huge}{\@setfontsize\Huge{29}{34}}
+\makeatother
+
+\usepackage{fontspec}
+\usepackage{xeCJK}
+%% Linux：用 Liberation Serif 替代 Times New Roman
+\setmainfont{Liberation Serif}
+\setsansfont{DejaVu Sans}
+\setCJKmainfont{Noto Serif CJK SC}[
+  BoldFont = Noto Sans CJK SC,
+  ItalicFont = Noto Serif CJK SC
+]
+\setCJKsansfont{Noto Sans CJK SC}
+
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage{url}
+\usepackage[colorlinks=true, linkcolor=black, urlcolor=blue!55!black, citecolor=black]{hyperref}
+
+\graphicspath{{figures/}}
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\DeclareCaptionLabelSeparator{cncolon}{：}
+\captionsetup{labelsep=cncolon, font=small, labelfont=bf}
+\renewcommand{\figureautorefname}{图}
+\renewcommand{\tableautorefname}{表}
+
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{5.5pt}
+
+\makeatletter
+\fancyhf{}
+\lhead{\footnotesize\@title}
+\rhead{\thepage}
+\renewcommand{\section}{%
+  \@startsection{section}{1}{\z@}%
+                {-2.0ex \@plus -0.5ex \@minus -0.2ex}%
+                { 1.5ex \@plus  0.3ex \@minus  0.2ex}%
+                {\large\bfseries\raggedright}%
+}
+\renewcommand{\subsection}{%
+  \@startsection{subsection}{2}{\z@}%
+                {-1.8ex \@plus -0.5ex \@minus -0.2ex}%
+                { 0.8ex \@plus  0.2ex}%
+                {\normalsize\bfseries\raggedright}%
+}
+\makeatother
+
+\titlespacing\section{0pt}{12pt plus 3pt minus 3pt}{1pt plus 1pt minus 1pt}
+\titlespacing\subsection{0pt}{10pt plus 3pt minus 3pt}{1pt plus 1pt minus 1pt}
+\titlespacing\subsubsection{0pt}{8pt plus 3pt minus 3pt}{1pt plus 1pt minus 1pt}
+
+%% 章 = section；正文小节 = subsection
+\makeatletter
+\let\report@section\section
+\let\report@subsection\subsection
+\let\report@subsubsection\subsubsection
+\newcommand{\chapter}{\report@section}
+\renewcommand{\section}{\report@subsection}
+\renewcommand{\subsection}{\report@subsubsection}
+\newcommand{\chaptermark}[1]{}
+\makeatother
+
+\newcommand{\figwidth}{0.95\columnwidth}
+\newcommand{\figmaxh}{0.42\textheight}
+\raggedbottom
+\newcommand{\ProjectFigure}[3]{%
+  \par
+  \noindent\begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=\figwidth,height=\figmaxh,keepaspectratio]{#1}\par
+    \vspace{0.15em}%
+    \captionof{figure}{#2}%
+    \label{#3}%
+  \end{minipage}\par
+  \vspace{0.85em}%
+}
+\newcommand{\ProjectTable}[1]{%
+  \par\noindent\begin{minipage}{\linewidth}#1\end{minipage}\par\vspace{0.6em}%
+}
+\newcommand{\MapThumb}[1]{%
+  \includegraphics[width=0.31\textwidth,height=0.18\textheight,keepaspectratio]{#1}%
+}
+%% 栏内并排：左场景 RViz，右评测曲线（禁止整页单图）
+\newcommand{\ScenarioPair}[4]{%
+  \begin{figure}[t]
+    \centering
+    \begin{minipage}[t]{0.48\linewidth}
+      \centering
+      \includegraphics[width=\linewidth,height=0.24\textheight,keepaspectratio]{#1}%
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.48\linewidth}
+      \centering
+      \includegraphics[width=\linewidth,height=0.24\textheight,keepaspectratio]{#2}%
+    \end{minipage}
+    \caption{#3}%
+    \label{#4}%
+  \end{figure}
+}
+
+\setlength{\droptitle}{-1.2em}
+\title{基于 ROS~2 的模块化四旋翼仿真与多路径运动规划平台}
+\author{Jungod\\[0.35em]
+  {\normalsize 代码库 \texttt{drone\_ws}（工程名 Anona）}}
+\date{}
+
+\begin{document}
+
+%% ========== 第 1 页：单栏 标题 / 作者 / 摘要 / 关键词 ==========
+\onecolumn
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+\noindent
+四旋翼自主飞行软件常把刚体动力学、底层控制与运动规划捆在同一仓库树中。更换规划后端时，执行链路与评测脚本往往一并改动，不同算法难以在同一执行条件下公平对照。针对这一问题，本文实现并整理一套运行于 Ubuntu~22.04 与 ROS~2 Humble 的模块化四旋翼仿真平台（工程仓库名 Anona，代码库 \texttt{drone\_ws}）。平台将动力学与控制层（plant，即自研 X 布局刚体动力学、级联 PID 与混控）固定下来，以统一话题契约接入 Path~A--H 共八类规划后端，覆盖经典栅格搜索、反应式直方图、无 ESDF 局部重规划、MINCO/GCOPTER 与 Hermite 轨迹优化、FUEL 风格探索任务模式，以及极坐标 DrQ-SAC 学习策略。障碍地图全部为过程生成点云：既包括 EGO 谱系的 random\_forest / mockamap 官方资源，也包括自研 \texttt{drone\_map} 的密集场、开阔场与窄通道等，并由 \texttt{map\_adapter} 统一到双话题与元数据接口。
+
+相对导师指定的 \texttt{pengyu\_sim} 与 MARSIM，本系统仅在概念上对照 RPM 到 wrench 分配、电机不对称滞后与仿真组织方式，动力学与控制器在 ROS~2 中独立实现，不执行、不包装其源码；官方规划器以 vendor 或桥接接入，剥离 SO3 / fake\_drone 等原仓库自带执行体，使对照落在规划算法而非各异的假飞机模型上。六项一键验收场景全部通过；七规划器$\times$两地图（官方森林与密集场）正方形任务在 staged 角点驻留规则下呈现显著差异。Path~H 在 dense\_field 对照中未能以策略本体完成成功判定（失败；安全监督 FALLBACK 不得记为纯 SAC 通过），单机循环演示取自随机森林而非密集场。正文给出动力学与控制全公式、地图目录、Path~A--H 模块对照表与统一接入说明、六项验收配对分析，以及可核验的开源关系专章，并讨论局限与后续工作。
+\end{abstract}
+
+\vspace{0.6em}
+\noindent\textbf{关键词：}ROS~2；四旋翼动力学；级联控制；运动规划；仿真地图；开源对照；避障；仿真评测
+
+\clearpage
+%% ========== 第 2 页起：单栏目录 ==========
+\tableofcontents
+\clearpage
+
+%% ========== 目录后：双栏正文 ==========
+\twocolumn
+\pagestyle{fancy}
+
+\input{report-body}
+
+\end{document}

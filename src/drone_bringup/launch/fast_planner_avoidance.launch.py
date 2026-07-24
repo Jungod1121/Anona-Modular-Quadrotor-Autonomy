@@ -10,13 +10,19 @@ from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
-from drone_bringup.maps_catalog import gcopter_planner_overrides
+from drone_bringup.maps_catalog import (
+    benchmark_square_waypoints,
+    gcopter_planner_overrides,
+)
 from drone_bringup.launch_utils import (
     controller_node,
     dynamics_node,
     map_stack,
+    resolve_mission_pose,
     rviz_node,
     send_goal_process,
+    square_mission_process,
+    square_speed_params,
     visualization_node,
 )
 
@@ -50,10 +56,15 @@ def launch_setup(context, *args, **kwargs):
     use_rviz = LaunchConfiguration('use_rviz')
     seed = int(float(LaunchConfiguration('seed').perform(context)))
     map_id = LaunchConfiguration('map').perform(context)
+    mission = LaunchConfiguration('mission').perform(context).strip().lower()
 
     map_nodes, pose = map_stack(map_id, seed=seed, planner='fast_planner')
+    pose = resolve_mission_pose(map_id, pose, mission)
     init_x, init_y, init_z = pose['init_x'], pose['init_y'], pose['init_z']
     goal_x, goal_y, goal_z = pose['goal_x'], pose['goal_y'], pose['goal_z']
+    square_wps = (
+        benchmark_square_waypoints(map_id) if mission == 'square' else [])
+    first_goal = square_wps[0] if square_wps else (goal_x, goal_y, goal_z)
 
     map_size_x, map_size_y, map_size_z = 50.0, 30.0, 4.0
     gb = gcopter_planner_overrides(map_id)
@@ -78,7 +89,7 @@ def launch_setup(context, *args, **kwargs):
             map_size_y = max(map_size_y, sy)
             map_size_z = max(map_size_z, sz)
 
-    cruise_z = max(float(goal_z), 1.0)
+    cruise_z = max(float(first_goal[2]), float(goal_z), 1.0)
     # Match plant tracking bandwidth — planner 2 m/s finishes horizon before our PID arrives.
     max_vel, max_acc = 1.2, 1.8
     local_rx, local_ry, local_rz = 12.0, 12.0, 3.5
@@ -89,12 +100,13 @@ def launch_setup(context, *args, **kwargs):
     virtual_ceil = 2.8
     flight_type = 1
     waypoint_num = 1
-    waypoints = [(float(goal_x), float(goal_y), cruise_z)]
+    waypoints = [(float(first_goal[0]), float(first_goal[1]), cruise_z)]
     goal_repeats = 4
     # Narrow S-bend: doors are offset from the start→goal line. A single far
     # goal makes kinodynamic A* aim straight through walls → EXEC↔REPLAN forever.
     # Chain preset door centers (flight_type=2) so each hop threads one gate.
-    if map_id in ('narrow_corridor', 'tier_medium_corridor', 'narrow'):
+    if mission != 'square' and map_id in (
+            'narrow_corridor', 'tier_medium_corridor', 'narrow'):
         max_vel, max_acc = 0.65, 1.0
         local_rx, local_ry, local_rz = 10.0, 8.0, 3.5
         inflation = 0.06
@@ -108,6 +120,32 @@ def launch_setup(context, *args, **kwargs):
             cruise_z, n_gates=5, gap=1.6)
         waypoint_num = len(waypoints)
         goal_repeats = 1
+
+    speed = square_speed_params(mission, strict=True)
+    if speed:
+        max_vel = float(speed['max_vel'])
+        max_acc = float(speed['max_acc'])
+        # Square: soft inflation so spawn/goals are not occupied (seed-1 forest
+        # previously: "open set empty, no path!"). Keep flight_type=1 + sequential
+        # /drone/goal — flight_type=2 + live goal republish caused EXEC↔REPLAN
+        # collisions and off-map runaways.
+        inflation = 0.04
+        dist0 = 0.18
+        search_horizon = 9.0
+        local_rx, local_ry, local_rz = 16.0, 16.0, 3.5
+        flight_type = 1
+        waypoints = [(float(first_goal[0]), float(first_goal[1]), cruise_z)]
+        waypoint_num = 1
+        fp_params_square_extra = {
+            'search/margin': 0.08,
+            'manager/clearance_threshold': 0.10,
+            'optimization/lambda2': 10.0,
+            'manager/control_points_distance': 0.35,
+            'fsm/thresh_replan': 0.8,
+            'fsm/thresh_no_replan': 1.5,
+        }
+    else:
+        fp_params_square_extra = {}
 
     fp_params = {
         'planner_node/planner': 1,
@@ -203,6 +241,7 @@ def launch_setup(context, *args, **kwargs):
         'bspline/limit_acc': max_acc,
         'bspline/limit_ratio': 1.1,
     })
+    fp_params.update(fp_params_square_extra)
 
     if map_id in ('narrow_corridor', 'tier_medium_corridor', 'narrow'):
         # Stronger obstacle cost so B-spline does not straighten through gates.
@@ -222,12 +261,18 @@ def launch_setup(context, *args, **kwargs):
             param_files=['dynamics.yaml'],
         ),
         controller_node(extra_params={
-            'trajectory_cmd_timeout': 0.50,
-            'local_goal_timeout': 1.5,
+            'trajectory_cmd_timeout': 1.20 if speed else 0.50,
+            'local_goal_timeout': 3.0 if speed else 1.5,
             # Match planner speed — 1.4 vs planner 0.7 overshoots and blows the plant.
-            'max_vel': min(1.4, max_vel + 0.15),
-            'max_acc': min(2.0, max_acc + 0.3),
-            'max_tilt': 0.45,
+            'max_vel': (
+                float(speed['max_vel']) if speed
+                else min(1.4, max_vel + 0.15)),
+            'max_acc': (
+                float(speed['max_acc']) if speed
+                else min(2.0, max_acc + 0.3)),
+            'max_tilt': 0.35 if speed else 0.45,
+            # Keep off for square — ballistic fallback after traj-in-collision
+            # was driving FP off-map.
             'use_drone_goal_fallback': False,
         }),
         Node(
@@ -238,6 +283,7 @@ def launch_setup(context, *args, **kwargs):
             remappings=[
                 ('/odom_world', '/drone/odom'),
                 ('/sdf_map/odom', '/drone/odom'),
+                # Homemade maps bridge into this topic; official forests publish natively.
                 ('/sdf_map/cloud', '/map_generator/global_cloud'),
             ],
             parameters=[fp_params],
@@ -279,12 +325,24 @@ def launch_setup(context, *args, **kwargs):
             }],
         ),
         visualization_node(),
-        send_goal_process(
-            goal_x, goal_y, cruise_z, yaw=0.0, delay_sec=10.0,
-            topic='/drone/goal', repeats=goal_repeats),
-        # Homemade maps: solid cylinder/wall markers + outlines (not EGO gray cloud).
-        rviz_node(condition=IfCondition(use_rviz), config='fast_planner_avoidance.rviz'),
     ])
+    if mission == 'square':
+        # flight_type=2 already owns the four corners; still publish /drone/goal
+        # so pose_to_path_goal can re-trigger if the FSM stalls, and so the
+        # controller goal-fallback has a live target.
+        actions.append(square_mission_process(
+            square_wps,
+            delay_sec=12.0,
+            arrival_tol=2.0,
+            max_hold=100.0,
+        ))
+    else:
+        actions.append(send_goal_process(
+            goal_x, goal_y, cruise_z, yaw=0.0, delay_sec=10.0,
+            topic='/drone/goal', repeats=goal_repeats))
+    # Homemade maps: solid cylinder/wall markers + outlines (not EGO gray cloud).
+    actions.append(rviz_node(
+        condition=IfCondition(use_rviz), config='fast_planner_avoidance.rviz'))
     return actions
 
 
@@ -296,5 +354,8 @@ def generate_launch_description():
         DeclareLaunchArgument('use_rviz', default_value='true'),
         DeclareLaunchArgument('seed', default_value='1'),
         DeclareLaunchArgument('map', default_value='official_forest'),
+        DeclareLaunchArgument(
+            'mission', default_value='catalog',
+            description='catalog = single catalog goal; square = map-specific square'),
         OpaqueFunction(function=launch_setup),
     ])
