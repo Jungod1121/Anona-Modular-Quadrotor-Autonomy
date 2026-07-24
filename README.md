@@ -11,6 +11,14 @@
 > One plant. Many planners. Fair comparison.
 
 <p align="center">
+  <a href="docs/media/demo.mp4">
+    <img src="docs/media/demo-poster.png" alt="Anona demo video" width="720"/>
+  </a>
+  <br/>
+  <em><a href="docs/media/demo.mp4">Watch demo (2:43, MP4)</a></em>
+</p>
+
+<p align="center">
   <img src="docs/media/forest.gif" alt="Single-UAV random forest loop" width="720"/>
 </p>
 <p align="center">

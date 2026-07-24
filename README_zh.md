@@ -11,6 +11,14 @@
 > 同一动力学与控制层。多种规划器。公平对照。
 
 <p align="center">
+  <a href="docs/media/demo.mp4">
+    <img src="docs/media/demo-poster.png" alt="Anona 演示视频" width="720"/>
+  </a>
+  <br/>
+  <em><a href="docs/media/demo.mp4">观看演示（2:43，MP4）</a></em>
+</p>
+
+<p align="center">
   <img src="docs/media/forest.gif" alt="单机随机森林循环" width="720"/>
 </p>
 <p align="center">
