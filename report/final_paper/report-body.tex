@@ -81,65 +81,69 @@ X 布局电机顺序为前左(0,CCW)、前右(1,CW)、后右(2,CCW)、后左(3,C
 
 \chapter{仿真地图}
 
-障碍地图均为过程生成点云，经 \texttt{map\_adapter} 统一发布到 \texttt{/map/obstacles} 与 \texttt{/map\_generator/global\_cloud}，并附带边界与种子等元数据。表~\ref{tab:maps} 列出本报告主要场景；对应三维斜视点云见图~\ref{fig:map_gallery}。
+障碍地图均为过程生成点云，经 \texttt{map\_adapter} 统一发布到 \texttt{/map/obstacles} 与 \texttt{/map\_generator/global\_cloud}，并附带边界与种子等元数据。表~\ref{tab:maps} 列出主要场景；三维斜视点云与规划模块对照见图~\ref{fig:map_gallery}、表~\ref{tab:planners}。
 
 \ProjectTable{%
 \captionof{table}{主要仿真地图摘要}\label{tab:maps}
-\setlength{\tabcolsep}{3pt}
+\setlength{\tabcolsep}{4pt}
 \small
-\begin{tabular}{@{}llp{0.42\linewidth}@{}}
+\begin{tabular}{@{}ll@{}}
 \toprule
-ID & 形态特征 & 本报告用途 \\
+ID & 形态特征 \\
 \midrule
-official\_forest & 圆柱树干与环状障碍，盒外起飞 & 验收避障；规划对照 \\
-official\_perlin & 稀疏 Perlin 三维团块 & 大空间对照 \\
-official\_maze2d & 加宽 2D 墙体迷宫 & 高难度迷宫 \\
-official\_maze3d & 3D Voronoi 通道 & 立体迷宫 \\
-dense\_field & 密集柱体与外墙 & 规划压力测试 \\
-narrow\_corridor & S 弯错落门洞 & 验收窄通道 \\
+official\_forest & 圆柱树干与环状障碍，盒外起飞 \\
+official\_perlin & 稀疏 Perlin 三维团块 \\
+official\_maze2d & 加宽 2D 墙体迷宫 \\
+official\_maze3d & 3D Voronoi 通道 \\
+dense\_field & 密集柱体与外墙 \\
+narrow\_corridor & S 弯错落门洞 \\
 \bottomrule
 \end{tabular}}
-
-\begin{figure*}[!t]
-\centering
-\setlength{\tabcolsep}{6pt}
-\begin{tabular}{@{}cc@{}}
-\includegraphics[width=0.46\textwidth,height=0.20\textheight,keepaspectratio]{maps/map_official_forest.png} &
-\includegraphics[width=0.46\textwidth,height=0.20\textheight,keepaspectratio]{maps/map_official_perlin.png} \\[0.45em]
-\includegraphics[width=0.46\textwidth,height=0.20\textheight,keepaspectratio]{maps/map_official_maze2d.png} &
-\includegraphics[width=0.46\textwidth,height=0.20\textheight,keepaspectratio]{maps/map_official_maze3d.png} \\[0.45em]
-\includegraphics[width=0.46\textwidth,height=0.20\textheight,keepaspectratio]{maps/map_dense_field.png} &
-\includegraphics[width=0.46\textwidth,height=0.20\textheight,keepaspectratio]{maps/map_narrow_corridor.png}
-\end{tabular}
-\caption{主要仿真地图三维斜视点云（三行$\times$两列）。颜色表示高度；绿点为起点，红星为目标。}
-\label{fig:map_gallery}
-\end{figure*}
 
 \chapter{运动规划 Path A--H}
 
-Path~A--H 共用表~\ref{tab:contract} 的动力学与控制层契约：规划侧只发布滚动局部目标或轨迹指令，不替换自研动力学与混控。按注册 ID 选择 launch（如 \texttt{planner:=ego}）；自研后端直连契约，第三方规划核经 vendor 与桥接节点接入，并剥离上游自带的 SO3 / fake\_drone 等执行体。公平对照矩阵仅含 weak/strong（A/B/C/E/G/H）；探索模式 D 与谱系可选 F 不进主矩阵。各模块对照见表~\ref{tab:planners}。
+Path~A--H 共用表~\ref{tab:contract} 的动力学与控制层契约：规划侧只发布滚动局部目标或轨迹指令，不替换自研动力学与混控。按注册 ID 选择 launch（如 \texttt{planner:=ego}）；自研后端直连契约，第三方规划核经 vendor 与桥接节点接入，并剥离上游自带的 SO3 / fake\_drone 等执行体。公平对照矩阵仅含 weak/strong（A/B/C/E/G/H）；探索模式 D 与谱系可选 F 不进主矩阵。
 
-\begin{table*}[!t]
+%% 图3 + 表3：跨双栏左右并排
+\begin{figure*}[!t]
 \centering
-\caption{Path A--H 模块对照}\label{tab:planners}
-\resizebox{\textwidth}{!}{%
-\setlength{\tabcolsep}{3.5pt}
-\small
-\begin{tabular}{@{}cllllllp{2.6cm}@{}}
-\toprule
-Path & 名称 & 自研/第三方 & 关联仓库 & 上游依赖 & 本仓包/桥接 & 类别 & 默认图/验收 \\
-\midrule
-A & Dyn-A*/B样条 & 自研 & EGO 谱系思路 & 障碍点云 & \texttt{drone\_planner} & 搜索/weak & dense；窄通道 \\
-B & EGO-Planner & 第三方 & ego-planner-swarm & 局部点云、PositionCommand & \texttt{ego\_vendor}+\texttt{ego\_cmd\_bridge} & 优化/strong & forest；场景4 \\
-C & GCOPTER/MINCO & 第三方 & yuwei-wu/GCOPTER & 几何走廊、点云 & \texttt{gcopter\_vendor} & 优化/strong & forest；对照 \\
-D & FUEL风格探索 & 自研模式 & 非 FUEL 整仓 & 前沿FSM→EGO & \texttt{drone\_exploration}+EGO桥 & 模式 & narrow；非矩阵 \\
-E & MIGHTY & 第三方 & mit-acl/mighty & Hermite 优化、状态 & \texttt{mighty\_vendor}+\texttt{mighty\_cmd\_bridge} & 优化/strong & 对照矩阵 \\
-F & Fast-Planner & 第三方 & Fast-Planner（\texttt{fp\_*}） & kino 重规划 & \texttt{fast\_planner\_vendor}+\texttt{ego\_cmd\_bridge} & 可选谱系 & 非主矩阵 \\
-G & VFH+ & 自研 & VFH+ 文献 & 局部直方图 & \texttt{drone\_rl\_planner} & 反应式/weak & 对照矩阵 \\
-H & DrQ-SAC & 自研+方法参考 & DrQ / DrQ-v2 & 极坐标观测、安全监督 & \texttt{drone\_rl\_planner}+\texttt{safety\_supervisor} & 学习/strong & dense；对照失败 \\
-\bottomrule
-\end{tabular}}
-\end{table*}
+\begin{minipage}[t]{0.52\textwidth}
+  \centering
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{@{}cc@{}}
+  \includegraphics[width=0.48\linewidth,height=0.13\textheight,keepaspectratio]{maps/map_official_forest.png} &
+  \includegraphics[width=0.48\linewidth,height=0.13\textheight,keepaspectratio]{maps/map_official_perlin.png} \\[0.3em]
+  \includegraphics[width=0.48\linewidth,height=0.13\textheight,keepaspectratio]{maps/map_official_maze2d.png} &
+  \includegraphics[width=0.48\linewidth,height=0.13\textheight,keepaspectratio]{maps/map_official_maze3d.png} \\[0.3em]
+  \includegraphics[width=0.48\linewidth,height=0.13\textheight,keepaspectratio]{maps/map_dense_field.png} &
+  \includegraphics[width=0.48\linewidth,height=0.13\textheight,keepaspectratio]{maps/map_narrow_corridor.png}
+  \end{tabular}
+  \captionof{figure}{主要仿真地图三维斜视点云（三行$\times$两列）。颜色表示高度；绿点为起点，红星为目标。}
+  \label{fig:map_gallery}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.46\textwidth}
+  \centering
+  \captionof{table}{Path A--H 模块对照}\label{tab:planners}
+  \vspace{0.25em}
+  \resizebox{\linewidth}{!}{%
+  \setlength{\tabcolsep}{3pt}
+  \footnotesize
+  \begin{tabular}{@{}cllll@{}}
+  \toprule
+  Path & 名称 & 自研/第三方 & 类别 & 本仓接入 \\
+  \midrule
+  A & Dyn-A*/B样条 & 自研 & 搜索/weak & \texttt{drone\_planner} \\
+  B & EGO-Planner & 第三方 & 优化/strong & \texttt{ego\_vendor}+桥 \\
+  C & GCOPTER/MINCO & 第三方 & 优化/strong & \texttt{gcopter\_vendor} \\
+  D & FUEL风格探索 & 自研模式 & 模式 & 探索FSM+EGO \\
+  E & MIGHTY & 第三方 & 优化/strong & \texttt{mighty\_vendor}+桥 \\
+  F & Fast-Planner & 第三方 & 可选 & \texttt{fp\_*}+桥 \\
+  G & VFH+ & 自研 & 反应式/weak & \texttt{drone\_rl\_planner} \\
+  H & DrQ-SAC & 自研+参考 & 学习/strong & RL+安全监督 \\
+  \bottomrule
+  \end{tabular}}
+\end{minipage}
+\end{figure*}
 
 集成上，第三方路径（B/C/E/F）只保留规划与轨迹接口，经桥接或直出进入本仓控制器；自研路径（A/G/H）与模式 D 在本仓实现主体。诚实边界：Path~D 是「FUEL 风格」任务编排而非上游 FUEL 整仓搬迁；Path~F 仅作谱系对照；Path~H 在 \texttt{dense\_field} 正方形 staged 对照中未能以策略本体通过——若终态为 FALLBACK（回退 VFH），不得记为纯 SAC 成功；单机演示动图取自随机森林，并非 dense。
 
