@@ -57,4 +57,5 @@ report/final_paper/*.xdv
 report/final_paper/*.toc
 report/final_paper/*.out
 report/final_paper/*.synctex.gz
+report/final_paper/figures/maps/_*.log
 
