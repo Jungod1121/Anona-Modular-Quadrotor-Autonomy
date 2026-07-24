@@ -180,6 +180,22 @@ const I18N = {
     reportsLoading: 'Loading…',
     reportsEmpty: 'No reports yet — run acceptance or batch scripts.',
     reportsError: 'Could not load reports.',
+    benchBatchTitle: 'Full seven-planner comparison',
+    benchBatchHint: 'Run 7 planners × Random Forest / Dense Obstacle Field: 14 independent trials.',
+    benchSingleTitle: 'Single independent benchmark',
+    benchSingleHint: 'Choose one planner and one benchmark map; the result is merged into the comparison report.',
+    benchDuration: 'Evaluation time per trial (seconds)',
+    benchRunAll: 'Run all 14 trials',
+    benchRunSingle: 'Run selected pair',
+    benchStop: 'Stop benchmark',
+    benchProgress: 'Progress',
+    benchState: 'Benchmark state',
+    benchLatest: 'Latest aggregate',
+    benchIdle: 'Idle',
+    benchRunning: 'Running…',
+    benchMapForest: 'Random Forest',
+    benchMapDense: 'Dense Obstacle Field',
+    benchOutputHint: 'Output: report/planner_benchmark/ (raw CSV, JSON, Markdown, and charts)',
     rlTrainHint: 'Available when Path G is selected: train the PPO local planner (target ≥95% success). Independent of the sim run.',
     sacTrainHint: 'Available when Path H is selected: continue Polar DrQ-SAC from best checkpoint (dense catalog density, honest eval ≥60 eps, target ≥90%). Opens a live monitor window. Independent of the sim run.',
     startRlTrain: 'Start training',
@@ -393,6 +409,22 @@ const I18N = {
     reportsLoading: '加载中…',
     reportsEmpty: '暂无报告 — 请运行验收或批量脚本。',
     reportsError: '无法加载报告列表。',
+    benchBatchTitle: '七规划器完整对比',
+    benchBatchHint: '一键运行 7 个规划器 × 随机森林/密集障碍场，共 14 组独立测试。',
+    benchSingleTitle: '单项独立测试',
+    benchSingleHint: '手动指定一个规划器和一张基准地图；结果会合并进综合报告。',
+    benchDuration: '单组评测时长（秒）',
+    benchRunAll: '运行全部 14 组',
+    benchRunSingle: '运行所选组合',
+    benchStop: '停止评测',
+    benchProgress: '执行进度',
+    benchState: '评测状态',
+    benchLatest: '最新汇总',
+    benchIdle: '空闲',
+    benchRunning: '运行中…',
+    benchMapForest: '随机森林',
+    benchMapDense: '密集障碍场',
+    benchOutputHint: '输出：report/planner_benchmark/（原始 CSV、JSON、Markdown 和图表）',
     rlTrainHint: '选中路径 G 后可用：训练 PPO 局部规划器（目标成功率 ≥95%）。与仿真启动相互独立。',
     sacTrainHint: '选中路径 H 后可用：从 best 权重续训 Polar DrQ-SAC（目录级密集场、诚实评测 ≥60 局、目标 ≥90%）。开始训练会自动弹出监控窗口。与仿真启动相互独立。',
     startRlTrain: '开始训练',
@@ -1678,6 +1710,99 @@ async function stopAcceptance() {
   pollReports().catch(() => {});
 }
 
+function benchmarkDuration(id) {
+  const value = Number(el(id)?.value);
+  return Number.isFinite(value) ? Math.max(10, Math.min(600, value)) : 90;
+}
+
+function updateBenchmarkCommand() {
+  const planner = el('benchmarkPlanner')?.value || 'homemade';
+  const map = el('benchmarkMap')?.value || 'official_forest';
+  const duration = benchmarkDuration('benchSingleDuration');
+  const command = el('benchmarkCommand');
+  if (command) {
+    command.textContent = `python3 scripts/run_planner_benchmark.py --mode single --planner ${planner} --map ${map} --duration ${duration}`;
+  }
+}
+
+function applyBenchmark(benchmark) {
+  const running = !!benchmark?.running;
+  const current = Number(benchmark?.current || 0);
+  const total = Number(benchmark?.total || (benchmark?.config?.mode === 'single' ? 1 : 14));
+  const currentCase = benchmark?.current_case || '';
+
+  const allButton = el('btnBenchmarkAll');
+  const oneButton = el('btnBenchmarkSingle');
+  const stopButton = el('btnBenchmarkStop');
+  if (allButton) allButton.disabled = running;
+  if (oneButton) oneButton.disabled = running;
+  if (stopButton) stopButton.disabled = !running;
+  ['benchmarkPlanner', 'benchmarkMap', 'benchBatchDuration', 'benchSingleDuration'].forEach((id) => {
+    if (el(id)) el(id).disabled = running;
+  });
+  if (el('btnStart')) el('btnStart').disabled = running || state.running;
+  if (el('btnRestart')) el('btnRestart').disabled = running;
+
+  const stateEl = el('benchmarkState');
+  if (stateEl) {
+    const base = running ? t('benchRunning') : t('benchIdle');
+    stateEl.textContent = currentCase && running ? `${base} ${currentCase}` : base;
+  }
+
+  const progress = el('benchmarkProgress');
+  const fill = el('benchmarkProgressFill');
+  const label = el('benchmarkProgressLabel');
+  if (progress && fill && label) {
+    const hasProgress = total > 0 && (running || current > 0);
+    progress.hidden = !hasProgress;
+    const percent = total > 0 ? Math.max(0, Math.min(100, current / total * 100)) : 0;
+    fill.style.width = `${percent}%`;
+    label.textContent = `${current}/${total}${currentCase ? ` · ${currentCase}` : ''}`;
+  }
+
+  const summary = benchmark?.summary || {};
+  const latest = el('benchmarkLatest');
+  if (latest) {
+    if (summary.completed_cases != null) {
+      const score = summary.mean_score == null ? '—' : Number(summary.mean_score).toFixed(1);
+      latest.textContent = `${summary.completed_cases}/${summary.matrix_size || 14} · success ${summary.successes || 0} · score ${score}`;
+    } else {
+      latest.textContent = '—';
+    }
+  }
+
+  const log = el('benchmarkLog');
+  if (log && Array.isArray(benchmark?.logs) && benchmark.logs.length) {
+    log.hidden = false;
+    log.textContent = benchmark.logs.join('\n');
+    log.scrollTop = log.scrollHeight;
+  }
+}
+
+async function startBenchmark(mode) {
+  const single = mode === 'single';
+  const body = {
+    mode: single ? 'single' : 'all',
+    duration: benchmarkDuration(single ? 'benchSingleDuration' : 'benchBatchDuration'),
+  };
+  if (single) {
+    body.planner = el('benchmarkPlanner').value;
+    body.map = el('benchmarkMap').value;
+  }
+  const data = await api('/api/benchmark/start', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+  if (!data.ok) throw new Error(data.error || t('startFailed'));
+  await poll();
+}
+
+async function stopBenchmark() {
+  await api('/api/benchmark/stop', { method: 'POST', body: '{}' });
+  await poll();
+  pollReports().catch(() => {});
+}
+
 function updateExploreUI() {
   const block = el('exploreBlock');
   const hint = el('goalHintDefault');
@@ -2292,6 +2417,7 @@ function applyStatus(st) {
   applyDiagnostics(st);
   applyRlTrain(isSacPlanner() ? st.sac_train : st.rl_train);
   applyAcceptance(st.acceptance);
+  applyBenchmark(st.benchmark);
 
   if (!state.clearLocalLogs && Array.isArray(st.logs)) {
     el('logView').textContent = st.logs.join('\n');
@@ -2518,6 +2644,23 @@ const btnAccStop = el('btnAccStop');
 if (btnAccStop) {
   btnAccStop.addEventListener('click', () => stopAcceptance().catch((e) => alert(e.message)));
 }
+
+const btnBenchmarkAll = el('btnBenchmarkAll');
+if (btnBenchmarkAll) {
+  btnBenchmarkAll.addEventListener('click', () => startBenchmark('all').catch((e) => alert(e.message)));
+}
+const btnBenchmarkSingle = el('btnBenchmarkSingle');
+if (btnBenchmarkSingle) {
+  btnBenchmarkSingle.addEventListener('click', () => startBenchmark('single').catch((e) => alert(e.message)));
+}
+const btnBenchmarkStop = el('btnBenchmarkStop');
+if (btnBenchmarkStop) {
+  btnBenchmarkStop.addEventListener('click', () => stopBenchmark().catch((e) => alert(e.message)));
+}
+['benchmarkPlanner', 'benchmarkMap', 'benchSingleDuration'].forEach((id) => {
+  if (el(id)) el(id).addEventListener('change', updateBenchmarkCommand);
+});
+updateBenchmarkCommand();
 
 const btnStart = el('btnStart');
 const btnStop = el('btnStop');
