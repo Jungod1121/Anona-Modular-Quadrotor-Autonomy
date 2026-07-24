@@ -11,11 +11,11 @@
 > One plant. Many planners. Fair comparison.
 
 <p align="center">
-  <a href="docs/media/demo.mp4">
+  <a href="https://www.bilibili.com/video/BV11Dgi6gE9A/">
     <img src="docs/media/demo-poster.png" alt="Anona demo video" width="720"/>
   </a>
   <br/>
-  <em><a href="docs/media/demo.mp4">Watch demo (2:43, MP4)</a></em>
+  <em><a href="https://www.bilibili.com/video/BV11Dgi6gE9A/">Watch demo on Bilibili · Anona: Modular Quadrotor Autonomy</a></em>
 </p>
 
 <p align="center">

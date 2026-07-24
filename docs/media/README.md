@@ -1,12 +1,19 @@
 # Media assets · 媒体素材
 
-Root READMEs embed the files below. Keep GIFs and video compressed for GitHub.
+Root READMEs embed the files below. Keep GIFs compressed for GitHub.
+
+## Demo video · 演示视频
+
+Hosted on Bilibili (not in-repo MP4):  
+https://www.bilibili.com/video/BV11Dgi6gE9A/
+
+Poster: `demo-poster.png` (README click-through).
 
 ## Status · 状态
 
 | Filename | Status | Notes |
 |----------|--------|-------|
-| `demo.mp4` + `demo-poster.png` | ready | ~2:43 overview (1280p H.264, ~26 MB) |
+| `demo-poster.png` | ready | Links to Bilibili demo |
 | `architecture.png` | ready | Stack diagram |
 | `topic-dataflow.png` | ready | Topic contract |
 | `console-ui.png` / `console-multi.png` | ready | Mission Console |
@@ -16,7 +23,7 @@ Root READMEs embed the files below. Keep GIFs and video compressed for GitHub.
 | `sac-training.png` | ready | Training desktop shot |
 | `scenario_01`…`06_*.png` | ready | Acceptance RViz shots |
 
-Source screen captures (e.g. `.mov` 4K masters) stay outside git; only compressed deliverables are committed.
+Do not commit raw `.mov` masters or large in-repo `demo.mp4`.
 
 ## Capture tips · 拍摄提示
 

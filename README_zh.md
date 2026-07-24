@@ -11,11 +11,11 @@
 > 同一动力学与控制层。多种规划器。公平对照。
 
 <p align="center">
-  <a href="docs/media/demo.mp4">
+  <a href="https://www.bilibili.com/video/BV11Dgi6gE9A/">
     <img src="docs/media/demo-poster.png" alt="Anona 演示视频" width="720"/>
   </a>
   <br/>
-  <em><a href="docs/media/demo.mp4">观看演示（2:43，MP4）</a></em>
+  <em><a href="https://www.bilibili.com/video/BV11Dgi6gE9A/">B 站观看演示 · Anona：Modular Quadrotor Autonomy</a></em>
 </p>
 
 <p align="center">

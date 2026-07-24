@@ -63,6 +63,7 @@ report/final_paper/figures/maps/_*.log
 # Full-resolution GIF backups (too large for GitHub)
 docs/media/*_full.gif
 
-# Raw screen captures (encode to demo.mp4 before commit)
+# Raw screen captures / oversized local encodes (use Bilibili for demo)
 *.mov
 *.MOV
+docs/media/demo.mp4
