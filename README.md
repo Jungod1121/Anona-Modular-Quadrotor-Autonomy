@@ -21,9 +21,9 @@
 </p>
 
 <p align="center">
-  <img src="docs/media/forest-frame.png" alt="Random forest single-UAV loop (static frame)" width="720"/>
+  <img src="docs/media/forest.gif" alt="Random forest single-UAV loop" width="720"/>
   <br/>
-  <em>Single-UAV random-forest loop (static frame). Full animation: <a href="docs/media/forest.gif"><code>forest.gif</code></a> (~38 MB; compress before using as README hero). Not dense_field.</em>
+  <em>Single-UAV random-forest loop (animated). Not dense_field.</em>
 </p>
 
 ---
@@ -48,7 +48,7 @@
 | Architecture | [`architecture.png`](docs/media/architecture.png) | Embedded |
 | Topic flow | [`topic-dataflow.png`](docs/media/topic-dataflow.png) | Embedded |
 | Console | [`console-ui.png`](docs/media/console-ui.png) / [`console-multi.png`](docs/media/console-multi.png) | Embedded |
-| Single-UAV demo | [`forest.gif`](docs/media/forest.gif) (random forest; not dense) | Ready (large) |
+| Single-UAV demo | [`forest.gif`](docs/media/forest.gif) (random forest; not dense) | Ready |
 | Swarm | [`swarm-or-formation.png`](docs/media/swarm-or-formation.png) / [`.gif`](docs/media/swarm-or-formation.gif) | Ready |
 | RViz | [`rviz-overview.png`](docs/media/rviz-overview.png) | Embedded |
 | Training | [`sac-training.png`](docs/media/sac-training.png) | Static screenshot (not GIF) |

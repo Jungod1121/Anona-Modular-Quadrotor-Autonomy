@@ -21,9 +21,9 @@
 </p>
 
 <p align="center">
-  <img src="docs/media/forest-frame.png" alt="Random forest single-UAV loop (static frame)" width="720"/>
+  <img src="docs/media/forest.gif" alt="单机随机森林循环" width="720"/>
   <br/>
-  <em>单机随机森林循环（静态帧）。完整动图见 <a href="docs/media/forest.gif"><code>forest.gif</code></a>（约 38 MB，建议压缩后再作 README 主图）。非 dense_field。</em>
+  <em>单机随机森林循环（动图）。非 dense_field。</em>
 </p>
 
 ---
@@ -48,7 +48,7 @@
 | 架构 | [`architecture.png`](docs/media/architecture.png) | 已嵌入 |
 | 话题流 | [`topic-dataflow.png`](docs/media/topic-dataflow.png) | 已嵌入 |
 | 控制台 | [`console-ui.png`](docs/media/console-ui.png) / [`console-multi.png`](docs/media/console-multi.png) | 已嵌入 |
-| 单机演示 | [`forest.gif`](docs/media/forest.gif)（随机森林；非 dense） | 已就绪（体积大） |
+| 单机演示 | [`forest.gif`](docs/media/forest.gif)（随机森林；非 dense） | 已就绪 |
 | 集群 | [`swarm-or-formation.png`](docs/media/swarm-or-formation.png) / [`.gif`](docs/media/swarm-or-formation.gif) | 已就绪 |
 | RViz | [`rviz-overview.png`](docs/media/rviz-overview.png) | 已嵌入 |
 | 训练 | [`sac-training.png`](docs/media/sac-training.png) | 静态截图（非 GIF） |

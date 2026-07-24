@@ -59,3 +59,6 @@ report/final_paper/*.out
 report/final_paper/*.synctex.gz
 report/final_paper/figures/maps/_*.log
 
+
+# Full-resolution GIF backups (too large for GitHub)
+docs/media/*_full.gif

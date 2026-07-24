@@ -81,53 +81,37 @@ X 布局电机顺序为前左(0,CCW)、前右(1,CW)、后右(2,CCW)、后左(3,C
 
 \chapter{仿真地图}
 
-本章障碍均为过程生成点云，不依赖预先烘焙的 PCD 场景文件。\texttt{map\_adapter} 将点云同时发布到 \texttt{/map/obstacles} 与 \texttt{/map\_generator/global\_cloud}，并给出巡航高度附近的占据切片与 \texttt{/map/metadata}（边界、难度、种子等）。官方生成器若省略外墙，适配层可补 AABB 边界墙，便于规划器约束飞行域。六类常用地图的三维斜视点云见图~\ref{fig:map_gallery}（两行$\times$三列）。
-
-\section{官方 EGO 谱系地图}
-
-数据与节点来自 \texttt{ego\_vendor} 下的 \texttt{map\_generator}（\texttt{random\_forest}）与 \texttt{mockamap}，与 EGO-Planner / Fast-Planner 仿真生态同源。
-
-\texttt{official\_forest} 使用圆柱树干与带偏航的环状障碍，生成尺度约 $26\times20\times3\,\mathrm{m}$。机体初始位姿置于障碍包围盒之外（例如 $x=-15$），并保留东西向通廊参数，避免出生点落在占据内。该图完整度高，是 Path~B/C 与验收避障场景的默认选择。
-
-\texttt{official\_perlin}（mockamap type=1）在更大空间（约 $50\times26\times5\,\mathrm{m}$）生成分形 Perlin 三维团块，填充较稀；起点同样置于盒外。\texttt{official\_maze2d}（type=3）为递归分割墙体迷宫，本仓将道路宽度放宽至约 $1.2\,\mathrm{m}$，减轻相对膨胀半径过窄的失败。\texttt{official\_maze3d}（type=4）为 Voronoi 三维迷宫，工作区补丁将高度限制在非负区间并加宽通道。
-
-\section{自研地图}
-
-\texttt{drone\_map} 在本仓内用圆柱、球体与边界墙等几何原语生成点云。\texttt{dense\_field} 障碍密集并带外墙，适合弱规划器与学习策略的默认压力测试。\texttt{narrow\_corridor} 以多道错落门洞形成 S 弯窄通道，对应验收窄通道场景。\texttt{ego\_forest\_port} 与 \texttt{ego\_maze2d\_port} 将官方森林/迷宫几何移植到自研坐标系，便于在不启动官方生成器时做同源对照。
-
-\section{分级预设与本报告用图}
-
-四档预设不改动底层 ID，仅固化难度标签与种子：\texttt{tier\_simple\_open}（开阔场）、\texttt{tier\_medium\_corridor}（narrow\_corridor）、\texttt{tier\_complex\_forest}（official\_forest）、\texttt{tier\_extreme\_maze}（official\_maze2d）。本报告六项验收分别使用悬停/单目标开场图、多航点、EGO+官方森林避障、窄通道与含风扰的稳定性场景；规划器批量对照固定为 \texttt{official\_forest} 与 \texttt{dense\_field}；单机演示动图取自随机森林短循环，不是 dense\_field。
+障碍地图均为过程生成点云，经 \texttt{map\_adapter} 统一发布到 \texttt{/map/obstacles} 与 \texttt{/map\_generator/global\_cloud}，并附带边界与种子等元数据。表~\ref{tab:maps} 列出本报告主要场景；对应三维斜视点云见图~\ref{fig:map_gallery}。
 
 \ProjectTable{%
 \captionof{table}{主要仿真地图摘要}\label{tab:maps}
-\setlength{\tabcolsep}{2pt}
+\setlength{\tabcolsep}{3pt}
 \small
-\begin{tabular}{@{}llp{0.28\linewidth}@{}}
+\begin{tabular}{@{}llp{0.42\linewidth}@{}}
 \toprule
-ID & 生成来源 & 特征摘要 \\
+ID & 形态特征 & 本报告用途 \\
 \midrule
-official\_forest & random\_forest & 圆柱+环；盒外起飞 \\
-official\_perlin & mockamap~1 & Perlin 团块 \\
-official\_maze2d & mockamap~3 & 2D 迷宫加宽 \\
-official\_maze3d & mockamap~4 & 3D Voronoi \\
-dense\_field & drone\_map & 密集柱+墙 \\
-narrow\_corridor & drone\_map & S 弯门洞 \\
+official\_forest & 圆柱树干与环状障碍，盒外起飞 & 验收避障；规划对照 \\
+official\_perlin & 稀疏 Perlin 三维团块 & 大空间对照 \\
+official\_maze2d & 加宽 2D 墙体迷宫 & 高难度迷宫 \\
+official\_maze3d & 3D Voronoi 通道 & 立体迷宫 \\
+dense\_field & 密集柱体与外墙 & 规划压力测试 \\
+narrow\_corridor & S 弯错落门洞 & 验收窄通道 \\
 \bottomrule
 \end{tabular}}
 
-\begin{figure*}[!htbp]
+\begin{figure*}[!t]
 \centering
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}ccc@{}}
-\MapThumb{maps/map_official_forest.png} &
-\MapThumb{maps/map_official_perlin.png} &
-\MapThumb{maps/map_official_maze2d.png} \\[0.4em]
-\MapThumb{maps/map_official_maze3d.png} &
-\MapThumb{maps/map_dense_field.png} &
-\MapThumb{maps/map_narrow_corridor.png}
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{@{}cc@{}}
+\includegraphics[width=0.46\textwidth,height=0.20\textheight,keepaspectratio]{maps/map_official_forest.png} &
+\includegraphics[width=0.46\textwidth,height=0.20\textheight,keepaspectratio]{maps/map_official_perlin.png} \\[0.45em]
+\includegraphics[width=0.46\textwidth,height=0.20\textheight,keepaspectratio]{maps/map_official_maze2d.png} &
+\includegraphics[width=0.46\textwidth,height=0.20\textheight,keepaspectratio]{maps/map_official_maze3d.png} \\[0.45em]
+\includegraphics[width=0.46\textwidth,height=0.20\textheight,keepaspectratio]{maps/map_dense_field.png} &
+\includegraphics[width=0.46\textwidth,height=0.20\textheight,keepaspectratio]{maps/map_narrow_corridor.png}
 \end{tabular}
-\caption{主要仿真地图三维斜视点云（两行$\times$三列）。颜色表示高度；绿点为起点，红星为目标。}
+\caption{主要仿真地图三维斜视点云（三行$\times$两列）。颜色表示高度；绿点为起点，红星为目标。}
 \label{fig:map_gallery}
 \end{figure*}
 
@@ -141,17 +125,17 @@ Path~A--H 共用表~\ref{tab:contract} 的动力学与控制层契约：规划�
 \resizebox{\textwidth}{!}{%
 \setlength{\tabcolsep}{3.5pt}
 \small
-\begin{tabular}{@{}cllllllp{2.8cm}@{}}
+\begin{tabular}{@{}cllllllp{2.6cm}@{}}
 \toprule
 Path & 名称 & 自研/第三方 & 关联仓库 & 上游依赖 & 本仓包/桥接 & 类别 & 默认图/验收 \\
 \midrule
-A & Dyn-A*/B样条 & 自研 & 思路参考 EGO 谱系 & 障碍点云 & \texttt{drone\_planner} & 搜索/weak & dense；窄通道验收 \\
+A & Dyn-A*/B样条 & 自研 & EGO 谱系思路 & 障碍点云 & \texttt{drone\_planner} & 搜索/weak & dense；窄通道 \\
 B & EGO-Planner & 第三方 & ego-planner-swarm & 局部点云、PositionCommand & \texttt{ego\_vendor}+\texttt{ego\_cmd\_bridge} & 优化/strong & forest；场景4 \\
-C & GCOPTER/MINCO & 第三方 & yuwei-wu/GCOPTER & 几何走廊、点云 & \texttt{gcopter\_vendor} & 优化/strong & forest；对照矩阵 \\
-D & FUEL风格探索 & 自研模式 & 非 FUEL 整仓 & 前沿FSM→EGO & \texttt{drone\_exploration}+EGO桥 & 模式 & narrow；非主矩阵 \\
+C & GCOPTER/MINCO & 第三方 & yuwei-wu/GCOPTER & 几何走廊、点云 & \texttt{gcopter\_vendor} & 优化/strong & forest；对照 \\
+D & FUEL风格探索 & 自研模式 & 非 FUEL 整仓 & 前沿FSM→EGO & \texttt{drone\_exploration}+EGO桥 & 模式 & narrow；非矩阵 \\
 E & MIGHTY & 第三方 & mit-acl/mighty & Hermite 优化、状态 & \texttt{mighty\_vendor}+\texttt{mighty\_cmd\_bridge} & 优化/strong & 对照矩阵 \\
 F & Fast-Planner & 第三方 & Fast-Planner（\texttt{fp\_*}） & kino 重规划 & \texttt{fast\_planner\_vendor}+\texttt{ego\_cmd\_bridge} & 可选谱系 & 非主矩阵 \\
-G & VFH+ & 自研 & 经典 VFH+ 文献 & 局部直方图 & \texttt{drone\_rl\_planner} & 反应式/weak & 对照矩阵 \\
+G & VFH+ & 自研 & VFH+ 文献 & 局部直方图 & \texttt{drone\_rl\_planner} & 反应式/weak & 对照矩阵 \\
 H & DrQ-SAC & 自研+方法参考 & DrQ / DrQ-v2 & 极坐标观测、安全监督 & \texttt{drone\_rl\_planner}+\texttt{safety\_supervisor} & 学习/strong & dense；对照失败 \\
 \bottomrule
 \end{tabular}}
@@ -181,20 +165,23 @@ RViz2 显示机体 Marker、目标点、障碍点云、规划黄线（\texttt{/p
 
 \ProjectTable{%
 \captionof{table}{六项验收场景结果摘要}\label{tab:accept}
-\setlength{\tabcolsep}{3pt}
+\centering
+\resizebox{\linewidth}{!}{%
+\setlength{\tabcolsep}{4pt}
+\small
 \begin{tabular}{@{}cllc@{}}
 \toprule
 \# & 场景 & 关键指标 & 结果 \\
 \midrule
-1 & 悬停 & 最终误差 $0.0001\,\mathrm{m}$ & PASS \\
-2 & 单目标 & 最终误差 $0.0013\,\mathrm{m}$ & PASS \\
-3 & 多航点正方形 & 航点 $5/5$，最终 $0.0003\,\mathrm{m}$ & PASS \\
+1 & 悬停 & 终误 $0.0001\,\mathrm{m}$ & PASS \\
+2 & 单目标 & 终误 $0.0013\,\mathrm{m}$ & PASS \\
+3 & 多航点正方形 & 航点 $5/5$，终误 $0.0003\,\mathrm{m}$ & PASS \\
 4 & 静态避障 & 最小障距 $0.316\,\mathrm{m}$，wp $8/8$ & PASS \\
-5 & 窄通道 & 最小障距 $0.987\,\mathrm{m}$，最终 $0.0003\,\mathrm{m}$ & PASS \\
-6 & 稳定性 & 最终误差 $0.0433\,\mathrm{m}$ & PASS \\
+5 & 窄通道 & 最小障距 $0.987\,\mathrm{m}$，终误 $0.0003\,\mathrm{m}$ & PASS \\
+6 & 稳定性 & 终误 $0.0433\,\mathrm{m}$ & PASS \\
 \bottomrule
 \end{tabular}}
-
+}
 \subsection{场景1：悬停}
 
 \texttt{hover.launch.py}：开阔稀疏图，约 3\,s 后发布目标 $(0,0,1.5)$。机体由地面附近爬升并稳定悬停；末段均值误差 $0.0006\,\mathrm{m}$，最终 $0.0001\,\mathrm{m}$，远低于 $0.3\,\mathrm{m}$ 阈值。图~\ref{fig:sc01} 左为悬停位姿与轨迹，右为位置误差与 RPM 等曲线，表明开环无规划时动力学与控制层闭环可用。
