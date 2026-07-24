@@ -21,9 +21,9 @@ def launch_setup(context, *args, **kwargs):
 
     share = get_package_share_directory('drone_bringup')
     mapping = {
-        'homemade': 'avoidance.launch.py',
-        'a': 'avoidance.launch.py',
-        'path_a': 'avoidance.launch.py',
+        'homemade': 'homemade_avoidance.launch.py',
+        'a': 'homemade_avoidance.launch.py',
+        'path_a': 'homemade_avoidance.launch.py',
         'ego': 'ego_avoidance.launch.py',
         'b': 'ego_avoidance.launch.py',
         'path_b': 'ego_avoidance.launch.py',

@@ -1,0 +1,26 @@
+{
+  "title": "Dual planner EGO map",
+  "folder": "01_dual_planner_ego_map",
+  "canonical_plan_file": "dual_planner_ego_map_668444cd.plan.md",
+  "anchors": [
+    {
+      "line": 681,
+      "kind": "SwitchMode",
+      "label": "plan"
+    },
+    {
+      "line": 686,
+      "kind": "CreatePlan",
+      "label": "Official EGO wrap"
+    },
+    {
+      "line": 697,
+      "kind": "CreatePlan",
+      "label": "Dual planner EGO map"
+    }
+  ],
+  "dialogue_event_range": [
+    681,
+    697
+  ]
+}

@@ -27,10 +27,18 @@ public:
     declare_parameter("arm_length", 0.18);
     declare_parameter("body_scale", 0.12);
     declare_parameter("rotor_radius", 0.08);
+    declare_parameter("show_mission_endpoints", false);
+    declare_parameter("mission_start_x", 0.0);
+    declare_parameter("mission_start_y", 0.0);
+    declare_parameter("mission_start_z", 0.0);
+    declare_parameter("mission_goal_x", 0.0);
+    declare_parameter("mission_goal_y", 0.0);
+    declare_parameter("mission_goal_z", 0.0);
 
     arm_length_ = get_parameter("arm_length").as_double();
     body_scale_ = get_parameter("body_scale").as_double();
     rotor_radius_ = get_parameter("rotor_radius").as_double();
+    show_mission_endpoints_ = get_parameter("show_mission_endpoints").as_bool();
 
     // Namespaced multi-UAV markers are easy to miss at 30 m orbit — enlarge.
     const std::string ns0 = get_parameter("namespace").as_string();
@@ -67,7 +75,6 @@ private:
   void onOdom(const nav_msgs::msg::Odometry::SharedPtr msg)
   {
     visualization_msgs::msg::MarkerArray array;
-    const auto stamp = msg->header.stamp;
     const auto & pose = msg->pose.pose;
 
     // Central body
@@ -191,12 +198,62 @@ private:
       }
     }
 
+    if (show_mission_endpoints_) {
+      const auto append_endpoint =
+        [&](int marker_id, const std::string & text, double x, double y, double z,
+          float red, float green, float blue)
+        {
+          visualization_msgs::msg::Marker point;
+          point.header = msg->header;
+          point.ns = "mission_endpoints";
+          point.id = marker_id;
+          point.type = visualization_msgs::msg::Marker::SPHERE;
+          point.action = visualization_msgs::msg::Marker::ADD;
+          point.pose.position.x = x;
+          point.pose.position.y = y;
+          point.pose.position.z = z;
+          point.pose.orientation.w = 1.0;
+          point.scale.x = 0.32;
+          point.scale.y = 0.32;
+          point.scale.z = 0.32;
+          point.color.r = red;
+          point.color.g = green;
+          point.color.b = blue;
+          point.color.a = 1.0f;
+          array.markers.push_back(point);
+
+          visualization_msgs::msg::Marker label = point;
+          label.id = marker_id + 1;
+          label.type = visualization_msgs::msg::Marker::TEXT_VIEW_FACING;
+          label.pose.position.z = z + 0.38;
+          label.scale.x = 0.0;
+          label.scale.y = 0.0;
+          label.scale.z = 0.28;
+          label.text = text;
+          array.markers.push_back(label);
+        };
+
+      append_endpoint(
+        100, "START",
+        get_parameter("mission_start_x").as_double(),
+        get_parameter("mission_start_y").as_double(),
+        get_parameter("mission_start_z").as_double(),
+        0.15f, 0.95f, 0.25f);
+      append_endpoint(
+        102, "GOAL",
+        get_parameter("mission_goal_x").as_double(),
+        get_parameter("mission_goal_y").as_double(),
+        get_parameter("mission_goal_z").as_double(),
+        0.95f, 0.20f, 0.20f);
+    }
+
     marker_pub_->publish(array);
   }
 
   double arm_length_{0.18};
   double body_scale_{0.12};
   double rotor_radius_{0.08};
+  bool show_mission_endpoints_{false};
 
   rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_pub_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;

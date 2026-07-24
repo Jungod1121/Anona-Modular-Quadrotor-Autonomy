@@ -607,9 +607,6 @@ class LaunchManager:
         multi = str(
             incoming.get('multi_mode', c.get('multi_mode', 'ego_swarm')) or ''
         ).strip().lower()
-        if mode != 'multi' and 'mode' not in incoming and multi in MULTI_MODES:
-            mode = 'multi'
-            c['mode'] = 'multi'
         use_rviz = 'true' if c.get('use_rviz', True) else 'false'
         seed = int(c.get('seed', 1))
 
@@ -631,11 +628,10 @@ class LaunchManager:
                 n = max(2, min(int(c.get('num_drones', 2)), 20))
                 cmd.append(f'num_drones:={n}')
             elif multi == 'shared_field':
-                # Launch hard-locks dense_field; keep dashboard cfg consistent.
+                # Launch hard-locks dense_field. start() normalizes persisted cfg;
+                # command preview must remain side-effect free.
                 c['map'] = 'dense_field'
                 c['num_drones'] = 2
-                self.cfg['map'] = 'dense_field'
-                self.cfg['num_drones'] = 2
             elif multi == 'formation':
                 form = str(c.get('formation', 'v')).lower()
                 if form in ('triangle', 'wedge'):
@@ -646,9 +642,6 @@ class LaunchManager:
                 c['formation'] = form
                 c['map'] = 'dense_field'
                 c['num_drones'] = 3
-                self.cfg['map'] = 'dense_field'
-                self.cfg['num_drones'] = 3
-                self.cfg['formation'] = form
             return cmd
 
         planner = normalize_planner_id(str(c.get('planner', 'gcopter')))
@@ -794,6 +787,7 @@ class LaunchManager:
         patterns = [
             'planner_sim.launch.py', 'ego_avoidance.launch.py',
             'gcopter_avoidance.launch.py', 'avoidance.launch.py',
+            'homemade_avoidance.launch.py',
             'fuel_explore.launch.py', 'rl_avoidance.launch.py', 'sac_avoidance.launch.py',
             'ego_swarm.launch.py', 'shared_field.launch.py', 'formation.launch.py',
             'ego_planner_node', 'global_planning_node', 'random_forest',
@@ -1070,6 +1064,48 @@ def list_reports() -> Dict[str, Any]:
     return {'report_dir': str(root), 'files': entries[:40]}
 
 
+def _monitor_running() -> bool:
+    try:
+        out = subprocess.check_output(['ps', '-eo', 'pid,cmd'], text=True, timeout=3)
+    except Exception:
+        return False
+    for line in out.splitlines():
+        if 'drone_rl_planner.train_sac_monitor' in line and 'python' in line:
+            return True
+    return False
+
+
+def launch_sac_train_monitor() -> Dict[str, Any]:
+    """Popup Path H training monitor GUI (idempotent)."""
+    if _monitor_running():
+        return {'ok': True, 'already': True}
+    pkg = ws_root() / 'src' / 'drone_rl_planner'
+    display = os.environ.get('DISPLAY') or ':0'
+    env = os.environ.copy()
+    env['DISPLAY'] = display
+    env['PYTHONPATH'] = f'{pkg}:{env.get("PYTHONPATH", "")}'
+    log = pkg / 'checkpoints' / 'sac_monitor_gui.log'
+    try:
+        with log.open('a', encoding='utf-8') as lf:
+            lf.write(f'\n==== monitor launch {time.strftime("%Y-%m-%dT%H:%M:%S")} DISPLAY={display} ====\n')
+            proc = subprocess.Popen(
+                [
+                    'bash', '-lc',
+                    f'cd {shlex.quote(str(ws_root()))}; '
+                    f'export DISPLAY={shlex.quote(display)}; '
+                    f'export PYTHONPATH={shlex.quote(str(pkg))}:$PYTHONPATH; '
+                    'exec python3 -m drone_rl_planner.train_sac_monitor',
+                ],
+                stdout=lf,
+                stderr=subprocess.STDOUT,
+                env=env,
+                start_new_session=True,
+            )
+        return {'ok': True, 'pid': proc.pid, 'display': display}
+    except Exception as exc:
+        return {'ok': False, 'error': str(exc)}
+
+
 class RlTrainManager:
     """Background SB3 PPO training for Path G (separate from sim launch)."""
 
@@ -1205,13 +1241,19 @@ class SacTrainManager:
         self.proc: Optional[subprocess.Popen] = None
         self.log_lines: List[str] = []
         self.cfg: Dict[str, Any] = {
-            'target': 0.95,
-            'steps': 1_000_000,
+            'target': 0.90,
+            'steps': 5_000_000,
             'dense_heavy': True,
             'eval_every': 5_000,
             'eval_episodes': 60,
-            'resume': 'none',
-            'fresh': True,
+            'resume': 'auto',
+            'fresh': False,
+            'n_envs': 4,
+            'batch_size': 128,
+            'updates_per_step': 2,
+            'finetune_lr': 1e-4,
+            'persist_buffer': True,
+            'open_monitor': True,
         }
 
     def _pkg_root(self) -> Path:
@@ -1280,13 +1322,19 @@ class SacTrainManager:
                 return {'ok': False, 'error': 'stop Path G training first'}
             if cfg:
                 self.cfg.update(cfg)
-            steps = int(self.cfg.get('steps', 1_000_000))
+            steps = int(self.cfg.get('steps', 5_000_000))
             eval_every = int(self.cfg.get('eval_every', 5_000))
             eval_episodes = int(self.cfg.get('eval_episodes', 60))
-            target = float(self.cfg.get('target', 0.95))
+            target = float(self.cfg.get('target', 0.90))
             dense_heavy = bool(self.cfg.get('dense_heavy', True))
-            resume = str(self.cfg.get('resume', 'none') or '').strip()
+            resume = str(self.cfg.get('resume', 'auto') or '').strip()
             fresh = bool(self.cfg.get('fresh', False))
+            n_envs = int(self.cfg.get('n_envs', 4))
+            batch_size = int(self.cfg.get('batch_size', 128))
+            updates_per_step = int(self.cfg.get('updates_per_step', 2))
+            finetune_lr = float(self.cfg.get('finetune_lr', 1e-4))
+            persist_buffer = bool(self.cfg.get('persist_buffer', True))
+            open_monitor = bool(self.cfg.get('open_monitor', True))
             pkg = self._pkg_root()
             best = pkg / 'checkpoints' / 'sac_polar_local_best.pt'
             last = pkg / 'checkpoints' / 'sac_polar_local.pt'
@@ -1305,12 +1353,15 @@ class SacTrainManager:
                 f'--eval-episodes={eval_episodes}',
                 f'--target={target}',
                 '--device=cuda',
-                '--batch-size=128',
-                '--updates-per-step=2',
-                '--n-envs=2',
+                f'--batch-size={batch_size}',
+                f'--updates-per-step={updates_per_step}',
+                f'--n-envs={n_envs}',
+                f'--finetune-lr={finetune_lr}',
             ]
             if dense_heavy:
                 cmd.append('--dense-heavy')
+            if persist_buffer:
+                cmd.append('--persist-buffer')
             if resume == 'auto':
                 if best.is_file():
                     cmd.append(f'--resume={best}')
@@ -1334,7 +1385,20 @@ class SacTrainManager:
                 start_new_session=True,
             )
             threading.Thread(target=self._read_stdout, args=(self.proc,), daemon=True).start()
-            return {'ok': True, 'cmd': ' '.join(cmd), 'target': self.cfg.get('target', 0.90)}
+            mon = launch_sac_train_monitor() if open_monitor else {'ok': False, 'skipped': True}
+            if mon.get('ok'):
+                self._append_log(
+                    f'[dashboard] opened train monitor '
+                    f'(pid={mon.get("pid", "existing")} display={mon.get("display", "?")})'
+                )
+            elif not mon.get('skipped'):
+                self._append_log(f'[dashboard] monitor launch failed: {mon.get("error")}')
+            return {
+                'ok': True,
+                'cmd': ' '.join(cmd),
+                'target': target,
+                'monitor': mon,
+            }
 
     def stop(self) -> Dict[str, Any]:
         with self.lock:

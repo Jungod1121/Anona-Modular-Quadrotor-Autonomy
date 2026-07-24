@@ -1,0 +1,16 @@
+{
+  "title": "Glass revert XY track",
+  "folder": "07_glass_revert_xy_track",
+  "canonical_plan_file": "glass_revert_xy_track_e08cf224.plan.md",
+  "anchors": [
+    {
+      "line": 2626,
+      "kind": "CreatePlan",
+      "label": "Glass revert XY track"
+    }
+  ],
+  "dialogue_event_range": [
+    2626,
+    2626
+  ]
+}

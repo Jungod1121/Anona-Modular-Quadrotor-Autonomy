@@ -181,7 +181,7 @@ const I18N = {
     reportsEmpty: 'No reports yet — run acceptance or batch scripts.',
     reportsError: 'Could not load reports.',
     rlTrainHint: 'Available when Path G is selected: train the PPO local planner (target ≥95% success). Independent of the sim run.',
-    sacTrainHint: 'Available when Path H is selected: fine-tune Polar DrQ-SAC on catalog-density dense scenes (honest eval ≥60 eps, target ≥95%). Independent of the sim run.',
+    sacTrainHint: 'Available when Path H is selected: continue Polar DrQ-SAC from best checkpoint (dense catalog density, honest eval ≥60 eps, target ≥90%). Opens a live monitor window. Independent of the sim run.',
     startRlTrain: 'Start training',
     stopRlTrain: 'Stop training',
     rlTrainState: 'Train status',
@@ -394,7 +394,7 @@ const I18N = {
     reportsEmpty: '暂无报告 — 请运行验收或批量脚本。',
     reportsError: '无法加载报告列表。',
     rlTrainHint: '选中路径 G 后可用：训练 PPO 局部规划器（目标成功率 ≥95%）。与仿真启动相互独立。',
-    sacTrainHint: '选中路径 H 后可用：在目录级密度密集场上微调 Polar DrQ-SAC（诚实评测 ≥60 局，目标成功率 ≥95%）。与仿真启动相互独立。',
+    sacTrainHint: '选中路径 H 后可用：从 best 权重续训 Polar DrQ-SAC（目录级密集场、诚实评测 ≥60 局、目标 ≥90%）。开始训练会自动弹出监控窗口。与仿真启动相互独立。',
     startRlTrain: '开始训练',
     stopRlTrain: '停止训练',
     rlTrainState: '训练状态',
@@ -1972,9 +1972,15 @@ function selectMulti(key, sync = true) {
 }
 
 /** Homemade multi modes only support dense_field — grey out other map cards. */
-function updateMultiMapLock() {
-  const lock = state.mode === 'multi'
+function isDenseOnlyMultiMode() {
+  // The visible page is authoritative. A stale server/mode response must never
+  // carry the multi-drone dense-map restriction onto the single-flight page.
+  return state.page === 'multi'
     && (state.multiMode === 'shared_field' || state.multiMode === 'formation');
+}
+
+function updateMultiMapLock() {
+  const lock = isDenseOnlyMultiMode();
   document.querySelectorAll('.map-card').forEach((card) => {
     const allowed = !lock || card.dataset.map === 'dense_field';
     card.disabled = !allowed;
@@ -2007,8 +2013,7 @@ function updateMultiFieldVisibility() {
 }
 
 function selectMap(key, sync = true) {
-  const lock = state.mode === 'multi'
-    && (state.multiMode === 'shared_field' || state.multiMode === 'formation');
+  const lock = isDenseOnlyMultiMode();
   if (lock && key !== 'dense_field') {
     key = 'dense_field';
   }
@@ -2388,13 +2393,19 @@ async function startRlTrain() {
     const data = await api('/api/sac/train', {
       method: 'POST',
       body: JSON.stringify({
-        target: 0.95,
-        steps: 1000000,
+        target: 0.90,
+        steps: 5000000,
         dense_heavy: true,
         eval_every: 5000,
         eval_episodes: 60,
-        resume: 'none',
-        fresh: true,
+        resume: 'auto',
+        fresh: false,
+        n_envs: 4,
+        batch_size: 128,
+        updates_per_step: 2,
+        finetune_lr: 1e-4,
+        persist_buffer: true,
+        open_monitor: true,
       }),
     });
     if (!data.ok) alert(data.error || t('startFailed'));

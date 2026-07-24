@@ -59,6 +59,7 @@ class TrajCmdSample:
 @dataclass
 class EvalState:
     goal: Tuple[float, float, float]
+    safety_distance: float = 0.35
     samples: List[Sample] = field(default_factory=list)
     obstacles: List[Tuple[float, float, float]] = field(default_factory=list)
     last_rpm: Tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)
@@ -181,6 +182,12 @@ class EvaluateNode(Node):
         ]
 
     def _on_traj_cmd(self, msg: TrajectoryCommand):
+        ready = bool(msg.trajectory_ready)
+        # Path F / EGO bridges publish TrajectoryCommand but not always PlannerStatus.
+        if ready:
+            self.state.planner_success_ever = True
+            if not self.state.last_planner:
+                self.state.last_planner = 'TRAJ_CMD'
         if self.state.t0 is None:
             return
         self.state.traj_cmd_samples.append(TrajCmdSample(
@@ -188,7 +195,7 @@ class EvaluateNode(Node):
             px=float(msg.position.x),
             py=float(msg.position.y),
             pz=float(msg.position.z),
-            ready=bool(msg.trajectory_ready),
+            ready=ready,
         ))
 
     def _on_diagnostics(self, msg: PlannerDiagnostics):
@@ -317,8 +324,12 @@ class EvaluateNode(Node):
             f.write(f'planner_success_ever: {self.state.planner_success_ever}\n')
             f.write(f'final_planner_state: {self.state.last_planner}\n')
             if mins:
-                f.write(f'min_obstacle_distance: {np.min(mins):.4f} m\n')
-                f.write(f'avoidance_pass_0.35m: {np.min(mins) > 0.35}\n')
+                min_obs = float(np.min(mins))
+                f.write(f'min_obstacle_distance: {min_obs:.4f} m\n')
+                f.write(f'avoidance_safety_distance: {self.state.safety_distance:.4f} m\n')
+                f.write(f'avoidance_pass: {min_obs > self.state.safety_distance}\n')
+                # Retain the legacy field for older reports and scripts.
+                f.write(f'avoidance_pass_0.35m: {min_obs > 0.35}\n')
             if math.isfinite(flown_len) and flown_len > 0:
                 f.write(f'flown_path_length: {flown_len:.4f} m\n')
             if math.isfinite(detour_ratio):
@@ -333,50 +344,32 @@ class EvaluateNode(Node):
                     f.write(f'fallback_trigger_rate_hz: {fallback_rate:.4f}\n')
 
         try:
-            import matplotlib
-            matplotlib.use('Agg')
-            import matplotlib.pyplot as plt
+            from drone_bringup.eval_figures import save_evaluation_figure
 
-            fig, axes = plt.subplots(2, 2, figsize=(10, 8))
-            axes[0, 0].plot(ts, errs)
-            axes[0, 0].axhline(0.3, color='r', ls='--', label='0.3m limit')
-            axes[0, 0].set_title('Position error')
-            axes[0, 0].set_xlabel('t [s]')
-            axes[0, 0].legend()
-            axes[0, 0].grid(True)
-
-            for i, lbl in enumerate(['rpm0', 'rpm1', 'rpm2', 'rpm3']):
-                axes[0, 1].plot(ts, [getattr(s, lbl) for s in self.state.samples], label=lbl)
-            axes[0, 1].set_title('Motor RPM')
-            axes[0, 1].legend()
-            axes[0, 1].grid(True)
-
-            axes[1, 0].plot([s.px for s in self.state.samples], [s.py for s in self.state.samples], 'b-', label='flown')
+            rpm = np.array(
+                [[s.rpm0, s.rpm1, s.rpm2, s.rpm3] for s in self.state.samples],
+                dtype=float,
+            )
+            planned_xy = None
             if self.state.planned_path:
-                px = [p[0] for p in self.state.planned_path]
-                py = [p[1] for p in self.state.planned_path]
-                axes[1, 0].plot(px, py, 'y--', alpha=0.8, label='planned')
-            axes[1, 0].plot(self.state.goal[0], self.state.goal[1], 'r*', ms=12)
-            axes[1, 0].set_title('XY trajectory')
-            axes[1, 0].set_aspect('equal')
-            axes[1, 0].legend()
-            axes[1, 0].grid(True)
-
-            if mins:
-                axes[1, 1].plot(ts, [s.min_obs for s in self.state.samples])
-                axes[1, 1].axhline(0.35, color='r', ls='--', label='safety 0.35m')
-                axes[1, 1].set_title('Min obstacle distance')
-                axes[1, 1].legend()
-                axes[1, 1].grid(True)
-            else:
-                axes[1, 1].text(0.5, 0.5, 'No obstacle cloud', ha='center', va='center')
-                axes[1, 1].set_axis_off()
-
-            fig.tight_layout()
-            fig.savefig(os.path.join(self.output_dir, 'evaluation.png'), dpi=120)
-            plt.close(fig)
+                planned_xy = np.array(
+                    [[p[0], p[1]] for p in self.state.planned_path], dtype=float)
+            save_evaluation_figure(
+                output_path=os.path.join(self.output_dir, 'evaluation.png'),
+                ts=ts,
+                errs=errs,
+                px=flown[:, 0],
+                py=flown[:, 1],
+                rpm=rpm,
+                min_obs=[s.min_obs for s in self.state.samples],
+                goal_xy=(self.state.goal[0], self.state.goal[1]),
+                planned_xy=planned_xy,
+                obs_limit=self.state.safety_distance,
+            )
         except ImportError:
-            self.get_logger().warn('matplotlib not available; skipped plots')
+            self.get_logger().warn('matplotlib / eval_figures not available; skipped plots')
+        except Exception as exc:
+            self.get_logger().warn(f'evaluation figure failed: {exc}')
 
         self.get_logger().info(f'Exported metrics to {self.output_dir}')
         self.get_logger().info(
@@ -392,12 +385,15 @@ def main(argv=None):
     parser.add_argument('--goal-x', type=float, default=0.0)
     parser.add_argument('--goal-y', type=float, default=0.0)
     parser.add_argument('--goal-z', type=float, default=1.5)
+    parser.add_argument('--safety-distance', type=float, default=0.35,
+                        help='Minimum obstacle clearance used for pass/fail and plots')
     parser.add_argument('--hold-samples', type=int, default=30,
                         help='Last N odom samples for hold-at-goal check (default 30)')
     args = parser.parse_args(argv)
 
     out = args.output_dir or os.path.expanduser('~/drone_ws/scripts/output')
     state = EvalState(goal=(args.goal_x, args.goal_y, args.goal_z),
+                      safety_distance=args.safety_distance,
                       hold_at_goal_samples=args.hold_samples)
 
     rclpy.init(args=argv)

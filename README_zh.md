@@ -144,7 +144,7 @@ ros2 run drone_bringup dashboard   # http://127.0.0.1:8765/
 | 1 | 悬停 | `hover.launch.py` |
 | 2 | 单目标 | `single_goal.launch.py` |
 | 3 | 多航点 | `multi_goal.launch.py` |
-| 4 | 静态避障 | `avoidance.launch.py` |
+| 4 | 静态避障 | `avoidance.launch.py`（Path B · official_forest · 矩形后漏斗） |
 | 5 | 窄通道 | `narrow_passage.launch.py` |
 | 6 | 稳定性（+ 风扰 / IMU 噪声） | `stability_demo.launch.py` |
 

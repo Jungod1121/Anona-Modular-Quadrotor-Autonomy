@@ -144,7 +144,7 @@ ros2 run drone_bringup dashboard   # http://127.0.0.1:8765/
 | 1 | Hover | `hover.launch.py` |
 | 2 | Single goal | `single_goal.launch.py` |
 | 3 | Multi-waypoint | `multi_goal.launch.py` |
-| 4 | Static avoidance | `avoidance.launch.py` |
+| 4 | Static avoidance | `avoidance.launch.py` (Path B · official_forest · rect then funnel) |
 | 5 | Narrow passage | `narrow_passage.launch.py` |
 | 6 | Stability (+ wind / IMU noise) | `stability_demo.launch.py` |
 

@@ -58,7 +58,7 @@ PLANNERS: Dict[str, Dict[str, Any]] = {
         'class': 'weak',
         'status': 'active',
         'family': 'search',
-        'launch': 'avoidance.launch.py',
+        'launch': 'homemade_avoidance.launch.py',
         'package': 'drone_planner',
         'principle': 'Deterministic grid A* search with B-spline smoothing',
         'desc_en': 'Dyn-A* search + B-spline optimize on occupancy grid',

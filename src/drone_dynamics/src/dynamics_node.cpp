@@ -1,5 +1,6 @@
 #include "drone_dynamics/quadrotor_model.hpp"
 
+#include <drone_msgs/msg/disturbance_status.hpp>
 #include <drone_msgs/msg/motor_command.hpp>
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <nav_msgs/msg/odometry.hpp>
@@ -38,6 +39,8 @@ public:
     odom_pub_ = create_publisher<nav_msgs::msg::Odometry>(prefix + "/drone/odom", 10);
     imu_pub_ = create_publisher<sensor_msgs::msg::Imu>(prefix + "/drone/imu", 10);
     path_pub_ = create_publisher<nav_msgs::msg::Path>(prefix + "/drone/path", 10);
+    disturb_pub_ = create_publisher<drone_msgs::msg::DisturbanceStatus>(
+      prefix + "/drone/disturbance_status", 10);
     tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
 
     motor_sub_ = create_subscription<drone_msgs::msg::MotorCommand>(
@@ -54,6 +57,7 @@ public:
     const double integ_hz = get_parameter("integration_rate").as_double();
     steps_per_pub_ = std::max(1, static_cast<int>(std::lround(integ_hz / pub_hz)));
     dt_ = 1.0 / integ_hz;
+    disturb_period_pubs_ = std::max(1, static_cast<int>(std::lround(pub_hz / 20.0)));  // ~20 Hz
 
     timer_ = create_wall_timer(
       std::chrono::duration<double>(1.0 / pub_hz),
@@ -216,6 +220,43 @@ private:
       path_.poses.erase(path_.poses.begin(), path_.poses.begin() + 1000);
     }
     path_pub_->publish(path_);
+
+    ++pub_tick_;
+    if (pub_tick_ % disturb_period_pubs_ == 0) {
+      publishDisturbance(stamp, accel, gyro);
+    }
+  }
+
+  void publishDisturbance(
+    const rclcpp::Time & stamp,
+    const Eigen::Vector3d & accel,
+    const Eigen::Vector3d & gyro)
+  {
+    const Eigen::Vector3d Fw = model_->windForce(sim_time_);
+    drone_msgs::msg::DisturbanceStatus msg;
+    msg.header.stamp = stamp;
+    msg.header.frame_id = "map";
+    msg.wind_enable = params_.wind_enable;
+    msg.wind_force_x = Fw.x();
+    msg.wind_force_y = Fw.y();
+    msg.wind_force_z = Fw.z();
+    msg.wind_force_norm = Fw.norm();
+    msg.wind_const_x = params_.wind_const_x;
+    msg.wind_const_y = params_.wind_const_y;
+    msg.wind_const_z = params_.wind_const_z;
+    msg.wind_sin_amp = params_.wind_sin_amp;
+    msg.wind_sin_freq = params_.wind_sin_freq;
+    msg.imu_noise_enable = params_.imu_noise_enable;
+    msg.imu_accel_noise_std = params_.imu_accel_noise_std;
+    msg.imu_gyro_noise_std = params_.imu_gyro_noise_std;
+    msg.imu_accel_x = accel.x();
+    msg.imu_accel_y = accel.y();
+    msg.imu_accel_z = accel.z();
+    msg.imu_gyro_x = gyro.x();
+    msg.imu_gyro_y = gyro.y();
+    msg.imu_gyro_z = gyro.z();
+    msg.sim_time = sim_time_;
+    disturb_pub_->publish(msg);
   }
 
   DynamicsParams params_;
@@ -223,6 +264,8 @@ private:
   Eigen::Vector4d motor_cmd_;
   double dt_{0.002};
   int steps_per_pub_{5};
+  int disturb_period_pubs_{5};
+  int pub_tick_{0};
   double sim_time_{0.0};
   double init_x_{0}, init_y_{0}, init_z_{0}, init_yaw_{0};
   double cmd_timeout_{0.5};
@@ -233,6 +276,7 @@ private:
   rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
   rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub_;
   rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub_;
+  rclcpp::Publisher<drone_msgs::msg::DisturbanceStatus>::SharedPtr disturb_pub_;
   rclcpp::Subscription<drone_msgs::msg::MotorCommand>::SharedPtr motor_sub_;
   std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
   rclcpp::TimerBase::SharedPtr timer_;

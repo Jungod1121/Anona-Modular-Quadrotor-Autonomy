@@ -1,0 +1,16 @@
+{
+  "title": "Three Planner Integration",
+  "folder": "05_three_planner_integration",
+  "canonical_plan_file": "three_planner_integration_35dc6f85.plan.md",
+  "anchors": [
+    {
+      "line": 1478,
+      "kind": "CreatePlan",
+      "label": "Three Planner Integration"
+    }
+  ],
+  "dialogue_event_range": [
+    1478,
+    1478
+  ]
+}

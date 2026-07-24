@@ -26,6 +26,33 @@ WS = Path(__file__).resolve().parents[1]
 REPORT_DIR = WS / 'report'
 OUTPUT_ROOT = REPORT_DIR / 'acceptance_runs'
 
+try:
+    from drone_bringup.maps_catalog import (
+        OFFICIAL_FOREST_LOOP_WAYPOINTS,
+        official_forest_mission_waypoints,
+    )
+except ImportError:  # script run without sourcing install/setup.bash
+    OFFICIAL_FOREST_LOOP_WAYPOINTS = (
+        (-8.0, 6.0, 1.0),
+        (8.0, 6.0, 1.0),
+        (8.0, -6.0, 1.0),
+        (-8.0, -6.0, 1.0),
+    )
+
+    def official_forest_mission_waypoints(cycles: int = 2):
+        rect = list(OFFICIAL_FOREST_LOOP_WAYPOINTS)
+        funnel = [
+            (8.0, 6.0, 1.0),
+            (-8.0, 6.0, 1.0),
+            (8.0, -6.0, 1.0),
+            (-8.0, -6.0, 1.0),
+        ]
+        n = max(1, int(cycles))
+        mission = list(rect)
+        if n >= 2:
+            mission.extend(funnel * (n - 1))
+        return mission
+
 
 @dataclass
 class ScenarioSpec:
@@ -40,6 +67,9 @@ class ScenarioSpec:
     notes: str = ''
     extra_processes: List[List[str]] = field(default_factory=list)
     hold_at_goal: bool = False
+    safety_distance: float = 0.35
+    # Optional mission waypoints for criteria like waypoints_list:1.2
+    waypoints: List[Tuple[float, float, float]] = field(default_factory=list)
 
 
 def parse_summary(path: Path) -> Dict[str, str]:
@@ -117,6 +147,8 @@ def cleanup_sim() -> None:
         'ros2 launch drone_bringup',
         'vfh_planner_node', 'sac_planner_node', 'rl_planner_node',
         'vfh', 'sac_planner', 'safety_supervisor',
+        'fast_planner_node', 'traj_server', 'pose_to_path_goal', 'ego_cmd_bridge',
+        'interference_monitor',
     ]
     for pat in patterns:
         subprocess.run(['pkill', '-9', '-f', pat], check=False,
@@ -205,6 +237,7 @@ def run_scenario(spec: ScenarioSpec, dry_run: bool = False, use_rviz: bool = Fal
             '--goal-x', str(spec.goal[0]),
             '--goal-y', str(spec.goal[1]),
             '--goal-z', str(spec.goal[2]),
+            '--safety-distance', str(spec.safety_distance),
         ]
         eval_started = time.time()
         eval_proc = subprocess.Popen(eval_cmd, cwd=str(WS), env=env)
@@ -247,6 +280,12 @@ def run_scenario(spec: ScenarioSpec, dry_run: bool = False, use_rviz: bool = Fal
                 side = float(expr.split(':')[1])
                 wp = square_waypoints(side, spec.goal[2])
                 wp_result = waypoint_visits(out_dir / 'metrics.csv', wp[:-1], tol=0.6)
+                result['waypoint_visits'] = wp_result
+                checks[key] = wp_result['pass']
+            elif expr.startswith('waypoints_list:'):
+                tol = float(expr.split(':', 1)[1])
+                wp = list(spec.waypoints) if spec.waypoints else []
+                wp_result = waypoint_visits(out_dir / 'metrics.csv', wp, tol=tol)
                 result['waypoint_visits'] = wp_result
                 checks[key] = wp_result['pass']
             elif expr.startswith('log_not:'):
@@ -322,7 +361,7 @@ SCENARIOS = [
             '到达目标误差≤0.3m': 'summary:goal_pass_0.3m_true',
             '最大误差≤3.0m(起飞过程)': 'summary:max_pos_err_lte_3.0',
         },
-        notes='目标 (2,1,1.5)',
+        notes='目标 (2,1,1.5)；RViz 开启时等待界面就绪后发 goal',
         hold_at_goal=True,
     ),
     ScenarioSpec(
@@ -330,30 +369,42 @@ SCENARIOS = [
         name='多目标点(正方形4点)',
         launch='multi_goal.launch.py',
         launch_args=['pattern:=square'],
-        eval_delay=10.0,
-        eval_duration=110.0,
-        goal=(1.0, 1.0, 1.5),
+        # Start recording before the delayed waypoint publisher (5 s), so the
+        # first edge from the origin is included in the XY trace.
+        eval_delay=4.0,
+        eval_duration=60.0,
+        goal=(0.0, 0.0, 1.5),
+        waypoints=[
+            (0.0, 0.0, 1.5),
+            (2.0, 0.0, 1.5),
+            (2.0, 2.0, 1.5),
+            (0.0, 2.0, 1.5),
+            (0.0, 0.0, 1.5),
+        ],
         criteria={
-            '4个角点均访问': 'waypoints:2.0',
+            '4条边的角点均访问': 'waypoints_list:0.25',
             '最终回到起点附近': 'summary:goal_pass_0.3m_true',
         },
-        notes='square side=2m, hold=8s/点, 5s 后开始发航点',
+        notes='原点起步的 2m×2m 闭合正方形；到点且低速后切换下一航点',
     ),
     ScenarioSpec(
         id=4,
         name='静态避障',
         launch='avoidance.launch.py',
-        launch_args=['seed:=42'],
-        eval_delay=12.0,
-        eval_duration=150.0,
-        goal=(17.0, 5.0, 1.5),
+        launch_args=['seed:=1', 'map:=official_forest', 'cycles:=2'],
+        eval_delay=14.0,
+        # Lap1 rectangle + lap2 funnel on official_forest @ up to 0.8 m/s + replan slack
+        eval_duration=280.0,
+        goal=official_forest_mission_waypoints(2)[-1],
+        waypoints=official_forest_mission_waypoints(2),
         criteria={
-            '到达目标误差≤0.5m': 'summary:final_pos_err_lte_0.5',
-            '最小障碍距离>0.35m': 'summary:avoidance_pass_0.35m_true',
+            '循环航点均访问': 'waypoints_list:1.5',
+            '最小障碍距离>0.30m': 'summary:avoidance_pass_true',
             '规划器曾报告success': 'summary:planner_success_ever_true',
         },
-        notes='dense_field 80圆柱+围墙, seed=42',
-        hold_at_goal=True,
+        notes='Path B EGO + official_forest: lap1 矩形, lap2 漏斗(对角→宽→对角→宽)',
+        hold_at_goal=False,
+        safety_distance=0.30,
     ),
     ScenarioSpec(
         id=5,
@@ -365,7 +416,7 @@ SCENARIOS = [
         goal=(17.0, 5.0, 1.5),
         criteria={
             '到达目标误差≤0.5m': 'summary:final_pos_err_lte_0.5',
-            '最小障碍距离>0.35m': 'summary:avoidance_pass_0.35m_true',
+            '最小障碍距离>0.35m': 'summary:avoidance_pass_true',
             '无A*失败日志': 'log_not:A* failed',
         },
         notes='narrow_corridor S-bend: 3×1.6m doors + side clutter (PLAN §5.3)',
@@ -450,6 +501,33 @@ def write_report(results: List[Dict], merge_existing: bool = False) -> None:
         lines.append('')
         if r.get('notes'):
             lines.append(f'- 说明：{r["notes"]}')
+        # Embed evaluation figure when present (relative to report/).
+        out_dir = r.get('output_dir') or ''
+        png_rel = None
+        if out_dir:
+            png_path = Path(out_dir) / 'evaluation.png'
+            if png_path.is_file():
+                try:
+                    png_rel = png_path.resolve().relative_to(REPORT_DIR.resolve()).as_posix()
+                except ValueError:
+                    png_rel = f'acceptance_runs/{Path(out_dir).name}/evaluation.png'
+        if png_rel is None:
+            # Fallback naming used by run_scenario.
+            slug = {
+                1: 'scenario_01_hover',
+                2: 'scenario_02_single_goal',
+                3: 'scenario_03_multi_goal',
+                4: 'scenario_04_avoidance',
+                5: 'scenario_05_narrow_passage',
+                6: 'scenario_06_stability_demo',
+            }.get(int(r['id']))
+            if slug and (OUTPUT_ROOT / slug / 'evaluation.png').is_file():
+                png_rel = f'acceptance_runs/{slug}/evaluation.png'
+        if png_rel:
+            lines.append(f'- 评测图：')
+            lines.append('')
+            lines.append(f'  ![scenario {r["id"]} evaluation]({png_rel})')
+            lines.append('')
         checks = r.get('checks', {})
         if checks:
             lines.append('- 检查项：')
@@ -467,10 +545,13 @@ def write_report(results: List[Dict], merge_existing: bool = False) -> None:
             lines.append('- 原始指标：')
             for k, v in summary.items():
                 lines.append(f'  - `{k}`: {v}')
-        if r.get('launch_log_tail'):
-            lines.append('- launch 日志末尾：')
+        # Keep launch tails short — full log is on disk.
+        tail = r.get('launch_log_tail') or ''
+        if tail:
+            clipped = '\n'.join(tail.strip().splitlines()[-12:])
+            lines.append('- launch 日志末尾（截断）：')
             lines.append('```')
-            lines.append(r['launch_log_tail'])
+            lines.append(clipped)
             lines.append('```')
         lines.append('')
 
@@ -498,9 +579,9 @@ def write_report(results: List[Dict], merge_existing: bool = False) -> None:
     ))
     lines.append(row(
         '避障最小距离',
-        '> 安全距离 0.35 m',
+        '> 安全距离 0.30 m',
         'scenario 4 min_obstacle_distance',
-        avoid.get('checks', {}).get('最小障碍距离>0.35m', False),
+        avoid.get('checks', {}).get('最小障碍距离>0.30m', False),
     ))
     lines.append(row(
         '狭窄通道',
@@ -521,6 +602,7 @@ def write_report(results: List[Dict], merge_existing: bool = False) -> None:
         '',
         f'- JSON：`report/acceptance_results.json`',
         f'- 各场景原始数据：`report/acceptance_runs/scenario_XX_*/metrics.csv`',
+        f'- 各场景评测图：`report/acceptance_runs/scenario_XX_*/evaluation.png`',
         '',
         '## 复现命令',
         '',

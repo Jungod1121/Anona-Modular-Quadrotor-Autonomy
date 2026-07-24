@@ -98,6 +98,9 @@ public:
   /** Apply Gaussian noise + bias random walk if enabled; updates bias state. */
   void sampleImu(Eigen::Vector3d & accel_out, Eigen::Vector3d & gyro_out, double dt);
 
+  /** Instantaneous external wind force in map frame [N] (same as applied in step). */
+  Eigen::Vector3d windForce(double sim_time) const;
+
   static double rpmToRad(double rpm) { return rpm * 2.0 * M_PI / 60.0; }
   static double radToRpm(double rad) { return rad * 60.0 / (2.0 * M_PI); }
 
@@ -111,7 +114,6 @@ private:
   unsigned rng_state_{1};
 
   double nextGaussian();
-  Eigen::Vector3d windForce(double sim_time) const;
 };
 
 }  // namespace drone_dynamics

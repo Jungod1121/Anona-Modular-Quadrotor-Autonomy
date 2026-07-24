@@ -1,0 +1,21 @@
+{
+  "title": "Maps Goals Dashboard",
+  "folder": "03_maps_goals_dashboard",
+  "canonical_plan_file": "maps_goals_dashboard_b9cb5625.plan.md",
+  "anchors": [
+    {
+      "line": 981,
+      "kind": "SwitchMode",
+      "label": "plan"
+    },
+    {
+      "line": 984,
+      "kind": "CreatePlan",
+      "label": "Maps Goals Dashboard"
+    }
+  ],
+  "dialogue_event_range": [
+    981,
+    984
+  ]
+}
