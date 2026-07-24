@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-07-19 21:21:32 CST",
-  "passed": 4,
+  "timestamp": "2026-07-24 00:02:06 CST",
+  "passed": 6,
   "total": 6,
   "results": [
     {
@@ -14,9 +14,9 @@
         "\u6700\u7ec8\u4f4d\u7f6e\u8bef\u5dee\u22640.3m": true
       },
       "summary": {
-        "samples": "902",
-        "mean_pos_err": "0.0009 m",
-        "max_pos_err": "0.0400 m",
+        "samples": "901",
+        "mean_pos_err": "0.0004 m",
+        "max_pos_err": "0.0077 m",
         "final_pos_err": "0.0001 m",
         "hover_pass_0.3m": "True",
         "goal_pass_0.3m": "True",
@@ -24,9 +24,9 @@
         "hold_at_goal_samples": "30",
         "planner_success_ever": "False",
         "final_planner_state": "",
-        "flown_path_length": "0.0663 m",
-        "detour_ratio": "1.6580",
-        "mean_jerk": "0.0381 m/s^3"
+        "flown_path_length": "0.0322 m",
+        "detour_ratio": "7.3892",
+        "mean_jerk": "0.1088 m/s^3"
       },
       "notes": "\u76ee\u6807 (0,0,1.5)\uff0c3s \u540e\u81ea\u52a8\u53d1 goal",
       "evaluate_exit_code": 0,
@@ -34,40 +34,40 @@
         "\u672b\u6bb5\u60ac\u505c\u22640.3m": true
       },
       "status": "pass",
-      "launch_log_tail": "[INFO] [rviz2-5]: process started with pid [670773]\n[viz_node-4] [INFO] [1784466570.067624497] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[dynamics_node-1] [INFO] [1784466570.069364857] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[controller_node-2] [INFO] [1784466570.069893230] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[map_node-3] [INFO] [1784466570.073977834] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=0 points=0 downsample_voxel=0.000\n[map_node-3] [INFO] [1784466570.074843982] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=0 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[INFO] [send_goal-6]: process started with pid [670836]\n[send_goal-6] [INFO] [1784466573.649545439] [send_goal]: Published goal (0.00, 0.00, 1.50) yaw=0.00 remaining=0 subs=1\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] Qt: Session management error: Could not open network socket\n[rviz2-5] [INFO] [1784466575.325631275] [rviz2]: Stereo is NOT SUPPORTED\n[rviz2-5] [INFO] [1784466575.325772530] [rviz2]: OpenGl version: 4.5 (GLSL 4.5)\n[rviz2-5] [INFO] [1784466575.377890650] [rviz2]: Stereo is NOT SUPPORTED\n[INFO] [rviz2-5]: process has finished cleanly [pid 670773]"
+      "launch_log_tail": "[INFO] [viz_node-4]: process started with pid [3037772]\n[INFO] [rviz2-5]: process started with pid [3037774]\n[viz_node-4] [INFO] [1784805427.585405039] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[controller_node-2] [INFO] [1784805427.594458411] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[dynamics_node-1] [INFO] [1784805427.604257113] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[map_node-3] [INFO] [1784805427.621117739] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=0 points=0 downsample_voxel=0.000\n[map_node-3] [INFO] [1784805427.621803877] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=0 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[INFO] [send_goal-6]: process started with pid [3037859]\n[send_goal-6] [INFO] [1784805431.119727190] [send_goal]: Published goal (0.00, 0.00, 1.50) yaw=0.00 remaining=0 subs=1\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] Qt: Session management error: Could not open network socket\n[rviz2-5] [INFO] [1784805432.897559992] [rviz2]: Stereo is NOT SUPPORTED\n[rviz2-5] [INFO] [1784805432.897743397] [rviz2]: OpenGl version: 4.5 (GLSL 4.5)\n[rviz2-5] [INFO] [1784805432.970946021] [rviz2]: Stereo is NOT SUPPORTED"
     },
     {
       "id": 2,
       "name": "\u5355\u76ee\u6807\u70b9",
       "launch": "single_goal.launch.py",
       "output_dir": "/home/jungod/drone_ws/report/acceptance_runs/scenario_02_single_goal",
-      "pass": false,
+      "pass": true,
       "checks": {
-        "\u5230\u8fbe\u76ee\u6807\u8bef\u5dee\u22640.3m": false,
-        "\u6700\u5927\u8bef\u5dee\u22643.0m(\u8d77\u98de\u8fc7\u7a0b)": false
+        "\u5230\u8fbe\u76ee\u6807\u8bef\u5dee\u22640.3m": true,
+        "\u6700\u5927\u8bef\u5dee\u22643.0m(\u8d77\u98de\u8fc7\u7a0b)": true
       },
       "summary": {
         "samples": "1002",
-        "mean_pos_err": "6.9489 m",
-        "max_pos_err": "9.7919 m",
-        "final_pos_err": "9.5205 m",
-        "hover_pass_0.3m": "False",
-        "goal_pass_0.3m": "False",
-        "hold_at_goal_pass_0.3m": "False",
+        "mean_pos_err": "0.0093 m",
+        "max_pos_err": "0.1099 m",
+        "final_pos_err": "0.0051 m",
+        "hover_pass_0.3m": "True",
+        "goal_pass_0.3m": "True",
+        "hold_at_goal_pass_0.3m": "True",
         "hold_at_goal_samples": "30",
         "planner_success_ever": "False",
         "final_planner_state": "",
-        "flown_path_length": "11.6803 m",
-        "detour_ratio": "90.4377",
-        "mean_jerk": "3.7949 m/s^3"
+        "flown_path_length": "0.8020 m",
+        "detour_ratio": "11.1603",
+        "mean_jerk": "4.0363 m/s^3"
       },
       "notes": "\u76ee\u6807 (2,1,1.5)",
       "evaluate_exit_code": 0,
       "supplementary_checks": {
-        "\u672b\u6bb5\u60ac\u505c\u22640.3m": false
+        "\u672b\u6bb5\u60ac\u505c\u22640.3m": true
       },
-      "status": "fail",
-      "launch_log_tail": "[dynamics_node-1] [INFO] [1784466635.348430608] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[controller_node-2] [INFO] [1784466635.348674907] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[viz_node-4] [INFO] [1784466635.349173433] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[map_node-3] [INFO] [1784466635.355443675] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=0 points=0 downsample_voxel=0.000\n[map_node-3] [INFO] [1784466635.356772371] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=0 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] Qt: Session management error: Could not open network socket\n[rviz2-5] [INFO] [1784466635.652068264] [rviz2]: Stereo is NOT SUPPORTED\n[rviz2-5] [INFO] [1784466635.652193499] [rviz2]: OpenGl version: 4.5 (GLSL 4.5)\n[rviz2-5] [INFO] [1784466635.687264093] [rviz2]: Stereo is NOT SUPPORTED\n[INFO] [send_goal-6]: process started with pid [671368]\n[send_goal-6] [INFO] [1784466639.297332846] [send_goal]: Published goal (2.00, 1.00, 1.50) yaw=0.00 remaining=0 subs=2\n[rviz2-5] [INFO] [1784466654.837977831] [rviz2]: Setting goal pose: Frame:map, Position(10.9906, 3.74765, 0), Orientation(0, 0, 0.187503, 0.982264) = Angle: 0.377239\n[INFO] [rviz2-5]: process has finished cleanly [pid 671260]"
+      "status": "pass",
+      "launch_log_tail": "[INFO] [viz_node-4]: process started with pid [3038578]\n[INFO] [rviz2-5]: process started with pid [3038580]\n[controller_node-2] [INFO] [1784805496.907770176] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[dynamics_node-1] [INFO] [1784805496.925856630] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[viz_node-4] [INFO] [1784805496.931148102] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[map_node-3] [INFO] [1784805496.976030487] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=0 points=0 downsample_voxel=0.000\n[map_node-3] [INFO] [1784805496.977824404] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=0 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[INFO] [send_goal-6]: process started with pid [3038650]\n[send_goal-6] [INFO] [1784805500.423372363] [send_goal]: Published goal (2.00, 1.00, 1.50) yaw=0.00 remaining=0 subs=1\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] Qt: Session management error: Could not open network socket\n[rviz2-5] [INFO] [1784805502.292539554] [rviz2]: Stereo is NOT SUPPORTED\n[rviz2-5] [INFO] [1784805502.292735712] [rviz2]: OpenGl version: 4.5 (GLSL 4.5)\n[rviz2-5] [INFO] [1784805502.359494455] [rviz2]: Stereo is NOT SUPPORTED"
     },
     {
       "id": 3,
@@ -76,36 +76,36 @@
       "output_dir": "/home/jungod/drone_ws/report/acceptance_runs/scenario_03_multi_goal",
       "pass": true,
       "checks": {
-        "4\u4e2a\u89d2\u70b9\u5747\u8bbf\u95ee": true,
+        "4\u6761\u8fb9\u7684\u89d2\u70b9\u5747\u8bbf\u95ee": true,
         "\u6700\u7ec8\u56de\u5230\u8d77\u70b9\u9644\u8fd1": true
       },
       "summary": {
-        "samples": "2202",
-        "mean_pos_err": "0.5841 m",
-        "max_pos_err": "3.2212 m",
-        "final_pos_err": "0.0010 m",
+        "samples": "1202",
+        "mean_pos_err": "0.4895 m",
+        "max_pos_err": "2.8156 m",
+        "final_pos_err": "0.0067 m",
         "hover_pass_0.3m": "True",
         "goal_pass_0.3m": "True",
         "hold_at_goal_pass_0.3m": "True",
         "hold_at_goal_samples": "30",
         "planner_success_ever": "False",
         "final_planner_state": "",
-        "flown_path_length": "18.3089 m",
-        "detour_ratio": "8.8811",
-        "mean_jerk": "3.5971 m/s^3"
+        "flown_path_length": "8.8292 m",
+        "detour_ratio": "5.8861",
+        "mean_jerk": "4.6989 m/s^3"
       },
-      "notes": "square side=2m, hold=8s/\u70b9, 5s \u540e\u5f00\u59cb\u53d1\u822a\u70b9",
+      "notes": "\u539f\u70b9\u8d77\u6b65\u7684 2m\u00d72m \u95ed\u5408\u6b63\u65b9\u5f62\uff1b\u5230\u70b9\u4e14\u4f4e\u901f\u540e\u5207\u6362\u4e0b\u4e00\u822a\u70b9",
       "evaluate_exit_code": 0,
       "waypoint_visits": {
-        "visited": 4,
-        "total": 4,
+        "visited": 5,
+        "total": 5,
         "pass": true,
         "details": [
           {
             "index": 0,
             "waypoint": [
-              1.0,
-              1.0,
+              0.0,
+              0.0,
               1.5
             ],
             "visited": true
@@ -113,8 +113,8 @@
           {
             "index": 1,
             "waypoint": [
-              -1.0,
-              1.0,
+              2.0,
+              0.0,
               1.5
             ],
             "visited": true
@@ -122,8 +122,8 @@
           {
             "index": 2,
             "waypoint": [
-              -1.0,
-              -1.0,
+              2.0,
+              2.0,
               1.5
             ],
             "visited": true
@@ -131,54 +131,142 @@
           {
             "index": 3,
             "waypoint": [
-              1.0,
-              -1.0,
+              0.0,
+              2.0,
+              1.5
+            ],
+            "visited": true
+          },
+          {
+            "index": 4,
+            "waypoint": [
+              0.0,
+              0.0,
               1.5
             ],
             "visited": true
           }
         ],
-        "tolerance_m": 0.6
+        "tolerance_m": 0.25
       },
       "status": "pass",
-      "launch_log_tail": "[INFO] [waypoint_publisher-6]: process started with pid [671838]\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] Qt: Session management error: Could not open network socket\n[waypoint_publisher-6] [INFO] [1784466711.036340119] [waypoint_publisher]: Waypoint publisher: 5 points, hold=8.0s, topic=/drone/goal\n[rviz2-5] [INFO] [1784466711.058421265] [rviz2]: Stereo is NOT SUPPORTED\n[rviz2-5] [INFO] [1784466711.058892200] [rviz2]: OpenGl version: 4.5 (GLSL 4.5)\n[rviz2-5] [INFO] [1784466711.111627019] [rviz2]: Stereo is NOT SUPPORTED\n[waypoint_publisher-6] [INFO] [1784466719.018419602] [waypoint_publisher]: Waypoint 1/5: (1.00, 1.00, 1.50)\n[waypoint_publisher-6] [INFO] [1784466727.019111566] [waypoint_publisher]: Waypoint 2/5: (-1.00, 1.00, 1.50)\n[waypoint_publisher-6] [INFO] [1784466735.019554833] [waypoint_publisher]: Waypoint 3/5: (-1.00, -1.00, 1.50)\n[waypoint_publisher-6] [INFO] [1784466743.019125322] [waypoint_publisher]: Waypoint 4/5: (1.00, -1.00, 1.50)\n[waypoint_publisher-6] [INFO] [1784466751.019852988] [waypoint_publisher]: Waypoint 5/5: (1.00, 1.00, 1.50)\n[waypoint_publisher-6] [INFO] [1784466759.018855936] [waypoint_publisher]: Waypoint sequence complete\n[INFO] [rviz2-5]: process has finished cleanly [pid 671774]"
+      "launch_log_tail": "[controller_node-2] [INFO] [1784812296.904046337] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on, approach_brake=on\n[dynamics_node-1] [INFO] [1784812296.904742833] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[INFO] [waypoint_publisher-6]: process started with pid [3078168]\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] Qt: Session management error: Could not open network socket\n[waypoint_publisher-6] [INFO] [1784812301.857079482] [waypoint_publisher]: Waypoint publisher: 4 pts/cycle \u00d7 1 cycles, mode=arrival,v<0.10, topic=/drone/goal\n[rviz2-5] [INFO] [1784812301.898624882] [rviz2]: Stereo is NOT SUPPORTED\n[rviz2-5] [INFO] [1784812301.898924474] [rviz2]: OpenGl version: 4.5 (GLSL 4.5)\n[rviz2-5] [INFO] [1784812301.936567636] [rviz2]: Stereo is NOT SUPPORTED\n[waypoint_publisher-6] [INFO] [1784812302.347780955] [waypoint_publisher]: Waypoint cycle 1/1 1/4: (2.00, 0.00, 1.50)\n[waypoint_publisher-6] [INFO] [1784812307.446894707] [waypoint_publisher]: Waypoint cycle 1/1 2/4: (2.00, 2.00, 1.50)\n[waypoint_publisher-6] [INFO] [1784812311.046801676] [waypoint_publisher]: Waypoint cycle 1/1 3/4: (0.00, 2.00, 1.50)\n[waypoint_publisher-6] [INFO] [1784812314.647144675] [waypoint_publisher]: Waypoint cycle 1/1 4/4: (0.00, 0.00, 1.50)\n[waypoint_publisher-6] [INFO] [1784812318.246670145] [waypoint_publisher]: Waypoint sequence complete"
     },
     {
       "id": 4,
       "name": "\u9759\u6001\u907f\u969c",
       "launch": "avoidance.launch.py",
       "output_dir": "/home/jungod/drone_ws/report/acceptance_runs/scenario_04_avoidance",
-      "pass": false,
+      "pass": true,
       "checks": {
-        "\u5230\u8fbe\u76ee\u6807\u8bef\u5dee\u22640.5m": false,
-        "\u6700\u5c0f\u969c\u788d\u8ddd\u79bb>0.35m": false,
+        "\u5faa\u73af\u822a\u70b9\u5747\u8bbf\u95ee": true,
+        "\u6700\u5c0f\u969c\u788d\u8ddd\u79bb>0.30m": true,
         "\u89c4\u5212\u5668\u66fe\u62a5\u544asuccess": true
       },
       "summary": {
-        "samples": "2263",
-        "mean_pos_err": "22.1748 m",
-        "max_pos_err": "24.3024 m",
-        "final_pos_err": "24.0416 m",
+        "samples": "5602",
+        "mean_pos_err": "9.3207 m",
+        "max_pos_err": "19.6749 m",
+        "final_pos_err": "0.1027 m",
         "hover_pass_0.3m": "False",
-        "goal_pass_0.3m": "False",
-        "hold_at_goal_pass_0.3m": "False",
+        "goal_pass_0.3m": "True",
+        "hold_at_goal_pass_0.3m": "True",
         "hold_at_goal_samples": "30",
         "planner_success_ever": "True",
-        "final_planner_state": "EXEC_TRAJ",
-        "min_obstacle_distance": "0.1503 m",
+        "final_planner_state": "TRAJ_CMD",
+        "min_obstacle_distance": "0.3132 m",
+        "avoidance_safety_distance": "0.3000 m",
+        "avoidance_pass": "True",
         "avoidance_pass_0.35m": "False",
-        "flown_path_length": "33.3581 m",
-        "detour_ratio": "3.0604",
-        "mean_jerk": "7.5291 m/s^3",
-        "planned_tracking_error_mean": "0.0207 m"
+        "flown_path_length": "122.4693 m",
+        "detour_ratio": "13.4077",
+        "mean_jerk": "3.8788 m/s^3",
+        "planned_tracking_error_mean": "7.9707 m"
       },
-      "notes": "dense_field 80\u5706\u67f1+\u56f4\u5899, seed=42",
+      "notes": "Path B EGO + official_forest: lap1 \u77e9\u5f62, lap2 \u6f0f\u6597(\u5bf9\u89d2\u2192\u5bbd\u2192\u5bf9\u89d2\u2192\u5bbd)",
       "evaluate_exit_code": 0,
-      "supplementary_checks": {
-        "\u672b\u6bb5\u60ac\u505c\u22640.3m": false
+      "waypoint_visits": {
+        "visited": 8,
+        "total": 8,
+        "pass": true,
+        "details": [
+          {
+            "index": 0,
+            "waypoint": [
+              -8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true
+          },
+          {
+            "index": 1,
+            "waypoint": [
+              8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true
+          },
+          {
+            "index": 2,
+            "waypoint": [
+              8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": true
+          },
+          {
+            "index": 3,
+            "waypoint": [
+              -8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": true
+          },
+          {
+            "index": 4,
+            "waypoint": [
+              8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true
+          },
+          {
+            "index": 5,
+            "waypoint": [
+              -8.0,
+              6.0,
+              1.0
+            ],
+            "visited": true
+          },
+          {
+            "index": 6,
+            "waypoint": [
+              8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": true
+          },
+          {
+            "index": 7,
+            "waypoint": [
+              -8.0,
+              -6.0,
+              1.0
+            ],
+            "visited": true
+          }
+        ],
+        "tolerance_m": 1.5
       },
-      "status": "fail",
-      "launch_log_tail": "[rviz2-7] Qt: Session management error: Could not open network socket\n[rviz2-7] [INFO] [1784466843.790278153] [rviz2]: Stereo is NOT SUPPORTED\n[rviz2-7] [INFO] [1784466843.790404210] [rviz2]: OpenGl version: 4.5 (GLSL 4.5)\n[rviz2-7] [INFO] [1784466843.822592852] [rviz2]: Stereo is NOT SUPPORTED\n[planner_node-5] [INFO] [1784466845.007155781] [drone_planner]: Map ingested: 236173 raw -> 42881 voxels | origin=(-10.4,-10.4,-0.2) size=(60.7,44.7,4.7) res=0.25 inflate=0.08 [auto_fit] [auto_inflate]\n[planner_node-5] [INFO] [1784466845.057041239] [drone_planner]: Planning (2.7,12.0)->(40.0,12.0)\n[planner_node-5] [INFO] [1784466845.057096042] [drone_planner]: Running A* with 0 peer keep-outs\n[planner_node-5] [WARN] [1784466845.058678765] [drone_planner]: DynA* failed at cruise_z=1.50 (band=\u00b10.35) \u2014 fallback GridA*\n[planner_node-5] [INFO] [1784466845.058966325] [drone_planner]: A* finished found=yes guide=150\n[planner_node-5] [INFO] [1784466845.059081131] [drone_planner]: Planned path: 175 waypoints, length=39.75 m (horizontal avoidance)\n[INFO] [rviz2-7]: process has finished cleanly [pid 672553]\n[map_adapter-2] [INFO] [1784466877.514672609] [map_adapter]: adapted cloud #20 width=236173 occ=224x160 topdown_cells=3254\n[map_adapter-2] [INFO] [1784466917.422543837] [map_adapter]: adapted cloud #40 width=236173 occ=224x160 topdown_cells=3254\n[map_adapter-2] [INFO] [1784466957.423138105] [map_adapter]: adapted cloud #60 width=236173 occ=224x160 topdown_cells=3254\n[map_adapter-2] [INFO] [1784466997.414237521] [map_adapter]: adapted cloud #80 width=236173 occ=224x160 topdown_cells=3254"
+      "status": "pass",
+      "launch_log_tail": "[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[map_adapter-2] [INFO] [1784822187.448349928] [map_adapter]: adapted cloud #2920 width=33370 occ=136x88 topdown_cells=650\n[local_sense_cloud-6] [INFO] [1784822187.786440050] [drone_0_local_sense_cloud]: global cloud cached: 31782 points\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[map_adapter-2] [INFO] [1784822189.450467528] [map_adapter]: adapted cloud #2940 width=33370 occ=136x88 topdown_cells=650\n[local_sense_cloud-6] [INFO] [1784822189.533896003] [drone_0_local_sense_cloud]: local cloud #2950: 6884 pts @ (-7.9,-6.0,1.1)\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[map_adapter-2] [INFO] [1784822191.452829143] [map_adapter]: adapted cloud #2960 width=33370 occ=136x88 topdown_cells=650"
     },
     {
       "id": 5,
@@ -192,9 +280,9 @@
         "\u65e0A*\u5931\u8d25\u65e5\u5fd7": true
       },
       "summary": {
-        "samples": "2989",
-        "mean_pos_err": "0.7831 m",
-        "max_pos_err": "11.2093 m",
+        "samples": "3002",
+        "mean_pos_err": "0.8291 m",
+        "max_pos_err": "11.3824 m",
         "final_pos_err": "0.0003 m",
         "hover_pass_0.3m": "True",
         "goal_pass_0.3m": "True",
@@ -202,12 +290,14 @@
         "hold_at_goal_samples": "30",
         "planner_success_ever": "True",
         "final_planner_state": "EXEC_TRAJ",
-        "min_obstacle_distance": "0.9826 m",
+        "min_obstacle_distance": "0.9852 m",
+        "avoidance_safety_distance": "0.3500 m",
+        "avoidance_pass": "True",
         "avoidance_pass_0.35m": "True",
-        "flown_path_length": "20.6643 m",
-        "detour_ratio": "1.8435",
-        "mean_jerk": "28.7290 m/s^3",
-        "planned_tracking_error_mean": "0.0232 m"
+        "flown_path_length": "21.0806 m",
+        "detour_ratio": "1.8520",
+        "mean_jerk": "3.9245 m/s^3",
+        "planned_tracking_error_mean": "0.0242 m"
       },
       "notes": "narrow_corridor S-bend: 3\u00d71.6m doors + side clutter (PLAN \u00a75.3)",
       "evaluate_exit_code": 0,
@@ -215,7 +305,7 @@
         "\u672b\u6bb5\u60ac\u505c\u22640.3m": true
       },
       "status": "pass",
-      "launch_log_tail": "[rviz2-6] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-6] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-6] Qt: Session management error: Could not open network socket\n[planner_node-4] [INFO] [1784467013.413792574] [drone_planner]: Map ingested: 137567 raw -> 15616 voxels | origin=(-4.7,-4.7,-0.2) size=(29.4,19.4,4.7) res=0.25 inflate=0.08 [auto_fit] [auto_inflate]\n[rviz2-6] [INFO] [1784467013.553878109] [rviz2]: Stereo is NOT SUPPORTED\n[rviz2-6] [INFO] [1784467013.554349755] [rviz2]: OpenGl version: 4.5 (GLSL 4.5)\n[rviz2-6] [INFO] [1784467013.606290307] [rviz2]: Stereo is NOT SUPPORTED\n[INFO] [send_goal-7]: process started with pid [673429]\n[planner_node-4] [INFO] [1784467017.885290004] [drone_planner]: New goal (17.00, 5.00, 1.50)\n[send_goal-7] [INFO] [1784467017.903028587] [send_goal]: Published goal (17.00, 5.00, 1.50) yaw=0.00 remaining=0 subs=3\n[planner_node-4] [INFO] [1784467017.915111885] [drone_planner]: Planning (1.0,5.0)->(17.0,5.0)\n[planner_node-4] [INFO] [1784467017.915175234] [drone_planner]: Running A* with 0 peer keep-outs\n[planner_node-4] [INFO] [1784467017.932252625] [drone_planner]: A* finished found=yes guide=87\n[planner_node-4] [INFO] [1784467017.932385254] [drone_planner]: Planned path: 138 waypoints, length=26.78 m (horizontal avoidance)\n[INFO] [rviz2-6]: process has finished cleanly [pid 673310]"
+      "launch_log_tail": "[dynamics_node-1] [INFO] [1784822221.710463636] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[planner_node-4] [INFO] [1784822221.718420595] [drone_planner]: drone_planner ready (DynAStar=on, Bspline=off, local_mapping=off, map=/map/obstacles, peers=)\n[map_node-3] [INFO] [1784822221.730929393] [drone_map]: Map generated: mode=narrow_corridor seed=42 attempt=0 connected=true obstacles=83 points=137567 downsample_voxel=0.000\n[map_node-3] [INFO] [1784822221.734576246] [drone_map]: drone_map ready: mode=narrow_corridor seed=42 attempt=0 connected=yes points=137567 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[planner_node-4] [INFO] [1784822221.755791718] [drone_planner]: Map ingested: 137567 raw -> 15616 voxels | origin=(-4.7,-4.7,-0.2) size=(29.4,19.4,4.7) res=0.25 inflate=0.08 [auto_fit] [auto_inflate]\n[rviz2-6] [INFO] [1784822222.167282117] [rviz2]: Stereo is NOT SUPPORTED\n[rviz2-6] [INFO] [1784822222.167414175] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)\n[rviz2-6] [INFO] [1784822222.186602138] [rviz2]: Stereo is NOT SUPPORTED\n[INFO] [send_goal-7]: process started with pid [121756]\n[planner_node-4] [INFO] [1784822226.592312239] [drone_planner]: New goal (17.00, 5.00, 1.50)\n[send_goal-7] [INFO] [1784822226.602805300] [send_goal]: Published goal (17.00, 5.00, 1.50) yaw=0.00 remaining=0 subs=3\n[planner_node-4] [INFO] [1784822226.618582613] [drone_planner]: Planning (1.0,5.0)->(17.0,5.0)\n[planner_node-4] [INFO] [1784822226.618647194] [drone_planner]: Running A* with 0 peer keep-outs\n[planner_node-4] [INFO] [1784822226.623975578] [drone_planner]: A* finished found=yes guide=87\n[planner_node-4] [INFO] [1784822226.624065376] [drone_planner]: Planned path: 138 waypoints, length=26.78 m (horizontal avoidance)"
     },
     {
       "id": 6,
@@ -228,24 +318,24 @@
         "\u8bc4\u6d4b\u56fe\u5df2\u751f\u6210": true
       },
       "summary": {
-        "samples": "1801",
-        "mean_pos_err": "0.0368 m",
-        "max_pos_err": "0.0827 m",
-        "final_pos_err": "0.0473 m",
+        "samples": "1802",
+        "mean_pos_err": "0.0363 m",
+        "max_pos_err": "0.0804 m",
+        "final_pos_err": "0.0521 m",
         "hover_pass_0.3m": "True",
         "goal_pass_0.3m": "True",
         "hold_at_goal_pass_0.3m": "True",
         "hold_at_goal_samples": "30",
         "planner_success_ever": "False",
         "final_planner_state": "",
-        "flown_path_length": "4.2773 m",
-        "detour_ratio": "67.7021",
-        "mean_jerk": "4.0780 m/s^3"
+        "flown_path_length": "4.1398 m",
+        "detour_ratio": "65.0275",
+        "mean_jerk": "1.3920 m/s^3"
       },
       "notes": "wind_enable+imu_noise_enable, \u624b\u52a8\u8dd1 evaluate",
       "evaluate_exit_code": 0,
       "status": "pass",
-      "launch_log_tail": "[INFO] [viz_node-4]: process started with pid [674129]\n[INFO] [rviz2-5]: process started with pid [674131]\n[viz_node-4] [INFO] [1784467187.868453275] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[controller_node-2] [INFO] [1784467187.870542790] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[dynamics_node-1] [INFO] [1784467187.870847142] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[map_node-3] [INFO] [1784467187.876276029] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=0 points=0 downsample_voxel=0.000\n[map_node-3] [INFO] [1784467187.877024465] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=0 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[INFO] [send_goal-6]: process started with pid [674192]\n[send_goal-6] [INFO] [1784467191.433142367] [send_goal]: Published goal (0.00, 0.00, 1.50) yaw=0.00 remaining=0 subs=1\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] _IceTransSocketUNIXConnect: Cannot connect to non-local host jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV\n[rviz2-5] Qt: Session management error: Could not open network socket\n[rviz2-5] [INFO] [1784467193.093599130] [rviz2]: Stereo is NOT SUPPORTED\n[rviz2-5] [INFO] [1784467193.093710088] [rviz2]: OpenGl version: 4.5 (GLSL 4.5)\n[rviz2-5] [INFO] [1784467193.127466337] [rviz2]: Stereo is NOT SUPPORTED"
+      "launch_log_tail": "[INFO] [map_node-3]: process started with pid [122539]\n[INFO] [viz_node-4]: process started with pid [122541]\n[INFO] [rviz2-5]: process started with pid [122543]\n[viz_node-4] [INFO] [1784822413.849002803] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[controller_node-2] [INFO] [1784822413.851074927] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[dynamics_node-1] [INFO] [1784822413.851421557] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[map_node-3] [INFO] [1784822413.856399560] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=0 points=0 downsample_voxel=0.000\n[map_node-3] [INFO] [1784822413.857110382] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=0 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[rviz2-5] [INFO] [1784822414.287995474] [rviz2]: Stereo is NOT SUPPORTED\n[rviz2-5] [INFO] [1784822414.288147459] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)\n[rviz2-5] [INFO] [1784822414.316783865] [rviz2]: Stereo is NOT SUPPORTED\n[INFO] [interference_monitor-6]: process started with pid [122622]\n[interference_monitor-6] [INFO] [1784822416.813790697] [interference_monitor]: Interference monitor ready (goal=(0.0, 0.0, 1.5), limit=0.3 m)\n[INFO] [send_goal-7]: process started with pid [122650]\n[send_goal-7] [INFO] [1784822417.811491217] [send_goal]: Published goal (0.00, 0.00, 1.50) yaw=0.00 remaining=0 subs=2"
     }
   ],
   "rates": {

@@ -55,9 +55,10 @@ ros2 launch drone_bringup planner_sim.launch.py planner:=vfh map:=dense_field
 ros2 launch drone_bringup planner_sim.launch.py planner:=sac map:=dense_field
 ```
 
-Or call each launch directly: `avoidance.launch.py`, `ego_avoidance.launch.py`,
+Or call each launch directly: `homemade_avoidance.launch.py`, `ego_avoidance.launch.py`,
 `gcopter_avoidance.launch.py`, `fuel_explore.launch.py`, `mighty_avoidance.launch.py`,
-`fast_planner_avoidance.launch.py`, `rl_avoidance.launch.py`, `sac_avoidance.launch.py`
+`fast_planner_avoidance.launch.py`, `rl_avoidance.launch.py`, `sac_avoidance.launch.py`.
+Acceptance scenario 4 (`avoidance.launch.py`) is the Path B EGO + official_forest cyclic protocol.
 (all accept `map:=…`).
 
 Web UI (planner + map Start/Stop):
@@ -76,7 +77,7 @@ ros2 launch drone_bringup ego_swarm.launch.py num_drones:=2 map:=official_forest
 
 | ID | Path | Class | Package | Launch | Aliases |
 |----|------|-------|---------|--------|---------|
-| `homemade` | A | weak | `drone_planner` | `avoidance.launch.py` | `a`, `path_a`, `dynastar` |
+| `homemade` | A | weak | `drone_planner` | `homemade_avoidance.launch.py` | `a`, `path_a`, `dynastar` |
 | `ego` | B | strong | `ego_vendor/ego_planner` | `ego_avoidance.launch.py` | `b`, `path_b` |
 | `gcopter` | C | strong | `gcopter_vendor/gcopter` | `gcopter_avoidance.launch.py` | `c`, `path_c`, `minco` |
 | `fuel_explore` | D | **mode** | `drone_exploration` + EGO | `fuel_explore.launch.py` | `d`, `path_d`, `fuel` |
@@ -89,6 +90,7 @@ ros2 launch drone_bringup ego_swarm.launch.py num_drones:=2 map:=official_forest
 
 Dyn-A* + B-spline on an occupancy grid; auto-fits grid/inflate from the obstacle cloud.
 Optional local mapping via `local_mapping_enable` (default off).
+Demo launch: `homemade_avoidance.launch.py`.
 
 ### Path B — `ego` (strong)
 
@@ -97,6 +99,10 @@ EGO-Planner rebound B-spline; [`ego_cmd_bridge`](drone_bringup/ego_cmd_bridge.py
 (`local_sense_cloud`, horizon 5 m) crops the **same** global map cloud for
 `grid_map` — not a different map. RViz: gray ForestCloud + gray occupancy +
 rainbow inflate (`ego_avoidance.rviz`).
+
+Acceptance scenario 4 (`avoidance.launch.py`): EGO + `official_forest` — lap 1
+rectangle, lap 2 funnel (diagonal → wide → diagonal → wide). Generic single-goal
+demo: `ego_avoidance.launch.py`.
 
 ### Path C — `gcopter` (strong)
 

@@ -1,0 +1,21 @@
+{
+  "title": "Multi planner switch",
+  "folder": "02_multi_planner_switch",
+  "canonical_plan_file": "multi_planner_switch_9abd0d10.plan.md",
+  "anchors": [
+    {
+      "line": 788,
+      "kind": "SwitchMode",
+      "label": "plan"
+    },
+    {
+      "line": 791,
+      "kind": "CreatePlan",
+      "label": "Multi planner switch"
+    }
+  ],
+  "dialogue_event_range": [
+    788,
+    791
+  ]
+}

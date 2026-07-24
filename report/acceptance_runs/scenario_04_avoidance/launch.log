@@ -1,80 +1,2128 @@
-[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-07-14-01-42-00-912352-jungod-ASUS-TUF-Gaming-A15-FA507XV-FA507XV-437984
+[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-07-23-23-51-33-950477-jungod-asus-tuf-gaming-a15-119466
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [dynamics_node-1]: process started with pid [438001]
-[INFO] [controller_node-2]: process started with pid [438003]
-[INFO] [map_node-3]: process started with pid [438005]
-[INFO] [planner_node-4]: process started with pid [438007]
-[INFO] [viz_node-5]: process started with pid [438009]
-[planner_node-4] [INFO] [1783964520.972448891] [drone_planner]: drone_planner ready (DynAStar=off, Bspline=off, local_raycast=off)
-[viz_node-5] [INFO] [1783964520.972943891] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)
-[controller_node-2] [INFO] [1783964520.973458548] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00 (cascade PID + mixer, self-developed)
-[dynamics_node-1] [INFO] [1783964520.973724142] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)
-[map_node-3] [INFO] [1783964521.091528298] [drone_map]: Map generated: mode=dense_field seed=42 attempt=0 connected=true obstacles=84 points=96008 downsample_voxel=0.000
-[map_node-3] [INFO] [1783964521.094760260] [drone_map]: drone_map ready: mode=dense_field seed=42 attempt=0 connected=yes points=96008 (native cylinders+walls for dense/narrow; ego_* modes optional)
-[planner_node-4] [INFO] [1783964521.113666456] [drone_planner]: Map ingested: 96008 raw -> 7794 voxels (+boundary sealed)
-[INFO] [send_goal-6]: process started with pid [438117]
-[planner_node-4] [INFO] [1783964525.465228595] [drone_planner]: New goal (17.00, 5.00, 1.50)
-[planner_node-4] [INFO] [1783964525.472640701] [drone_planner]: Planned path: 98 waypoints, length=19.39 m (horizontal avoidance)
-[send_goal-6] [INFO] [1783964525.477189943] [send_goal]: Published goal (17.00, 5.00, 1.50) yaw=0.00 remaining=0
+[INFO] [random_forest-1]: process started with pid [119492]
+[INFO] [map_adapter-2]: process started with pid [119494]
+[INFO] [dynamics_node-3]: process started with pid [119496]
+[INFO] [controller_node-4]: process started with pid [119498]
+[INFO] [ego_planner_node-5]: process started with pid [119500]
+[INFO] [local_sense_cloud-6]: process started with pid [119502]
+[INFO] [traj_server-7]: process started with pid [119504]
+[INFO] [ego_cmd_bridge-8]: process started with pid [119506]
+[INFO] [viz_node-9]: process started with pid [119508]
+[INFO] [rviz2-10]: process started with pid [119510]
+[dynamics_node-3] [INFO] [1784821894.030753386] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)
+[viz_node-9] [INFO] [1784821894.032837686] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)
+[controller_node-4] [INFO] [1784821894.035795339] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=off
+[ego_planner_node-5] hit: 0.619039
+[ego_planner_node-5] miss: -0.619039
+[ego_planner_node-5] min log: -1.99243
+[ego_planner_node-5] max: 2.19722
+[ego_planner_node-5] thresh log: 1.38629
+[ego_planner_node-5] [FSM]: from INIT to WAIT_TARGET
+[map_adapter-2] [INFO] [1784821894.310753123] [map_adapter]: map_adapter /map_generator/global_cloud → clouds ['/map/obstacles'], occupancy + metadata for map=official_forest
+[ego_cmd_bridge-8] [INFO] [1784821894.334148052] [ego_cmd_bridge]: EGO bridge ready ns=-: /drone_0_planning/pos_cmd → /planner/local_goal; Path ← /drone_0_plan_vis/optimal_list; goals /drone/goal → /drone/goal_bridge_unused
+[local_sense_cloud-6] [INFO] [1784821894.339931642] [drone_0_local_sense_cloud]: local_sense: /map_generator/global_cloud → /drone_0_pcl_render_node/cloud horizon=5.0 m @ 10 Hz (TRANSIENT_LOCAL)
+[random_forest-1] seed=1
+[random_forest-1] [WARN] [1784821894.531861634] [RandomMapGenerateCylinder]: Finished generate random map 
+[rviz2-10] [INFO] [1784821894.565678871] [rviz2]: Stereo is NOT SUPPORTED
+[rviz2-10] [INFO] [1784821894.565829804] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)
+[local_sense_cloud-6] [INFO] [1784821894.577749794] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[rviz2-10] [INFO] [1784821894.611347510] [rviz2]: Stereo is NOT SUPPORTED
+[local_sense_cloud-6] [INFO] [1784821894.629367734] [drone_0_local_sense_cloud]: local cloud #1: 621 pts @ (-15.0,0.0,0.9)
+[map_adapter-2] [INFO] [1784821894.651086536] [map_adapter]: adapted cloud #1 width=33370 occ=136x88 topdown_cells=650
+[traj_server-7] [WARN] [1784821895.033274974] [drone_0_traj_server]: [Traj server]: ready.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784821896.569295753] [map_adapter]: adapted cloud #20 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784821898.574532453] [map_adapter]: adapted cloud #40 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784821899.529985324] [drone_0_local_sense_cloud]: local cloud #50: 631 pts @ (-15.0,0.0,0.9)
+[local_sense_cloud-6] [INFO] [1784821899.661957902] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784821900.581529043] [map_adapter]: adapted cloud #60 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784821902.589001121] [map_adapter]: adapted cloud #80 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[INFO] [waypoint_publisher-11]: process started with pid [119711]
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784821904.529458623] [drone_0_local_sense_cloud]: local cloud #100: 631 pts @ (-15.0,0.0,0.9)
+[waypoint_publisher-11] [INFO] [1784821904.575296153] [waypoint_publisher]: Waypoint publisher: 8 pts/cycle × 1 cycles, mode=arrival, topic=/drone/goal
+[map_adapter-2] [INFO] [1784821904.626025316] [map_adapter]: adapted cloud #100 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821904.665810322] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] Triggered!
+[waypoint_publisher-11] [INFO] [1784821905.064969757] [waypoint_publisher]: Waypoint cycle 1/1 1/8: (-8.00, 6.00, 1.00)
+[ego_planner_node-5] [FSM]: from WAIT_TARGET to SEQUENTIAL_START
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 0]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=3,time(ms)=0.028,total_t(ms)=0.028,cost=0.068
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.000151674[0m,optimize:0.000109986,refine:4.1688e-05,avg_time=0.000151674
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from SEQUENTIAL_START to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 1]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=3,time(ms)=0.019,total_t(ms)=0.019,cost=0.052
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.000184596[0m,optimize:0.00018142,refine:3.176e-06,avg_time=0.000168135
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 2]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=3,time(ms)=0.009,total_t(ms)=0.009,cost=0.051
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m7.4489e-05[0m,optimize:7.3357e-05,refine:1.132e-06,avg_time=0.00013692
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821906.602836231] [map_adapter]: adapted cloud #120 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 3]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.006,total_t(ms)=0.006,cost=0.001
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.000110246[0m,optimize:0.000109084,refine:1.162e-06,avg_time=0.000130251
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 4]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.006,total_t(ms)=0.006,cost=0.001
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m6.8018e-05[0m,optimize:6.6765e-05,refine:1.253e-06,avg_time=0.000117805
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 5]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.006,total_t(ms)=0.006,cost=0.001
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m7.8356e-05[0m,optimize:7.7124e-05,refine:1.232e-06,avg_time=0.00011123
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821908.594135489] [map_adapter]: adapted cloud #140 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821909.529544489] [drone_0_local_sense_cloud]: local cloud #150: 976 pts @ (-13.8,1.1,0.9)
+[local_sense_cloud-6] [INFO] [1784821909.888785909] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821910.872590703] [map_adapter]: adapted cloud #160 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 6]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=17,time(ms)=0.045,total_t(ms)=0.045,cost=0.061
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.000133038[0m,optimize:0.000130995,refine:2.043e-06,avg_time=0.000114345
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821912.896005830] [map_adapter]: adapted cloud #180 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 7]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] iter=5,time(ms)=0.182812,rebound.
+[ego_planner_node-5] [32miter(+1)=21,time(ms)=0.053,total_t(ms)=0.246,cost=0.058
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00032[0m,optimize:0.00031,refine:1.5e-06,avg_time=0.00014
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821914.530577706] [drone_0_local_sense_cloud]: local cloud #200: 2007 pts @ (-11.1,3.3,1.0)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821914.903654133] [map_adapter]: adapted cloud #200 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821914.908414991] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821916.929430551] [map_adapter]: adapted cloud #220 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 8]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=12,time(ms)=0.029,total_t(ms)=0.029,cost=0.047
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00012[0m,optimize:0.00012,refine:1.7e-06,avg_time=0.00014
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821918.911489365] [map_adapter]: adapted cloud #240 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821919.539903325] [drone_0_local_sense_cloud]: local cloud #250: 3325 pts @ (-8.7,4.4,1.0)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821919.933870192] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821920.923601558] [map_adapter]: adapted cloud #260 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[waypoint_publisher-11] [INFO] [1784821921.364720873] [waypoint_publisher]: Waypoint cycle 1/1 2/8: (8.00, 6.00, 1.00)
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 9]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=18,time(ms)=0.072,total_t(ms)=0.073,cost=0.098
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00043[0m,optimize:0.0002,refine:0.00023,avg_time=0.00017
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 10]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=4,time(ms)=0.016,total_t(ms)=0.016,cost=0.239
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00019[0m,optimize:0.00011,refine:7.8e-05,avg_time=0.00017
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 11]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.012,total_t(ms)=0.013,cost=0.117
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00028[0m,optimize:0.00014,refine:0.00014,avg_time=0.00018
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821922.920917280] [map_adapter]: adapted cloud #280 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 12]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.008,total_t(ms)=0.009,cost=0.089
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00013[0m,optimize:7.2e-05,refine:6.1e-05,avg_time=0.00017
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 13]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.013,total_t(ms)=0.013,cost=0.072
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00025[0m,optimize:0.00014,refine:0.00011,avg_time=0.00018
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 14]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.014,total_t(ms)=0.015,cost=0.066
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00018[0m,optimize:0.00011,refine:7.2e-05,avg_time=0.00018
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821924.568410610] [drone_0_local_sense_cloud]: local cloud #300: 4181 pts @ (-7.3,6.0,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821924.932574322] [map_adapter]: adapted cloud #300 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821924.962495601] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821926.944957979] [map_adapter]: adapted cloud #320 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 15]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=9,time(ms)=0.036,total_t(ms)=0.037,cost=0.013
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00018[0m,optimize:0.00017,refine:2.4e-06,avg_time=0.00018
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821928.965836036] [map_adapter]: adapted cloud #340 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821929.533314451] [drone_0_local_sense_cloud]: local cloud #350: 5930 pts @ (-4.9,5.9,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821929.987427541] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 16]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=9,time(ms)=0.035,total_t(ms)=0.035,cost=0.008
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00017[0m,optimize:0.00017,refine:2e-06,avg_time=0.00018
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821930.986426811] [map_adapter]: adapted cloud #360 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821933.030524690] [map_adapter]: adapted cloud #380 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 17]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=9,time(ms)=0.046,total_t(ms)=0.046,cost=0.021
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00029[0m,optimize:0.00029,refine:1.9e-06,avg_time=0.00019
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821934.532558657] [drone_0_local_sense_cloud]: local cloud #400: 5084 pts @ (-2.2,5.9,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821935.056152793] [map_adapter]: adapted cloud #400 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821935.082563015] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 18]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] [32miter(+1)=32,time(ms)=0.168,total_t(ms)=0.169,cost=0.077
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] [32miter(+1)=19,time(ms)=0.064,total_t(ms)=0.064,cost=0.028
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00044[0m,optimize:0.00043,refine:3.4e-06,avg_time=0.0002
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821937.124776410] [map_adapter]: adapted cloud #420 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821939.147865321] [map_adapter]: adapted cloud #440 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 19]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=11,time(ms)=0.043,total_t(ms)=0.043,cost=0.025
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00019[0m,optimize:0.00018,refine:2.6e-06,avg_time=0.0002
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821939.535966439] [drone_0_local_sense_cloud]: local cloud #450: 5609 pts @ (0.4,6.0,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821940.082968509] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821941.203162301] [map_adapter]: adapted cloud #460 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 20]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=12,time(ms)=0.023,total_t(ms)=0.023,cost=0.036
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m7.7e-05[0m,optimize:7.6e-05,refine:1.3e-06,avg_time=0.00019
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821943.234175802] [map_adapter]: adapted cloud #480 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821944.533155135] [drone_0_local_sense_cloud]: local cloud #500: 3715 pts @ (3.0,5.6,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821945.182488801] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[map_adapter-2] [INFO] [1784821945.323029793] [map_adapter]: adapted cloud #500 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 21]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=9,time(ms)=0.030,total_t(ms)=0.030,cost=0.015
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00013[0m,optimize:0.00013,refine:1.9e-06,avg_time=0.00019
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821947.324608268] [map_adapter]: adapted cloud #520 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 22]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=8,time(ms)=0.023,total_t(ms)=0.024,cost=0.032
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m9.4e-05[0m,optimize:9.2e-05,refine:1.5e-06,avg_time=0.00019
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821949.296298381] [map_adapter]: adapted cloud #540 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821949.532249547] [drone_0_local_sense_cloud]: local cloud #550: 4135 pts @ (5.6,6.0,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821950.185156965] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821951.270180939] [map_adapter]: adapted cloud #560 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[waypoint_publisher-11] [INFO] [1784821951.765039852] [waypoint_publisher]: Waypoint cycle 1/1 3/8: (8.00, -6.00, 1.00)
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 23]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] [32miter(+1)=24,time(ms)=0.052,total_t(ms)=0.053,cost=0.209
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] iter=19,time(ms)=0.048,rebound.
+[ego_planner_node-5] [32miter(+1)=18,time(ms)=0.028,total_t(ms)=0.081,cost=0.326
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00039[0m,optimize:0.00029,refine:0.0001,avg_time=0.00019
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 24]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=4,time(ms)=0.012,total_t(ms)=0.012,cost=0.187
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00015[0m,optimize:7.9e-05,refine:6.7e-05,avg_time=0.00019
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 25]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=3,time(ms)=0.016,total_t(ms)=0.016,cost=0.176
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00019[0m,optimize:0.0001,refine:8.7e-05,avg_time=0.00019
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821953.261442152] [map_adapter]: adapted cloud #580 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 26]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=3,time(ms)=0.018,total_t(ms)=0.018,cost=0.147
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00018[0m,optimize:0.00011,refine:6.6e-05,avg_time=0.00019
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 27]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=3,time(ms)=0.016,total_t(ms)=0.016,cost=0.136
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00016[0m,optimize:0.0001,refine:6.1e-05,avg_time=0.00019
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821954.533223192] [drone_0_local_sense_cloud]: local cloud #600: 4917 pts @ (7.8,5.7,1.1)
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 28]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.011,total_t(ms)=0.011,cost=0.042
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00016[0m,optimize:9.8e-05,refine:6.1e-05,avg_time=0.00019
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821955.254176815] [map_adapter]: adapted cloud #600 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821955.288230077] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821957.249339434] [map_adapter]: adapted cloud #620 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 29]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=9,time(ms)=0.035,total_t(ms)=0.035,cost=0.027
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00015[0m,optimize:0.00014,refine:1.7e-06,avg_time=0.00019
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821959.254715931] [map_adapter]: adapted cloud #640 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821959.531591304] [drone_0_local_sense_cloud]: local cloud #650: 2331 pts @ (7.6,3.1,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821960.384351624] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 30]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=3,time(ms)=0.024,total_t(ms)=0.024,cost=0.002
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00015[0m,optimize:0.00015,refine:2.1e-06,avg_time=0.00019
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821961.288553878] [map_adapter]: adapted cloud #660 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821963.316999457] [map_adapter]: adapted cloud #680 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 31]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=10,time(ms)=0.034,total_t(ms)=0.035,cost=0.011
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00011[0m,optimize:0.00011,refine:1.2e-06,avg_time=0.00018
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821964.530482568] [drone_0_local_sense_cloud]: local cloud #700: 2138 pts @ (7.8,0.5,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821965.313059243] [map_adapter]: adapted cloud #700 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821965.482873353] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 32]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=12,time(ms)=0.022,total_t(ms)=0.022,cost=0.023
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m7.3e-05[0m,optimize:7.2e-05,refine:1e-06,avg_time=0.00018
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821967.327772754] [map_adapter]: adapted cloud #720 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821969.288731505] [map_adapter]: adapted cloud #740 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821969.532904067] [drone_0_local_sense_cloud]: local cloud #750: 3176 pts @ (7.9,-2.1,1.1)
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 33]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] iter=5,time(ms)=0.12,rebound.
+[ego_planner_node-5] [32miter(+1)=17,time(ms)=0.035, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=9,time(ms)=0.012,total_t(ms)=0.201,cost=0.126
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00031[0m,optimize:0.0003,refine:3.3e-06,avg_time=0.00018
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821970.485156182] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[map_adapter-2] [INFO] [1784821971.307848019] [map_adapter]: adapted cloud #760 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 34]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=9,time(ms)=0.035,total_t(ms)=0.035,cost=0.050
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00012[0m,optimize:0.00012,refine:1.8e-06,avg_time=0.00018
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821973.336471499] [map_adapter]: adapted cloud #780 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821974.532119693] [drone_0_local_sense_cloud]: local cloud #800: 4238 pts @ (7.4,-4.9,1.1)
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[waypoint_publisher-11] [INFO] [1784821974.764735787] [waypoint_publisher]: Waypoint cycle 1/1 4/8: (-8.00, -6.00, 1.00)
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 35]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] iter=20,time(ms)=0.18,rebound.
+[ego_planner_node-5] iter=43,time(ms)=0.33,rebound.
+[ego_planner_node-5] [32miter(+1)=21,time(ms)=0.085,total_t(ms)=0.616,cost=0.292
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] iter=9,time(ms)=0.022,rebound.
+[ego_planner_node-5] iter=11,time(ms)=0.027,rebound.
+[ego_planner_node-5] iter=29,time(ms)=0.094,rebound.
+[ego_planner_node-5] iter=15,time(ms)=0.098,rebound.
+[ego_planner_node-5] [32miter(+1)=17,time(ms)=0.043, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=19,time(ms)=0.047,total_t(ms)=0.350,cost=2.277
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.0018[0m,optimize:0.0017,refine:0.00015,avg_time=0.00023
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821975.328529971] [map_adapter]: adapted cloud #800 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [FSM]: state: REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 36]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] iter=5,time(ms)=0.049,rebound.
+[ego_planner_node-5] [32miter(+1)=38,time(ms)=0.121, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=15,time(ms)=0.026, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=20,time(ms)=0.036, collided, keep optimizing
+[ego_planner_node-5] [0mtraj 1 failed.
+[ego_planner_node-5] iter=19,time(ms)=0.059,rebound.
+[ego_planner_node-5] [32miter(+1)=13,time(ms)=0.029,total_t(ms)=0.091,cost=0.378
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] [34mThis refined trajectory hits obstacles. It doesn't matter if appeares occasionally. But if continously appearing, Increase parameter "lambda_fitness".
+[ego_planner_node-5] [0mrefine_success=0
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 37]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] iter=5,time(ms)=0.034,rebound.
+[ego_planner_node-5] [32miter(+1)=38,time(ms)=0.120, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=15,time(ms)=0.030, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=20,time(ms)=0.035, collided, keep optimizing
+[ego_planner_node-5] [0mtraj 1 failed.
+[ego_planner_node-5] iter=19,time(ms)=0.059,rebound.
+[ego_planner_node-5] [32miter(+1)=13,time(ms)=0.029,total_t(ms)=0.091,cost=0.378
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] [34mThis refined trajectory hits obstacles. It doesn't matter if appeares occasionally. But if continously appearing, Increase parameter "lambda_fitness".
+[ego_planner_node-5] [0mrefine_success=0
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 38]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] iter=5,time(ms)=0.57,rebound.
+[ego_planner_node-5] iter=12,time(ms)=0.042,rebound.
+[ego_planner_node-5] [32miter(+1)=28,time(ms)=0.060, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=30,time(ms)=0.073, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=33,time(ms)=0.163, collided, keep optimizing
+[ego_planner_node-5] [0mtraj 1 failed.
+[ego_planner_node-5] iter=10,time(ms)=0.072,rebound.
+[ego_planner_node-5] [32miter(+1)=32,time(ms)=0.154,total_t(ms)=0.235,cost=0.404
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.0022[0m,optimize:0.0019,refine:0.00032,avg_time=0.00028
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821975.486872427] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 39]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=3,time(ms)=0.019,total_t(ms)=0.020,cost=0.080
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00027[0m,optimize:0.00014,refine:0.00013,avg_time=0.00028
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 40]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=3,time(ms)=0.017,total_t(ms)=0.017,cost=0.063
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00016[0m,optimize:0.0001,refine:6e-05,avg_time=0.00028
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 41]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=3,time(ms)=0.014,total_t(ms)=0.014,cost=0.068
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00012[0m,optimize:8.2e-05,refine:4.2e-05,avg_time=0.00027
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821977.323465329] [map_adapter]: adapted cloud #820 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 42]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=3,time(ms)=0.029,total_t(ms)=0.030,cost=0.080
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00035[0m,optimize:0.00021,refine:0.00014,avg_time=0.00028
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821979.333578295] [map_adapter]: adapted cloud #840 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821979.531537161] [drone_0_local_sense_cloud]: local cloud #850: 3832 pts @ (5.8,-4.4,0.9)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821980.583527000] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 43]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=12,time(ms)=0.064,total_t(ms)=0.064,cost=0.023
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00019[0m,optimize:0.00019,refine:3.1e-06,avg_time=0.00027
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821981.339966220] [map_adapter]: adapted cloud #860 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821983.338628875] [map_adapter]: adapted cloud #880 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 44]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=6,time(ms)=0.030,total_t(ms)=0.031,cost=0.006
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00015[0m,optimize:0.00015,refine:2e-06,avg_time=0.00027
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821984.531368405] [drone_0_local_sense_cloud]: local cloud #900: 2905 pts @ (3.1,-4.9,0.9)
+[map_adapter-2] [INFO] [1784821985.337540255] [map_adapter]: adapted cloud #900 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821985.584802711] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 45]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=8,time(ms)=0.019,total_t(ms)=0.019,cost=0.005
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m8.7e-05[0m,optimize:8.6e-05,refine:1.1e-06,avg_time=0.00027
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821987.348828683] [map_adapter]: adapted cloud #920 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821989.360154371] [map_adapter]: adapted cloud #940 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821989.532190232] [drone_0_local_sense_cloud]: local cloud #950: 3606 pts @ (0.5,-5.5,1.0)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 46]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=4,time(ms)=0.021,total_t(ms)=0.021,cost=0.001
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00013[0m,optimize:0.00012,refine:1.9e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821990.586714221] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[map_adapter-2] [INFO] [1784821991.389442223] [map_adapter]: adapted cloud #960 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 47]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=9,time(ms)=0.023,total_t(ms)=0.023,cost=0.022
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m9.9e-05[0m,optimize:9.7e-05,refine:1.5e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821993.406887045] [map_adapter]: adapted cloud #980 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821994.532469791] [drone_0_local_sense_cloud]: local cloud #1000: 4348 pts @ (-2.2,-5.6,1.0)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821995.428975410] [map_adapter]: adapted cloud #1000 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784821995.689046618] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 48]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=9,time(ms)=0.032,total_t(ms)=0.032,cost=0.020
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00013[0m,optimize:0.00012,refine:2.1e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821997.400681702] [map_adapter]: adapted cloud #1020 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 49]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=10,time(ms)=0.038,total_t(ms)=0.038,cost=0.014
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00012[0m,optimize:0.00012,refine:1.8e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784821999.397796195] [map_adapter]: adapted cloud #1040 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784821999.533060908] [drone_0_local_sense_cloud]: local cloud #1050: 4482 pts @ (-4.8,-5.8,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822000.784906913] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[map_adapter-2] [INFO] [1784822001.390709051] [map_adapter]: adapted cloud #1060 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822003.352422710] [map_adapter]: adapted cloud #1080 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[waypoint_publisher-11] [INFO] [1784822003.364753363] [waypoint_publisher]: Waypoint cycle 1/1 5/8: (8.00, 6.00, 1.00)
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 50]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=30,time(ms)=0.193,total_t(ms)=0.194,cost=0.096
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] [34mThis refined trajectory hits obstacles. It doesn't matter if appeares occasionally. But if continously appearing, Increase parameter "lambda_fitness".
+[ego_planner_node-5] [0mrefine_success=0
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 51]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=30,time(ms)=0.182,total_t(ms)=0.182,cost=0.096
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] [34mThis refined trajectory hits obstacles. It doesn't matter if appeares occasionally. But if continously appearing, Increase parameter "lambda_fitness".
+[ego_planner_node-5] [0mrefine_success=0
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 52]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] iter=13,time(ms)=0.047,rebound.
+[ego_planner_node-5] [32miter(+1)=40,time(ms)=0.122,total_t(ms)=0.174,cost=0.055
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.0003[0m,optimize:0.0003,refine:8.5e-07,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 53]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] [32miter(+1)=29,time(ms)=0.067,total_t(ms)=0.067,cost=0.067
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] [32miter(+1)=25,time(ms)=0.045,total_t(ms)=0.045,cost=0.034
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00023[0m,optimize:0.00023,refine:1.2e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822004.534526222] [drone_0_local_sense_cloud]: local cloud #1100: 7140 pts @ (-7.4,-5.8,1.0)
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 54]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] [32miter(+1)=28,time(ms)=0.088,total_t(ms)=0.089,cost=0.062
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] [32miter(+1)=27,time(ms)=0.071,total_t(ms)=0.071,cost=0.027
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00045[0m,optimize:0.00029,refine:0.00015,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 55]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] [32miter(+1)=33,time(ms)=0.112,total_t(ms)=0.113,cost=0.052
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] [32miter(+1)=28,time(ms)=0.073,total_t(ms)=0.073,cost=0.028
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00034[0m,optimize:0.00034,refine:1.8e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822005.389575080] [map_adapter]: adapted cloud #1100 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 56]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] [32miter(+1)=30,time(ms)=0.099,total_t(ms)=0.099,cost=0.042
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] [32miter(+1)=30,time(ms)=0.087,total_t(ms)=0.087,cost=0.034
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00039[0m,optimize:0.00039,refine:1.8e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822005.882869996] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 57]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] [32miter(+1)=31,time(ms)=0.102,total_t(ms)=0.102,cost=0.051
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] [32miter(+1)=23,time(ms)=0.058,total_t(ms)=0.059,cost=0.024
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00031[0m,optimize:0.00031,refine:1.6e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822007.364006743] [map_adapter]: adapted cloud #1120 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822009.348380085] [map_adapter]: adapted cloud #1140 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 58]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=22,time(ms)=0.110,total_t(ms)=0.111,cost=0.016
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00025[0m,optimize:0.00025,refine:2.5e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822009.531523863] [drone_0_local_sense_cloud]: local cloud #1150: 3046 pts @ (-5.0,-2.4,0.8)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822010.885229398] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[map_adapter-2] [INFO] [1784822011.350834132] [map_adapter]: adapted cloud #1160 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 59]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=18,time(ms)=0.084,total_t(ms)=0.084,cost=0.008
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00024[0m,optimize:0.00023,refine:3.4e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822013.350557145] [map_adapter]: adapted cloud #1180 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822014.531165881] [drone_0_local_sense_cloud]: local cloud #1200: 2872 pts @ (-2.5,-1.6,0.9)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822015.352977315] [map_adapter]: adapted cloud #1200 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 60]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=13,time(ms)=0.026,total_t(ms)=0.026,cost=0.007
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.0001[0m,optimize:9.9e-05,refine:1.2e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822015.886798839] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822017.373302524] [map_adapter]: adapted cloud #1220 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 61]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=7,time(ms)=0.017,total_t(ms)=0.017,cost=0.004
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m9.2e-05[0m,optimize:9.1e-05,refine:1e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822019.350810009] [map_adapter]: adapted cloud #1240 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822019.530327796] [drone_0_local_sense_cloud]: local cloud #1250: 2571 pts @ (-0.4,0.1,1.0)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822020.986643212] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[map_adapter-2] [INFO] [1784822021.349589755] [map_adapter]: adapted cloud #1260 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 62]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=5,time(ms)=0.024,total_t(ms)=0.024,cost=0.004
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00014[0m,optimize:0.00014,refine:2.3e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822023.349601946] [map_adapter]: adapted cloud #1280 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 63]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=10,time(ms)=0.022,total_t(ms)=0.023,cost=0.019
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00011[0m,optimize:0.00011,refine:1.4e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822024.529681021] [drone_0_local_sense_cloud]: local cloud #1300: 1819 pts @ (1.8,1.6,1.0)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822025.347192761] [map_adapter]: adapted cloud #1300 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822025.990787924] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822027.351885128] [map_adapter]: adapted cloud #1320 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 64]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=12,time(ms)=0.054,total_t(ms)=0.055,cost=0.018
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00017[0m,optimize:0.00017,refine:1.5e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822029.348608652] [map_adapter]: adapted cloud #1340 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822029.530608153] [drone_0_local_sense_cloud]: local cloud #1350: 2822 pts @ (4.0,3.1,1.0)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 65]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=10,time(ms)=0.035,total_t(ms)=0.036,cost=0.023
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00011[0m,optimize:0.00011,refine:1.5e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822031.084625948] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[map_adapter-2] [INFO] [1784822031.354453130] [map_adapter]: adapted cloud #1360 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822033.351740002] [map_adapter]: adapted cloud #1380 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 66]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=13,time(ms)=0.029,total_t(ms)=0.029,cost=0.011
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m9.8e-05[0m,optimize:9.7e-05,refine:1.7e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822034.531777677] [drone_0_local_sense_cloud]: local cloud #1400: 4031 pts @ (6.2,4.7,1.0)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822035.349971048] [map_adapter]: adapted cloud #1400 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822036.085043806] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[waypoint_publisher-11] [INFO] [1784822036.564672526] [waypoint_publisher]: Waypoint cycle 1/1 6/8: (-8.00, 6.00, 1.00)
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 67]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=82,time(ms)=0.615,total_t(ms)=0.616,cost=0.132
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.0011[0m,optimize:0.0008,refine:0.00031,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 68]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=8,time(ms)=0.028,total_t(ms)=0.028,cost=0.092
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00023[0m,optimize:0.00011,refine:0.00011,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822037.349213413] [map_adapter]: adapted cloud #1420 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 69]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.009,total_t(ms)=0.009,cost=0.058
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00015[0m,optimize:7.2e-05,refine:7.6e-05,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 70]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=7,time(ms)=0.042,total_t(ms)=0.042,cost=0.051
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00031[0m,optimize:0.00018,refine:0.00013,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 71]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.015,total_t(ms)=0.015,cost=0.046
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00017[0m,optimize:0.0001,refine:6.8e-05,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822039.349570972] [map_adapter]: adapted cloud #1440 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822039.532008339] [drone_0_local_sense_cloud]: local cloud #1450: 4174 pts @ (5.6,6.1,1.0)
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 72]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.013,total_t(ms)=0.013,cost=0.016
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00017[0m,optimize:0.00011,refine:6.1e-05,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822041.085802016] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822041.348664171] [map_adapter]: adapted cloud #1460 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 73]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=9,time(ms)=0.030,total_t(ms)=0.030,cost=0.019
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00014[0m,optimize:0.00013,refine:2.1e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822043.355328150] [map_adapter]: adapted cloud #1480 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822044.533024316] [drone_0_local_sense_cloud]: local cloud #1500: 4200 pts @ (2.5,5.9,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822045.353223466] [map_adapter]: adapted cloud #1500 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 74]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=6,time(ms)=0.022,total_t(ms)=0.022,cost=0.007
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00012[0m,optimize:0.00012,refine:1.6e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822046.087330160] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822047.351374827] [map_adapter]: adapted cloud #1520 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 75]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=4,time(ms)=0.021,total_t(ms)=0.021,cost=0.002
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00012[0m,optimize:0.00012,refine:1.9e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822049.350984594] [map_adapter]: adapted cloud #1540 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822049.532896112] [drone_0_local_sense_cloud]: local cloud #1550: 5536 pts @ (-0.0,6.1,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822051.088577781] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822051.354989736] [map_adapter]: adapted cloud #1560 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 76]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=7,time(ms)=0.024,total_t(ms)=0.024,cost=0.018
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00012[0m,optimize:0.00011,refine:1.6e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822053.352230116] [map_adapter]: adapted cloud #1580 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822054.532376324] [drone_0_local_sense_cloud]: local cloud #1600: 4967 pts @ (-2.7,6.0,1.1)
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 77]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=12,time(ms)=0.030,total_t(ms)=0.031,cost=0.018
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m9.6e-05[0m,optimize:9.4e-05,refine:1.5e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822055.355443595] [map_adapter]: adapted cloud #1600 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822056.185071438] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822057.351808346] [map_adapter]: adapted cloud #1620 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 78]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=14,time(ms)=0.037,total_t(ms)=0.037,cost=0.015
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00013[0m,optimize:0.00012,refine:1.5e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822059.348970133] [map_adapter]: adapted cloud #1640 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822059.533438765] [drone_0_local_sense_cloud]: local cloud #1650: 6106 pts @ (-5.4,6.0,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 79]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=9,time(ms)=0.024,total_t(ms)=0.025,cost=0.005
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m9.9e-05[0m,optimize:9.8e-05,refine:1.2e-06,avg_time=0.00024
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822061.185285322] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[map_adapter-2] [INFO] [1784822061.354317372] [map_adapter]: adapted cloud #1660 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[waypoint_publisher-11] [INFO] [1784822062.164890557] [waypoint_publisher]: Waypoint cycle 1/1 7/8: (8.00, -6.00, 1.00)
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 80]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=29,time(ms)=0.118,total_t(ms)=0.119,cost=0.082
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00046[0m,optimize:0.00023,refine:0.00023,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 81]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] [32miter(+1)=43,time(ms)=0.188,total_t(ms)=0.188,cost=0.144
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] [32miter(+1)=33,time(ms)=0.127,total_t(ms)=0.127,cost=0.041
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00049[0m,optimize:0.00048,refine:2e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822063.358659323] [map_adapter]: adapted cloud #1680 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 82]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] iter=20,time(ms)=0.077,rebound.
+[ego_planner_node-5] [32miter(+1)=34,time(ms)=0.102,total_t(ms)=0.188,cost=0.114
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] [32miter(+1)=33,time(ms)=0.093,total_t(ms)=0.093,cost=0.033
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00041[0m,optimize:0.00041,refine:1.4e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 83]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] [32miter(+1)=32,time(ms)=0.141,total_t(ms)=0.141,cost=0.132
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] [32miter(+1)=38,time(ms)=0.072,total_t(ms)=0.072,cost=0.047
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00066[0m,optimize:0.00054,refine:0.00012,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822064.532504303] [drone_0_local_sense_cloud]: local cloud #1700: 3599 pts @ (-8.0,5.8,1.1)
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 84]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] [32miter(+1)=31,time(ms)=0.097,total_t(ms)=0.098,cost=0.061
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] [32miter(+1)=21,time(ms)=0.053,total_t(ms)=0.053,cost=0.062
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00044[0m,optimize:0.0003,refine:0.00014,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 85]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=3,time(ms)=0.020,total_t(ms)=0.021,cost=0.050
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00015[0m,optimize:0.00014,refine:2.1e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822065.350221858] [map_adapter]: adapted cloud #1700 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822066.287516518] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822067.348622272] [map_adapter]: adapted cloud #1720 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 86]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] [32miter(+1)=41,time(ms)=0.088,total_t(ms)=0.088,cost=0.034
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] iter=27,time(ms)=0.057,rebound.
+[ego_planner_node-5] [32miter(+1)=23,time(ms)=0.042,total_t(ms)=0.104,cost=0.124
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00034[0m,optimize:0.00034,refine:1.3e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822069.349551515] [map_adapter]: adapted cloud #1740 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822069.532134352] [drone_0_local_sense_cloud]: local cloud #1750: 4865 pts @ (-6.1,3.7,1.2)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 87]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=16,time(ms)=0.060,total_t(ms)=0.060,cost=0.018
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00018[0m,optimize:0.00018,refine:1.1e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822071.356325055] [map_adapter]: adapted cloud #1760 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822071.387638464] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822073.389314643] [map_adapter]: adapted cloud #1780 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 88]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=13,time(ms)=0.073,total_t(ms)=0.074,cost=0.008
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00021[0m,optimize:0.00021,refine:3.3e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822074.532574447] [drone_0_local_sense_cloud]: local cloud #1800: 4800 pts @ (-3.4,3.3,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822075.366538656] [map_adapter]: adapted cloud #1800 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822076.491876416] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 89]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=17,time(ms)=0.037,total_t(ms)=0.037,cost=0.005
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00011[0m,optimize:0.00011,refine:1.1e-06,avg_time=0.00026
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822077.370239673] [map_adapter]: adapted cloud #1820 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822079.374545888] [map_adapter]: adapted cloud #1840 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822079.532017124] [drone_0_local_sense_cloud]: local cloud #1850: 4079 pts @ (-1.8,1.2,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 90]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=6,time(ms)=0.017,total_t(ms)=0.017,cost=0.005
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m9.3e-05[0m,optimize:9.2e-05,refine:1e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822081.362353719] [map_adapter]: adapted cloud #1860 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822081.586596912] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 91]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=5,time(ms)=0.026,total_t(ms)=0.026,cost=0.005
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00015[0m,optimize:0.00015,refine:2e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822083.347888546] [map_adapter]: adapted cloud #1880 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822084.531068174] [drone_0_local_sense_cloud]: local cloud #1900: 2159 pts @ (0.3,-0.4,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822085.355152669] [map_adapter]: adapted cloud #1900 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 92]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=5,time(ms)=0.026,total_t(ms)=0.026,cost=0.005
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00016[0m,optimize:0.00015,refine:2.2e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822086.588093296] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822087.348265963] [map_adapter]: adapted cloud #1920 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 93]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=10,time(ms)=0.025,total_t(ms)=0.026,cost=0.013
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00011[0m,optimize:0.0001,refine:1.1e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822089.354910091] [map_adapter]: adapted cloud #1940 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822089.530271504] [drone_0_local_sense_cloud]: local cloud #1950: 1831 pts @ (2.5,-2.0,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822091.348129459] [map_adapter]: adapted cloud #1960 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822091.686368350] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 94]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=14,time(ms)=0.038,total_t(ms)=0.038,cost=0.028
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00011[0m,optimize:0.00011,refine:1.6e-06,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822093.356162362] [map_adapter]: adapted cloud #1980 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822094.530944440] [drone_0_local_sense_cloud]: local cloud #2000: 2680 pts @ (4.6,-3.5,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 95]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=9,time(ms)=0.016,total_t(ms)=0.016,cost=0.012
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m6.9e-05[0m,optimize:6.8e-05,refine:8.7e-07,avg_time=0.00025
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822095.385613832] [map_adapter]: adapted cloud #2000 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822096.786967218] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822097.368992267] [map_adapter]: adapted cloud #2020 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 96]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=8,time(ms)=0.024,total_t(ms)=0.024,cost=0.037
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m7.7e-05[0m,optimize:7.6e-05,refine:1.5e-06,avg_time=0.00024
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822099.359736648] [map_adapter]: adapted cloud #2040 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822099.532010793] [drone_0_local_sense_cloud]: local cloud #2050: 4447 pts @ (6.7,-5.1,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[waypoint_publisher-11] [INFO] [1784822101.164623103] [waypoint_publisher]: Waypoint cycle 1/1 8/8: (-8.00, -6.00, 1.00)
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 97]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] iter=25,time(ms)=0.3,rebound.
+[ego_planner_node-5] iter=7,time(ms)=0.031,rebound.
+[ego_planner_node-5] [32miter(+1)=35,time(ms)=0.144, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=56,time(ms)=0.265, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=30,time(ms)=0.129,total_t(ms)=1.577,cost=7.736
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] iter=32,time(ms)=0.38,rebound.
+[ego_planner_node-5] iter=29,time(ms)=0.097,rebound.
+[ego_planner_node-5] [32miter(+1)=14,time(ms)=0.029,total_t(ms)=0.512,cost=0.901
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.0033[0m,optimize:0.0032,refine:0.00017,avg_time=0.00028
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 98]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] [32miter(+1)=36,time(ms)=0.181, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=27,time(ms)=0.138,total_t(ms)=0.358,cost=0.688
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] iter=16,time(ms)=0.055,rebound.
+[ego_planner_node-5] [32miter(+1)=26,time(ms)=0.052,total_t(ms)=0.112,cost=0.204
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00065[0m,optimize:0.00064,refine:1.2e-06,avg_time=0.00028
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [SAFETY]: from EXEC_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822101.350126257] [map_adapter]: adapted cloud #2060 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [WARN] [1784822101.771422721] [distinctiveTrajs]: base_point and control point are too close!
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 99]==============================================[0m
+[ego_planner_node-5] base_point= 6.7 -5.9  1.8 control point= 6.7 -5.9  1.8
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] iter=16,time(ms)=0.11,rebound.
+[ego_planner_node-5] iter=39,time(ms)=20,rebound.
+[ego_planner_node-5] iter=10,time(ms)=0.045,rebound.
+[ego_planner_node-5] iter=12,time(ms)=29,rebound.
+[ego_planner_node-5] iter=11,time(ms)=0.046,rebound.
+[ego_planner_node-5] iter=35,time(ms)=5.6,rebound.
+[ego_planner_node-5] [32miter(+1)=39,time(ms)=0.137, collided, keep optimizing
+[ego_planner_node-5] [0miter=20,time(ms)=2.3,rebound.
+[ego_planner_node-5] iter=34,time(ms)=1.1,rebound.
+[ego_planner_node-5] iter=46,time(ms)=0.2,rebound.
+[local_sense_cloud-6] [INFO] [1784822101.886062958] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [32miter(+1)=26,time(ms)=0.096, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=21,time(ms)=0.088, collided, keep optimizing
+[ego_planner_node-5] [0mtraj 1 failed.
+[ego_planner_node-5] plan_success=0
+[ego_planner_node-5] refine_success=0
+[ego_planner_node-5] [WARN] [1784822101.916560296] [distinctiveTrajs]: base_point and control point are too close!
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 100]==============================================[0m
+[ego_planner_node-5] base_point= 6.7 -5.9  1.8 control point= 6.7 -5.9  1.8
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] iter=16,time(ms)=0.054,rebound.
+[ego_planner_node-5] iter=39,time(ms)=21,rebound.
+[ego_planner_node-5] iter=10,time(ms)=0.042,rebound.
+[ego_planner_node-5] iter=12,time(ms)=26,rebound.
+[ego_planner_node-5] iter=11,time(ms)=0.086,rebound.
+[ego_planner_node-5] iter=35,time(ms)=6.1,rebound.
+[ego_planner_node-5] [32miter(+1)=39,time(ms)=0.177, collided, keep optimizing
+[ego_planner_node-5] [0miter=20,time(ms)=2.4,rebound.
+[ego_planner_node-5] iter=34,time(ms)=1.1,rebound.
+[ego_planner_node-5] iter=46,time(ms)=0.19,rebound.
+[ego_planner_node-5] [32miter(+1)=26,time(ms)=0.082, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=21,time(ms)=0.097, collided, keep optimizing
+[ego_planner_node-5] [0mtraj 1 failed.
+[ego_planner_node-5] plan_success=0
+[ego_planner_node-5] refine_success=0
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 101]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=2[1;0m
+[ego_planner_node-5] iter=5,time(ms)=0.1,rebound.
+[ego_planner_node-5] iter=75,time(ms)=0.29,rebound.
+[ego_planner_node-5] [32miter(+1)=25,time(ms)=0.073, collided, keep optimizing
+[ego_planner_node-5] [0m[32miter(+1)=32,time(ms)=0.099,total_t(ms)=0.588,cost=2.151
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] iter=10,time(ms)=0.027,rebound.
+[ego_planner_node-5] [32miter(+1)=47,time(ms)=0.149,total_t(ms)=0.178,cost=0.112
+[ego_planner_node-5] [0mtraj 2 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.0012[0m,optimize:0.001,refine:0.0002,avg_time=0.00029
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [WARN] [1784822102.365764160] [distinctiveTrajs]: base_point and control point are too close!
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 102]==============================================[0m
+[ego_planner_node-5] base_point= 5.9 -4.9  1.4 control point=5.9  -5 1.4
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=30,time(ms)=0.068, collided, keep optimizing
+[ego_planner_node-5] [0miter=6,time(ms)=0.015,rebound.
+[ego_planner_node-5] iter=32,time(ms)=0.1,rebound.
+[ego_planner_node-5] [32miter(+1)=26,time(ms)=0.055,total_t(ms)=0.257,cost=0.763
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00055[0m,optimize:0.00043,refine:0.00012,avg_time=0.00029
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 103]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.014,total_t(ms)=0.014,cost=0.053
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00027[0m,optimize:0.00014,refine:0.00013,avg_time=0.00029
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822103.351004651] [map_adapter]: adapted cloud #2080 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 104]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.015,total_t(ms)=0.016,cost=0.020
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00017[0m,optimize:0.00011,refine:6e-05,avg_time=0.00029
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] Triggered!
+[ego_planner_node-5] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 105]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=1,time(ms)=0.016,total_t(ms)=0.016,cost=0.012
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] Need to reallocate time.
+[ego_planner_node-5] total time:[42m0.00019[0m,optimize:0.00012,refine:7e-05,avg_time=0.00029
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822104.533317095] [drone_0_local_sense_cloud]: local cloud #2100: 4098 pts @ (6.9,-4.8,1.5)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822105.356056714] [map_adapter]: adapted cloud #2100 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822106.984038887] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 106]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=12,time(ms)=0.048,total_t(ms)=0.048,cost=0.030
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00018[0m,optimize:0.00018,refine:1.9e-06,avg_time=0.00029
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822107.352452697] [map_adapter]: adapted cloud #2120 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822109.351272299] [map_adapter]: adapted cloud #2140 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822109.531200223] [drone_0_local_sense_cloud]: local cloud #2150: 2789 pts @ (3.9,-4.3,1.5)
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 107]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=7,time(ms)=0.028,total_t(ms)=0.029,cost=0.007
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00016[0m,optimize:0.00016,refine:2.2e-06,avg_time=0.00029
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822111.351770267] [map_adapter]: adapted cloud #2160 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822111.985018740] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 108]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=5,time(ms)=0.024,total_t(ms)=0.024,cost=0.005
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00014[0m,optimize:0.00014,refine:2.1e-06,avg_time=0.00029
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822113.351088827] [map_adapter]: adapted cloud #2180 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822114.531556267] [drone_0_local_sense_cloud]: local cloud #2200: 3224 pts @ (1.4,-5.3,1.4)
+[map_adapter-2] [INFO] [1784822115.350238230] [map_adapter]: adapted cloud #2200 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 109]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=5,time(ms)=0.014,total_t(ms)=0.014,cost=0.004
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m8.1e-05[0m,optimize:8e-05,refine:1.2e-06,avg_time=0.00029
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822117.086955981] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[map_adapter-2] [INFO] [1784822117.358280892] [map_adapter]: adapted cloud #2220 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 110]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=10,time(ms)=0.023,total_t(ms)=0.023,cost=0.012
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m9.6e-05[0m,optimize:9.4e-05,refine:1.5e-06,avg_time=0.00028
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822119.348912744] [map_adapter]: adapted cloud #2240 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822119.532533207] [drone_0_local_sense_cloud]: local cloud #2250: 4246 pts @ (-1.2,-5.5,1.3)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822121.352425723] [map_adapter]: adapted cloud #2260 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822122.183010873] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 111]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=15,time(ms)=0.039,total_t(ms)=0.039,cost=0.024
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00011[0m,optimize:0.00011,refine:1.6e-06,avg_time=0.00028
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822123.348615385] [map_adapter]: adapted cloud #2280 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822124.531920031] [drone_0_local_sense_cloud]: local cloud #2300: 4046 pts @ (-3.8,-5.7,1.2)
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 112]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=10,time(ms)=0.043,total_t(ms)=0.043,cost=0.011
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.00015[0m,optimize:0.00014,refine:2.4e-06,avg_time=0.00028
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822125.363858487] [map_adapter]: adapted cloud #2300 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822127.186267857] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[map_adapter-2] [INFO] [1784822127.348956385] [map_adapter]: adapted cloud #2320 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[ego_planner_node-5] [47;30m
+[ego_planner_node-5] [drone 0 replan 113]==============================================[0m
+[ego_planner_node-5] [1;33mmulti-trajs=1[1;0m
+[ego_planner_node-5] [32miter(+1)=8,time(ms)=0.029,total_t(ms)=0.030,cost=0.040
+[ego_planner_node-5] [0mtraj 1 success.
+[ego_planner_node-5] plan_success=1
+[ego_planner_node-5] total time:[42m0.0001[0m,optimize:9.9e-05,refine:1.8e-06,avg_time=0.00028
+[ego_planner_node-5] refine_success=1
+[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822129.349808281] [map_adapter]: adapted cloud #2340 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822129.533002950] [drone_0_local_sense_cloud]: local cloud #2350: 5680 pts @ (-6.4,-5.9,1.1)
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[waypoint_publisher-11] [INFO] [1784822130.964461387] [waypoint_publisher]: Waypoint sequence complete
+[map_adapter-2] [INFO] [1784822131.353171020] [map_adapter]: adapted cloud #2360 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[local_sense_cloud-6] [INFO] [1784822132.186712210] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[map_adapter-2] [INFO] [1784822133.349172050] [map_adapter]: adapted cloud #2380 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: EXEC_TRAJ
+[ego_planner_node-5] [FSM]: from EXEC_TRAJ to WAIT_TARGET
+[local_sense_cloud-6] [INFO] [1784822134.533874993] [drone_0_local_sense_cloud]: local cloud #2400: 6896 pts @ (-8.0,-6.0,1.1)
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822135.359727010] [map_adapter]: adapted cloud #2400 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784822137.187228905] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[map_adapter-2] [INFO] [1784822137.348123225] [map_adapter]: adapted cloud #2420 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822139.353398575] [map_adapter]: adapted cloud #2440 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822139.533786561] [drone_0_local_sense_cloud]: local cloud #2450: 6878 pts @ (-7.9,-6.0,1.1)
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822141.349371391] [map_adapter]: adapted cloud #2460 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784822142.284119231] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822143.351538798] [map_adapter]: adapted cloud #2480 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784822144.534232585] [drone_0_local_sense_cloud]: local cloud #2500: 6884 pts @ (-7.9,-6.0,1.1)
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822145.367653902] [map_adapter]: adapted cloud #2500 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822147.367436973] [map_adapter]: adapted cloud #2520 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822147.385891312] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822149.351449981] [map_adapter]: adapted cloud #2540 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822149.534228749] [drone_0_local_sense_cloud]: local cloud #2550: 6884 pts @ (-7.9,-6.0,1.1)
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822151.348948610] [map_adapter]: adapted cloud #2560 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784822152.485165261] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822153.366127654] [map_adapter]: adapted cloud #2580 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784822154.533701743] [drone_0_local_sense_cloud]: local cloud #2600: 6884 pts @ (-7.9,-6.0,1.1)
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822155.351303365] [map_adapter]: adapted cloud #2600 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822157.349432631] [map_adapter]: adapted cloud #2620 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822157.485602468] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822159.353333788] [map_adapter]: adapted cloud #2640 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822159.533463717] [drone_0_local_sense_cloud]: local cloud #2650: 6884 pts @ (-7.9,-6.0,1.1)
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822161.366820952] [map_adapter]: adapted cloud #2660 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784822162.486029843] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822163.361239622] [map_adapter]: adapted cloud #2680 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784822164.534173193] [drone_0_local_sense_cloud]: local cloud #2700: 6884 pts @ (-7.9,-6.0,1.1)
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822165.353621253] [map_adapter]: adapted cloud #2700 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822167.349736617] [map_adapter]: adapted cloud #2720 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822167.584076501] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822169.359284503] [map_adapter]: adapted cloud #2740 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822169.536192078] [drone_0_local_sense_cloud]: local cloud #2750: 6884 pts @ (-7.9,-6.0,1.1)
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822171.371510885] [map_adapter]: adapted cloud #2760 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784822172.585269694] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822173.355907298] [map_adapter]: adapted cloud #2780 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784822174.533838123] [drone_0_local_sense_cloud]: local cloud #2800: 6884 pts @ (-7.9,-6.0,1.1)
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822175.350674237] [map_adapter]: adapted cloud #2800 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822177.347106893] [map_adapter]: adapted cloud #2820 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822177.685595829] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822179.352341196] [map_adapter]: adapted cloud #2840 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822179.534617201] [drone_0_local_sense_cloud]: local cloud #2850: 6884 pts @ (-7.9,-6.0,1.1)
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822181.385485735] [map_adapter]: adapted cloud #2860 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784822182.686757641] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822183.430278105] [map_adapter]: adapted cloud #2880 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[local_sense_cloud-6] [INFO] [1784822184.533621012] [drone_0_local_sense_cloud]: local cloud #2900: 6884 pts @ (-7.9,-6.0,1.1)
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822185.439093169] [map_adapter]: adapted cloud #2900 width=33370 occ=136x88 topdown_cells=650
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822187.448349928] [map_adapter]: adapted cloud #2920 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822187.786440050] [drone_0_local_sense_cloud]: global cloud cached: 31782 points
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822189.450467528] [map_adapter]: adapted cloud #2940 width=33370 occ=136x88 topdown_cells=650
+[local_sense_cloud-6] [INFO] [1784822189.533896003] [drone_0_local_sense_cloud]: local cloud #2950: 6884 pts @ (-7.9,-6.0,1.1)
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[ego_planner_node-5] [FSM]: state: WAIT_TARGET
+[ego_planner_node-5] wait for goal or trigger.
+[map_adapter-2] [INFO] [1784822191.452829143] [map_adapter]: adapted cloud #2960 width=33370 occ=136x88 topdown_cells=650
 [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
-[INFO] [send_goal-6]: sending signal 'SIGINT' to process[send_goal-6]
-[INFO] [viz_node-5]: sending signal 'SIGINT' to process[viz_node-5]
-[INFO] [planner_node-4]: sending signal 'SIGINT' to process[planner_node-4]
-[INFO] [map_node-3]: sending signal 'SIGINT' to process[map_node-3]
-[INFO] [controller_node-2]: sending signal 'SIGINT' to process[controller_node-2]
-[INFO] [dynamics_node-1]: sending signal 'SIGINT' to process[dynamics_node-1]
-[viz_node-5] [INFO] [1783964685.212024505] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[planner_node-4] [INFO] [1783964685.212022461] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[dynamics_node-1] [INFO] [1783964685.212022501] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[map_node-3] [INFO] [1783964685.212033702] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[controller_node-2] [INFO] [1783964685.212050383] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[send_goal-6] Traceback (most recent call last):
-[send_goal-6]   File "/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal", line 33, in <module>
-[send_goal-6]     sys.exit(load_entry_point('drone-bringup', 'console_scripts', 'send_goal')())
-[send_goal-6]   File "/home/jungod/drone_ws/build/drone_bringup/drone_bringup/send_goal.py", line 65, in main
-[send_goal-6]     rclpy.spin(node)
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
-[send_goal-6]     executor.spin_once()
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
-[send_goal-6]     self._spin_once_impl(timeout_sec)
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 803, in _spin_once_impl
-[send_goal-6]     handler()
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 256, in __call__
-[send_goal-6]     self._execute_coroutine_step(self._handler)
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 272, in _execute_coroutine_step
-[send_goal-6]     result = coro.send(None)
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 488, in handler
-[send_goal-6]     await call_coroutine(entity, arg)
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 396, in _execute_timer
-[send_goal-6]     await await_or_execute(tmr.callback)
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 110, in await_or_execute
-[send_goal-6]     return callback(*args)
-[send_goal-6]   File "/home/jungod/drone_ws/build/drone_bringup/drone_bringup/send_goal.py", line 49, in <lambda>
-[send_goal-6]     self.create_timer(0.2, lambda: rclpy.shutdown())
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 130, in shutdown
-[send_goal-6]     _shutdown(context=context)
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/utilities.py", line 58, in shutdown
-[send_goal-6]     return context.shutdown()
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 103, in shutdown
-[send_goal-6]     self._call_on_shutdown_callbacks()
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 92, in _call_on_shutdown_callbacks
-[send_goal-6]     callback = weak_method()
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 111, in reset_executor
-[send_goal-6]     __executor.shutdown()
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 252, in shutdown
-[send_goal-6]     if not self._work_tracker.wait(timeout_sec):
-[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 97, in wait
-[send_goal-6]     if not self._work_condition.wait_for(
-[send_goal-6]   File "/usr/lib/python3.10/threading.py", line 355, in wait_for
-[send_goal-6]     self.wait(waittime)
-[send_goal-6]   File "/usr/lib/python3.10/threading.py", line 320, in wait
-[send_goal-6]     waiter.acquire()
-[send_goal-6] KeyboardInterrupt
-[viz_node-5] [INFO] [1783964685.215283439] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[ERROR] [planner_node-4]: process has died [pid 438007, exit code -2, cmd '/home/jungod/drone_ws/install/drone_planner/lib/drone_planner/planner_node --ros-args -r __node:=drone_planner --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/planner.yaml'].
-[map_node-3] [INFO] [1783964685.216084350] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[ERROR] [controller_node-2]: process has died [pid 438003, exit code -2, cmd '/home/jungod/drone_ws/install/drone_controller/lib/drone_controller/controller_node --ros-args -r __node:=drone_controller --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/controller.yaml'].
-[ERROR] [dynamics_node-1]: process has died [pid 438001, exit code -2, cmd '/home/jungod/drone_ws/install/drone_dynamics/lib/drone_dynamics/dynamics_node --ros-args -r __node:=drone_dynamics --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/dynamics.yaml --params-file /tmp/launch_params_qz49d_w0'].
-[ERROR] [send_goal-6]: process has died [pid 438117, exit code -2, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal --x 17.0 --y 5.0 --z 1.5 --yaw 0.0'].
-[INFO] [viz_node-5]: process has finished cleanly [pid 438009]
-[INFO] [map_node-3]: process has finished cleanly [pid 438005]
+[traj_server-7] [INFO] [1784822191.638797300] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[controller_node-4] [INFO] [1784822191.638799363] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[viz_node-9] [INFO] [1784822191.638796929] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[dynamics_node-3] [INFO] [1784822191.638810164] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [waypoint_publisher-11]: sending signal 'SIGINT' to process[waypoint_publisher-11]
+[INFO] [rviz2-10]: sending signal 'SIGINT' to process[rviz2-10]
+[INFO] [viz_node-9]: sending signal 'SIGINT' to process[viz_node-9]
+[INFO] [ego_cmd_bridge-8]: sending signal 'SIGINT' to process[ego_cmd_bridge-8]
+[INFO] [traj_server-7]: sending signal 'SIGINT' to process[traj_server-7]
+[INFO] [local_sense_cloud-6]: sending signal 'SIGINT' to process[local_sense_cloud-6]
+[INFO] [ego_planner_node-5]: sending signal 'SIGINT' to process[ego_planner_node-5]
+[INFO] [controller_node-4]: sending signal 'SIGINT' to process[controller_node-4]
+[ERROR] [viz_node-9]: process has died [pid 119508, exit code -2, cmd '/home/jungod/drone_ws/install/drone_visualization/lib/drone_visualization/viz_node --ros-args -r __node:=drone_visualization --params-file /tmp/launch_params_baujp28c'].
+[INFO] [dynamics_node-3]: sending signal 'SIGINT' to process[dynamics_node-3]
+[ERROR] [waypoint_publisher-11]: process has died [pid 119711, exit code -2, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/waypoint_publisher --pattern list --hold 1.0 --list=-8.0,6.0,1.0;8.0,6.0,1.0;8.0,-6.0,1.0;-8.0,-6.0,1.0;8.0,6.0,1.0;-8.0,6.0,1.0;8.0,-6.0,1.0;-8.0,-6.0,1.0 --cycles 1 --wait-arrival --arrival-tol 1.2 --max-hold 60.0 --z 1.0'].
+[ERROR] [traj_server-7]: process has died [pid 119504, exit code -2, cmd '/home/jungod/drone_ws/install/ego_planner/lib/ego_planner/traj_server --ros-args -r __node:=drone_0_traj_server --params-file /tmp/launch_params_nod8oe5q -r planning/bspline:=/drone_0_planning/bspline -r /position_cmd:=/drone_0_planning/pos_cmd'].
+[INFO] [map_adapter-2]: sending signal 'SIGINT' to process[map_adapter-2]
+[INFO] [random_forest-1]: sending signal 'SIGINT' to process[random_forest-1]
+[ERROR] [controller_node-4]: process has died [pid 119498, exit code -2, cmd '/home/jungod/drone_ws/install/drone_controller/lib/drone_controller/controller_node --ros-args -r __node:=drone_controller --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/controller.yaml --params-file /tmp/launch_params_km1xqrg3'].
+[random_forest-1] [INFO] [1784822191.638811957] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [dynamics_node-3]: process has died [pid 119496, exit code -2, cmd '/home/jungod/drone_ws/install/drone_dynamics/lib/drone_dynamics/dynamics_node --ros-args -r __node:=drone_dynamics --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/dynamics.yaml --params-file /tmp/launch_params_fr2i1x0s'].
+[ego_planner_node-5] [INFO] [1784822191.638803631] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[waypoint_publisher-11] Traceback (most recent call last):
+[waypoint_publisher-11]   File "/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/waypoint_publisher", line 33, in <module>
+[waypoint_publisher-11]     sys.exit(load_entry_point('drone_bringup==0.1.0', 'console_scripts', 'waypoint_publisher')())
+[waypoint_publisher-11]   File "/home/jungod/drone_ws/install/drone_bringup/lib/python3.10/site-packages/drone_bringup/waypoint_publisher.py", line 282, in main
+[waypoint_publisher-11]     rclpy.spin(node)
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+[waypoint_publisher-11]     executor.spin_once()
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
+[waypoint_publisher-11]     self._spin_once_impl(timeout_sec)
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 803, in _spin_once_impl
+[waypoint_publisher-11]     handler()
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 256, in __call__
+[waypoint_publisher-11]     self._execute_coroutine_step(self._handler)
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 272, in _execute_coroutine_step
+[waypoint_publisher-11]     result = coro.send(None)
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 488, in handler
+[waypoint_publisher-11]     await call_coroutine(entity, arg)
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 396, in _execute_timer
+[waypoint_publisher-11]     await await_or_execute(tmr.callback)
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 110, in await_or_execute
+[waypoint_publisher-11]     return callback(*args)
+[waypoint_publisher-11]   File "/home/jungod/drone_ws/install/drone_bringup/lib/python3.10/site-packages/drone_bringup/waypoint_publisher.py", line 151, in <lambda>
+[waypoint_publisher-11]     self.create_timer(0.2, lambda: rclpy.shutdown())
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 130, in shutdown
+[waypoint_publisher-11]     _shutdown(context=context)
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/utilities.py", line 58, in shutdown
+[waypoint_publisher-11]     return context.shutdown()
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 103, in shutdown
+[waypoint_publisher-11]     self._call_on_shutdown_callbacks()
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 92, in _call_on_shutdown_callbacks
+[waypoint_publisher-11]     callback = weak_method()
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 111, in reset_executor
+[waypoint_publisher-11]     __executor.shutdown()
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 252, in shutdown
+[waypoint_publisher-11]     if not self._work_tracker.wait(timeout_sec):
+[waypoint_publisher-11]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 97, in wait
+[waypoint_publisher-11]     if not self._work_condition.wait_for(
+[waypoint_publisher-11]   File "/usr/lib/python3.10/threading.py", line 355, in wait_for
+[waypoint_publisher-11]     self.wait(waittime)
+[waypoint_publisher-11]   File "/usr/lib/python3.10/threading.py", line 320, in wait
+[waypoint_publisher-11]     waiter.acquire()
+[waypoint_publisher-11] KeyboardInterrupt
+[rviz2-10] [INFO] [1784822191.638990201] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [local_sense_cloud-6]: process has died [pid 119502, exit code -2, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/local_sense_cloud --ros-args -r __node:=drone_0_local_sense_cloud --params-file /tmp/launch_params_u33pn9lu'].
+[rviz2-10] [INFO] [1784822191.645157325] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ego_cmd_bridge-8] Traceback (most recent call last):
+[ego_cmd_bridge-8]   File "/home/jungod/drone_ws/install/drone_bringup/lib/python3.10/site-packages/drone_bringup/ego_cmd_bridge.py", line 218, in main
+[ego_cmd_bridge-8]     rclpy.spin(node)
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+[ego_cmd_bridge-8]     executor.spin_once()
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
+[ego_cmd_bridge-8]     self._spin_once_impl(timeout_sec)
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 797, in _spin_once_impl
+[ego_cmd_bridge-8]     handler, entity, node = self.wait_for_ready_callbacks(timeout_sec=timeout_sec)
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 780, in wait_for_ready_callbacks
+[ERROR] [random_forest-1]: process has died [pid 119492, exit code -2, cmd '/home/jungod/drone_ws/install/map_generator/lib/map_generator/random_forest --ros-args -r __node:=random_forest --params-file /tmp/launch_params_rm6xnh5_'].
+[ego_cmd_bridge-8]     return next(self._cb_iter)
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 677, in _wait_for_ready_callbacks
+[ego_cmd_bridge-8]     wait_set.wait(timeout_nsec)
+[ego_cmd_bridge-8] KeyboardInterrupt
+[ego_cmd_bridge-8] 
+[ego_cmd_bridge-8] During handling of the above exception, another exception occurred:
+[ego_cmd_bridge-8] 
+[ego_cmd_bridge-8] Traceback (most recent call last):
+[ego_cmd_bridge-8]   File "/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/ego_cmd_bridge", line 33, in <module>
+[ego_cmd_bridge-8]     sys.exit(load_entry_point('drone_bringup==0.1.0', 'console_scripts', 'ego_cmd_bridge')())
+[ego_cmd_bridge-8]   File "/home/jungod/drone_ws/install/drone_bringup/lib/python3.10/site-packages/drone_bringup/ego_cmd_bridge.py", line 221, in main
+[ego_cmd_bridge-8]     rclpy.shutdown()
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 130, in shutdown
+[ego_cmd_bridge-8]     _shutdown(context=context)
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/utilities.py", line 58, in shutdown
+[ego_cmd_bridge-8]     return context.shutdown()
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 102, in shutdown
+[ego_cmd_bridge-8]     self.__context.shutdown()
+[ego_cmd_bridge-8] rclpy._rclpy_pybind11.RCLError: failed to shutdown: rcl_shutdown already called on the given context, at ./src/rcl/init.c:241
+[ego_cmd_bridge-8] Error in sys.excepthook:
+[ego_cmd_bridge-8] Traceback (most recent call last):
+[ego_cmd_bridge-8]   File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 55, in apport_excepthook
+[ego_cmd_bridge-8]     import apt_pkg
+[ego_cmd_bridge-8] KeyboardInterrupt
+[ego_cmd_bridge-8] 
+[ego_cmd_bridge-8] Original exception was:
+[ego_cmd_bridge-8] Traceback (most recent call last):
+[ego_cmd_bridge-8]   File "/home/jungod/drone_ws/install/drone_bringup/lib/python3.10/site-packages/drone_bringup/ego_cmd_bridge.py", line 218, in main
+[ego_cmd_bridge-8]     rclpy.spin(node)
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+[ego_cmd_bridge-8]     executor.spin_once()
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
+[ego_cmd_bridge-8]     self._spin_once_impl(timeout_sec)
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 797, in _spin_once_impl
+[ego_cmd_bridge-8]     handler, entity, node = self.wait_for_ready_callbacks(timeout_sec=timeout_sec)
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 780, in wait_for_ready_callbacks
+[ego_cmd_bridge-8]     return next(self._cb_iter)
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 677, in _wait_for_ready_callbacks
+[ego_cmd_bridge-8]     wait_set.wait(timeout_nsec)
+[ego_cmd_bridge-8] KeyboardInterrupt
+[ego_cmd_bridge-8] 
+[ego_cmd_bridge-8] During handling of the above exception, another exception occurred:
+[ego_cmd_bridge-8] 
+[ego_cmd_bridge-8] Traceback (most recent call last):
+[ego_cmd_bridge-8]   File "/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/ego_cmd_bridge", line 33, in <module>
+[ego_cmd_bridge-8]     sys.exit(load_entry_point('drone_bringup==0.1.0', 'console_scripts', 'ego_cmd_bridge')())
+[ego_cmd_bridge-8]   File "/home/jungod/drone_ws/install/drone_bringup/lib/python3.10/site-packages/drone_bringup/ego_cmd_bridge.py", line 221, in main
+[ego_cmd_bridge-8]     rclpy.shutdown()
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 130, in shutdown
+[ego_cmd_bridge-8]     _shutdown(context=context)
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/utilities.py", line 58, in shutdown
+[ego_cmd_bridge-8]     return context.shutdown()
+[ego_cmd_bridge-8]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 102, in shutdown
+[ego_cmd_bridge-8]     self.__context.shutdown()
+[ego_cmd_bridge-8] rclpy._rclpy_pybind11.RCLError: failed to shutdown: rcl_shutdown already called on the given context, at ./src/rcl/init.c:241
+[ERROR] [map_adapter-2]: process has died [pid 119494, exit code -2, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/map_adapter --ros-args -r __node:=map_adapter --params-file /tmp/launch_params_37se3c2x'].
+[ERROR] [ego_planner_node-5]: process has died [pid 119500, exit code -2, cmd '/home/jungod/drone_ws/install/ego_planner/lib/ego_planner/ego_planner_node --ros-args -r __node:=drone_0_ego_planner_node --params-file /tmp/launch_params_y5la8x0l -r odom_world:=/drone/odom -r goal:=/drone/goal -r planning/bspline:=/drone_0_planning/bspline -r planning/data_display:=/drone_0_planning/data_display -r planning/broadcast_bspline_from_planner:=/broadcast_bspline -r planning/broadcast_bspline_to_planner:=/broadcast_bspline -r goal_point:=/drone_0_plan_vis/goal_point -r global_list:=/drone_0_plan_vis/global_list -r init_list:=/drone_0_plan_vis/init_list -r optimal_list:=/drone_0_plan_vis/optimal_list -r a_star_list:=/drone_0_plan_vis/a_star_list -r grid_map/odom:=/drone/odom -r grid_map/cloud:=/drone_0_pcl_render_node/cloud -r grid_map/occupancy:=/drone_0_grid/grid_map/occupancy -r grid_map/occupancy_inflate:=/drone_0_grid/grid_map/occupancy_inflate'].
+[ERROR] [ego_cmd_bridge-8]: process has died [pid 119506, exit code 1, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/ego_cmd_bridge --ros-args -r __node:=ego_cmd_bridge --params-file /tmp/launch_params_h5l6ihhy'].
+[INFO] [rviz2-10]: process has finished cleanly [pid 119510]

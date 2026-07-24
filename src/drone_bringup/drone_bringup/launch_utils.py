@@ -295,10 +295,12 @@ def planner_node(
     )
 
 
-def visualization_node(namespace: str = '') -> Node:
+def visualization_node(namespace: str = '', extra_params: Optional[dict] = None) -> Node:
     params = [{'arm_length': 0.18}]
     if namespace:
         params[0]['namespace'] = namespace
+    if extra_params:
+        params[0].update(extra_params)
     return Node(
         package='drone_visualization',
         executable='viz_node',
@@ -349,11 +351,12 @@ def waypoint_publisher_process(
     pattern: str = 'square',
     delay_sec: float = 5.0,
     extra_args: Optional[List[str]] = None,
+    hold_sec: float = 8.0,
 ) -> TimerAction:
     cmd = [
         libexec('waypoint_publisher'),
         '--pattern', pattern,
-        '--hold', '8.0',
+        '--hold', str(hold_sec),
     ]
     if extra_args:
         cmd.extend(extra_args)
@@ -378,6 +381,28 @@ def evaluate_process(
     ]
     if goal is not None:
         cmd.extend(['--goal-x', str(goal[0]), '--goal-y', str(goal[1]), '--goal-z', str(goal[2])])
+    return TimerAction(
+        period=delay_sec,
+        actions=[ExecuteProcess(cmd=cmd, output='screen')],
+    )
+
+
+def interference_monitor_process(
+    delay_sec: float = 2.0,
+    goal: Optional[tuple] = None,
+    hover_limit_m: float = 0.3,
+) -> TimerAction:
+    """Floating Tk panel for scenario-6 wind/IMU status (screen-capture friendly)."""
+    cmd = [libexec('interference_monitor')]
+    g = goal or (0.0, 0.0, 1.5)
+    # ROS2 Python nodes: pass params via --ros-args
+    cmd.extend([
+        '--ros-args',
+        '-p', f'goal_x:={g[0]}',
+        '-p', f'goal_y:={g[1]}',
+        '-p', f'goal_z:={g[2]}',
+        '-p', f'hover_limit_m:={hover_limit_m}',
+    ])
     return TimerAction(
         period=delay_sec,
         actions=[ExecuteProcess(cmd=cmd, output='screen')],
@@ -468,16 +493,22 @@ def vfh_planner_node(
         'ray_max': 6.0,
         'lookahead_m': 1.6,
         'path_horizon_m': 7.0,
-        'goal_tol': 0.70,
+        'goal_tol': 0.85,
+        'approach_m': 2.8,
+        'hold_exit_m': 2.0,
         'control_hz': 20.0,
         'max_vel_hint': 0.85,
     }
     if extra_params:
         params.update(extra_params)
-    # Prefer running from src so no colcon is required
+    # Always prefer src/ so Path G stop-at-goal fixes apply without a rebuild race.
     script = os.path.join(
         src_root if os.path.isdir(src_root) else root,
         'drone_rl_planner', 'vfh_planner_node.py')
+    if os.path.isfile(script) and os.path.isdir(src_root):
+        return _python_node_process(
+            script, src_root,
+            yaml_cfg if os.path.isfile(yaml_cfg) else None, params)
     if installed and os.path.isfile(
             os.path.join(get_package_prefix('drone_rl_planner'),
                          'lib', 'drone_rl_planner', 'vfh_planner_node')):

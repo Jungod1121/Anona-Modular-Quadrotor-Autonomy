@@ -1,0 +1,21 @@
+{
+  "title": "FUEL-style exploration",
+  "folder": "04_fuel_style_exploration",
+  "canonical_plan_file": "fuel-style_exploration_b7847763.plan.md",
+  "anchors": [
+    {
+      "line": 1121,
+      "kind": "SwitchMode",
+      "label": "plan"
+    },
+    {
+      "line": 1124,
+      "kind": "CreatePlan",
+      "label": "FUEL-style exploration"
+    }
+  ],
+  "dialogue_event_range": [
+    1121,
+    1124
+  ]
+}

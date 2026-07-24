@@ -49,6 +49,8 @@ class VfhPlannerNode(Node):
         self.declare_parameter('path_step_m', 0.45)
         self.declare_parameter('path_horizon_m', 7.0)
         self.declare_parameter('goal_tol', 0.70)
+        self.declare_parameter('hold_exit_m', 1.6)
+        self.declare_parameter('approach_m', 2.2)
         self.declare_parameter('control_hz', 20.0)
         self.declare_parameter('hist_smooth', 3)
         self.declare_parameter('goal_weight', 1.2)
@@ -66,6 +68,8 @@ class VfhPlannerNode(Node):
         self.path_step_m = float(self.get_parameter('path_step_m').value)
         self.path_horizon_m = float(self.get_parameter('path_horizon_m').value)
         self.goal_tol = float(self.get_parameter('goal_tol').value)
+        self.hold_exit_m = float(self.get_parameter('hold_exit_m').value)
+        self.approach_m = float(self.get_parameter('approach_m').value)
         self.hist_smooth = int(self.get_parameter('hist_smooth').value)
         self.goal_weight = float(self.get_parameter('goal_weight').value)
         self.clear_threshold = float(self.get_parameter('clear_threshold').value)
@@ -74,6 +78,10 @@ class VfhPlannerNode(Node):
         self._goal: Optional[PoseStamped] = None
         self._cloud: Optional[np.ndarray] = None
         self._heading = 0.0  # filtered command heading
+        self._holding = False
+        self._hold_yaw = 0.0
+        self._hold_xy = np.zeros(2, dtype=np.float64)  # freeze hover point (stops finish laps)
+        self._goal_key: Optional[Tuple[float, float, float]] = None
 
         self._local_pub = self.create_publisher(PoseStamped, '/planner/local_goal', 10)
         self._path_pub = self.create_publisher(NavPath, '/planner/trajectory', _latched())
@@ -110,6 +118,15 @@ class VfhPlannerNode(Node):
     def _on_goal(self, msg: PoseStamped) -> None:
         if msg.pose.position.z < 0.3:
             msg.pose.position.z = self.cruise_z
+        # New mission → leave hold so VFH can fly again.
+        key = (
+            round(float(msg.pose.position.x), 2),
+            round(float(msg.pose.position.y), 2),
+            round(float(msg.pose.position.z), 2),
+        )
+        if self._goal_key is not None and key != self._goal_key:
+            self._holding = False
+        self._goal_key = key
         self._goal = msg
 
     def _polar_clearance(self, pos_xy: np.ndarray) -> np.ndarray:
@@ -188,9 +205,13 @@ class VfhPlannerNode(Node):
         else:
             add(goal_xy)
 
-        if float(np.linalg.norm(local_goal - pos[:2])) < 0.8:
+        # Near the goal: never push local_goal past it (that causes finish-line laps).
+        dist_left = float(np.linalg.norm(goal_xy - pos[:2]))
+        if dist_left < self.approach_m:
+            local_goal = goal_xy.copy()
+        elif float(np.linalg.norm(local_goal - pos[:2])) < 0.8:
             local_goal = pos[:2] + np.array([np.cos(h), np.sin(h)]) * max(
-                1.0, min(self.lookahead_m, float(np.linalg.norm(goal_xy - pos[:2]))))
+                1.0, min(self.lookahead_m, dist_left))
         return path, local_goal
 
     def _publish_marker(self, target: np.ndarray, stamp) -> None:
@@ -209,6 +230,51 @@ class VfhPlannerNode(Node):
         m.color.r, m.color.g, m.color.b, m.color.a = 1.0, 0.85, 0.1, 0.95
         self._marker_pub.publish(m)
 
+    def _short_path(self, a_xy: np.ndarray, b_xy: np.ndarray, stamp) -> NavPath:
+        path = NavPath()
+        path.header.stamp = stamp
+        path.header.frame_id = 'map'
+        for xy in (a_xy, b_xy):
+            ps = PoseStamped()
+            ps.header = path.header
+            ps.pose.position.x = float(xy[0])
+            ps.pose.position.y = float(xy[1])
+            ps.pose.position.z = float(self.cruise_z)
+            ps.pose.orientation.w = 1.0
+            path.poses.append(ps)
+        return path
+
+    def _publish_hold(
+        self, pos_xy: np.ndarray, hold_xy: np.ndarray, yaw: float, stamp, dist_goal: float,
+        state: str = 'REACHED',
+    ) -> None:
+        # Hover at the latched XY (usually first-reach pose), not a moving goal
+        # chase that causes finish-line orbits after overshoot.
+        target = hold_xy
+        path = self._short_path(pos_xy, hold_xy, stamp)
+        lg = PoseStamped()
+        lg.header.stamp = stamp
+        lg.header.frame_id = 'map'
+        lg.pose.position.x = float(target[0])
+        lg.pose.position.y = float(target[1])
+        lg.pose.position.z = float(self.cruise_z)
+        lg.pose.orientation.z = float(np.sin(yaw * 0.5))
+        lg.pose.orientation.w = float(np.cos(yaw * 0.5))
+        self._local_pub.publish(lg)
+        self._path_pub.publish(path)
+        self._publish_marker(target, stamp)
+
+        st = PlannerStatus()
+        st.header = lg.header
+        st.state = state
+        st.success = True
+        st.message = 'vfh_plus_hold'
+        st.path_length = dist_goal
+        if self._cloud is not None and self._cloud.size:
+            clear = self._polar_clearance(pos_xy)
+            st.min_obstacle_distance = float(np.min(clear))
+        self._status_pub.publish(st)
+
     def _tick(self) -> None:
         if self._odom is None or self._goal is None:
             return
@@ -219,21 +285,44 @@ class VfhPlannerNode(Node):
         to_goal = goal[:2] - pos[:2]
         dist_goal = float(np.linalg.norm(to_goal))
         stamp = self.get_clock().now().to_msg()
+        speed = 0.0
+        if self._odom is not None:
+            v = self._odom.twist.twist.linear
+            speed = float(np.hypot(v.x, v.y))
+
+        # Hold latch: after first reach, hover in place (no finish-line orbits).
+        if self._holding:
+            if dist_goal > self.hold_exit_m:
+                self._holding = False
+            else:
+                self._heading = self._hold_yaw
+                self._publish_hold(
+                    pos[:2], self._hold_xy, self._hold_yaw, stamp, dist_goal, state='HOLD')
+                return
 
         if dist_goal < self.goal_tol:
-            target = goal[:2]
-            path = NavPath()
-            path.header.stamp = stamp
-            path.header.frame_id = 'map'
-            for xy in (pos[:2], goal[:2]):
-                ps = PoseStamped()
-                ps.header = path.header
-                ps.pose.position.x, ps.pose.position.y = float(xy[0]), float(xy[1])
-                ps.pose.position.z = float(self.cruise_z)
-                ps.pose.orientation.w = 1.0
-                path.poses.append(ps)
-            state, success = 'REACHED', True
-            yaw = float(np.arctan2(to_goal[1], to_goal[0])) if dist_goal > 1e-3 else self._heading
+            self._holding = True
+            # Freeze where we are now — pulling back to a missed goal makes laps.
+            self._hold_xy = pos[:2].copy()
+            self._hold_yaw = self._heading
+            self._heading = self._hold_yaw
+            self._publish_hold(
+                pos[:2], self._hold_xy, self._hold_yaw, stamp, dist_goal, state='REACHED')
+            return
+
+        # Final approach: fly straight at the goal; brake as we get close.
+        if dist_goal < self.approach_m:
+            goal_ang = float(np.arctan2(to_goal[1], to_goal[0]))
+            d = ((goal_ang - self._heading + np.pi) % (2 * np.pi)) - np.pi
+            self._heading = self._heading + 0.55 * d
+            self._heading = (self._heading + np.pi) % (2 * np.pi) - np.pi
+            # Soften local_goal so the plant does not overshoot and start circling.
+            brake = 0.35 if speed > 0.55 else (0.55 if speed > 0.30 else 1.0)
+            look = max(0.25, min(dist_goal, dist_goal * brake))
+            target = pos[:2] + to_goal / max(dist_goal, 1e-6) * look
+            path = self._short_path(pos[:2], goal[:2], stamp)
+            yaw = self._heading
+            state, success = 'APPROACH', False
         else:
             clear = self._polar_clearance(pos[:2])
             goal_ang = float(np.arctan2(to_goal[1], to_goal[0]))
@@ -245,11 +334,12 @@ class VfhPlannerNode(Node):
             self._heading = self._heading + (1.0 - alpha) * d
             self._heading = (self._heading + np.pi) % (2 * np.pi) - np.pi
             path, target = self._build_path(pos, self._heading, goal[:2], clear, stamp)
-            # Cap local_goal distance
+            # Cap local_goal distance; never overshoot the goal.
             vec = target - pos[:2]
             d = float(np.linalg.norm(vec))
-            if d > self.lookahead_m:
-                target = pos[:2] + vec / d * self.lookahead_m
+            if d > min(self.lookahead_m, dist_goal):
+                scale = min(self.lookahead_m, dist_goal) / max(d, 1e-6)
+                target = pos[:2] + vec * scale
             yaw = self._heading
             state, success = 'EXEC_TRAJ', False
 

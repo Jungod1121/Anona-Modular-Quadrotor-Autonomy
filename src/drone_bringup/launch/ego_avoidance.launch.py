@@ -1,6 +1,6 @@
 """Path B: official EGO planner + selectable map + our dynamics/controller.
 
-Does NOT use drone_planner or so3/fake_drone. Path A remains avoidance.launch.py.
+Does NOT use drone_planner or so3/fake_drone. Path A remains homemade_avoidance.launch.py.
 Default map is official_forest; switch with map:=… (see MAPS.md).
 """
 

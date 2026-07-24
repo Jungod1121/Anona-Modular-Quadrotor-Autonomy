@@ -44,8 +44,8 @@ def launch_setup(context, *args, **kwargs):
         ),
         controller_node(extra_params={
             'use_drone_goal_fallback': False,
-            'max_vel': max_vel,
-            'goal_slowdown_dist': 2.5,
+            'max_vel': 0.75,
+            'goal_slowdown_dist': 3.5,
         }),
         planner,
         visualization_node(),

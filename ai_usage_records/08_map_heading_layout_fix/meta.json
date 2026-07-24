@@ -1,0 +1,16 @@
+{
+  "title": "Map heading layout fix",
+  "folder": "08_map_heading_layout_fix",
+  "canonical_plan_file": "map_heading_layout_fix_bd27cdb1.plan.md",
+  "anchors": [
+    {
+      "line": 2743,
+      "kind": "CreatePlan",
+      "label": "Map heading layout fix"
+    }
+  ],
+  "dialogue_event_range": [
+    2743,
+    2743
+  ]
+}

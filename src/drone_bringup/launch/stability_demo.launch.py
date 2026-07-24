@@ -9,6 +9,7 @@ from drone_bringup.launch_utils import (
     controller_node,
     dynamics_node,
     evaluate_process,
+    interference_monitor_process,
     map_node,
     rviz_node,
     script_path,
@@ -20,6 +21,7 @@ from drone_bringup.launch_utils import (
 def launch_setup(context, *args, **kwargs):
     use_rviz = LaunchConfiguration('use_rviz')
     run_eval = LaunchConfiguration('run_eval')
+    use_interference_panel = LaunchConfiguration('use_interference_panel')
     mode = LaunchConfiguration('mode')
 
     mode_val = mode.perform(context)
@@ -62,6 +64,10 @@ def launch_setup(context, *args, **kwargs):
         send_goal_process(goal[0], goal[1], goal[2], yaw=0.0, delay_sec=3.0),
     ]
 
+    # Dedicated interference HUD — only for this scenario (not S1–S5).
+    if use_interference_panel.perform(context).lower() in ('1', 'true', 'yes'):
+        actions.append(interference_monitor_process(delay_sec=2.5, goal=goal))
+
     output_dir = os.path.join(os.path.dirname(script_path('evaluate.py')), 'output')
     if run_eval.perform(context).lower() in ('1', 'true', 'yes'):
         actions.append(
@@ -82,6 +88,9 @@ def generate_launch_description():
         DeclareLaunchArgument('use_rviz', default_value='true'),
         DeclareLaunchArgument('run_eval', default_value='true',
                               description='Start scripts/evaluate.py for CSV+plots'),
+        DeclareLaunchArgument(
+            'use_interference_panel', default_value='true',
+            description='Open floating Interference Monitor for wind/IMU status'),
         DeclareLaunchArgument('mode', default_value='hover',
                               description='hover or single_goal'),
         OpaqueFunction(function=launch_setup),

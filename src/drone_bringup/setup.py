@@ -46,6 +46,7 @@ setup(
             'map_adapter = drone_bringup.map_adapter_node:main',
             'dashboard = drone_bringup.dashboard_server:main',
             'drone_ws_console = drone_bringup.desktop_app:main',
+            'interference_monitor = drone_bringup.interference_monitor:main',
         ],
     },
 )

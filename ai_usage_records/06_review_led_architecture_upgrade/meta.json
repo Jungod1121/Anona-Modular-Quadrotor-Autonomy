@@ -1,0 +1,26 @@
+{
+  "title": "review-led architecture upgrade",
+  "folder": "06_review_led_architecture_upgrade",
+  "canonical_plan_file": "review-led_architecture_upgrade_eafb51b1.plan.md",
+  "anchors": [
+    {
+      "line": 1762,
+      "kind": "SwitchMode",
+      "label": "plan"
+    },
+    {
+      "line": 1976,
+      "kind": "SwitchMode",
+      "label": "plan"
+    },
+    {
+      "line": 2075,
+      "kind": "CreatePlan",
+      "label": "review-led architecture upgrade"
+    }
+  ],
+  "dialogue_event_range": [
+    1762,
+    2075
+  ]
+}

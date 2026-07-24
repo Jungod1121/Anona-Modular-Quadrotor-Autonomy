@@ -16,6 +16,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/PlannerStatus.msg"
   "msg/PlannerDiagnostics.msg"
   "msg/TrajectoryCommand.msg"
+  "msg/DisturbanceStatus.msg"
   DEPENDENCIES std_msgs builtin_interfaces geometry_msgs
 )
 

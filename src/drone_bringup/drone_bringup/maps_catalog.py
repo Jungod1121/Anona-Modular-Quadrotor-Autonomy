@@ -18,6 +18,44 @@ POSE_HOMEMADE = {
     'init_x': 2.0, 'init_y': 12.0, 'init_z': 1.5,
     'goal_x': 40.0, 'goal_y': 12.0, 'goal_z': 1.5,
 }
+# Acceptance scenario 4 (static avoidance) on official random forest.
+# Stays inside catalog envelope (~±17 x, ±11 y) with flyable gaps among cylinders/rings.
+#
+# Lap 1 — axis-aligned rectangle (NW→NE→SE→SW):
+OFFICIAL_FOREST_RECT_WAYPOINTS = (
+    (-8.0, 6.0, 1.0),
+    (8.0, 6.0, 1.0),
+    (8.0, -6.0, 1.0),
+    (-8.0, -6.0, 1.0),
+)
+# Lap 2 — funnel / hourglass: diagonal → wide → diagonal → wide.
+# After finishing the rectangle at SW (-8,-6):
+#   diagonal SW→NE, wide along north, diagonal NW→SE, wide along south.
+OFFICIAL_FOREST_FUNNEL_WAYPOINTS = (
+    (8.0, 6.0, 1.0),    # diagonal to NE
+    (-8.0, 6.0, 1.0),   # wide west along north edge
+    (8.0, -6.0, 1.0),   # diagonal to SE
+    (-8.0, -6.0, 1.0),  # wide west along south edge
+)
+# Back-compat alias: rectangle only (mission builder appends funnel for cycle≥2).
+OFFICIAL_FOREST_LOOP_WAYPOINTS = OFFICIAL_FOREST_RECT_WAYPOINTS
+
+
+def official_forest_mission_waypoints(cycles: int = 2):
+    """Build scenario-4 mission: 1× rectangle, then (cycles-1)× funnel laps."""
+    n = max(1, int(cycles))
+    mission = list(OFFICIAL_FOREST_RECT_WAYPOINTS)
+    if n >= 2:
+        mission.extend(OFFICIAL_FOREST_FUNNEL_WAYPOINTS * (n - 1))
+    return mission
+
+# Legacy dense_field loop (kept for scripts / older notes).
+DENSE_FIELD_LOOP_WAYPOINTS = (
+    (12.0, 8.0, 1.5),
+    (35.0, 8.0, 1.5),
+    (35.0, 18.0, 1.5),
+    (12.0, 18.0, 1.5),
+)
 POSE_OFFICIAL = {
     'init_x': -15.0, 'init_y': 0.0, 'init_z': 1.0,
     'goal_x': 15.0, 'goal_y': 0.0, 'goal_z': 1.0,
