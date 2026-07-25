@@ -222,14 +222,16 @@ def _mockamap_node(mock_type: int, seed: int) -> Node:
     else:  # maze3D (type 4) — wider passages; Z remapped to [0,z] in maps.cpp
         params = {
             **common,
-            'seed': int(seed) if seed else 510,
+            'seed': int(seed) if seed else 1,
             'x_length': 20,
             'y_length': 20,
             'z_length': 4,
-            'numNodes': 64,
-            'connectivity': 0.5,
-            'roadRad': 8,
-            'nodeRad': 5,
+            'numNodes': 48,
+            # Higher connectivity + larger road/node radii so Path C 3D A*
+            # can thread (-6,0)→(6,0) without sealing plate holes.
+            'connectivity': 0.7,
+            'roadRad': 12,
+            'nodeRad': 7,
         }
     return Node(
         package='mockamap',

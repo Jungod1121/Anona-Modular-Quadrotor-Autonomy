@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-07-24 21:39:45 CST",
-  "passed": 6,
+  "timestamp": "2026-07-25 11:24:31 CST",
+  "passed": 5,
   "total": 6,
   "results": [
     {
@@ -157,31 +157,31 @@
       "name": "\u9759\u6001\u907f\u969c",
       "launch": "avoidance.launch.py",
       "output_dir": "/home/jungod/drone_ws/report/acceptance_runs/scenario_04_avoidance",
-      "pass": true,
+      "pass": false,
       "checks": {
         "\u5faa\u73af\u822a\u70b9\u5747\u8bbf\u95ee": true,
-        "\u6700\u5c0f\u969c\u788d\u8ddd\u79bb>0.30m": true,
+        "\u6700\u5c0f\u969c\u788d\u8ddd\u79bb>0.30m": false,
         "\u89c4\u5212\u5668\u66fe\u62a5\u544asuccess": true
       },
       "summary": {
         "samples": "5602",
-        "mean_pos_err": "28.1727 m",
-        "max_pos_err": "53.8350 m",
-        "final_pos_err": "19.1843 m",
+        "mean_pos_err": "9.3633 m",
+        "max_pos_err": "19.6716 m",
+        "final_pos_err": "0.0885 m",
         "hover_pass_0.3m": "False",
-        "goal_pass_0.3m": "False",
-        "hold_at_goal_pass_0.3m": "False",
+        "goal_pass_0.3m": "True",
+        "hold_at_goal_pass_0.3m": "True",
         "hold_at_goal_samples": "30",
         "planner_success_ever": "True",
         "final_planner_state": "TRAJ_CMD",
-        "min_obstacle_distance": "0.3161 m",
+        "min_obstacle_distance": "0.2732 m",
         "avoidance_safety_distance": "0.3000 m",
-        "avoidance_pass": "True",
+        "avoidance_pass": "False",
         "avoidance_pass_0.35m": "False",
-        "flown_path_length": "668.8094 m",
-        "detour_ratio": "73.2308",
-        "mean_jerk": "10.8349 m/s^3",
-        "planned_tracking_error_mean": "30.0222 m"
+        "flown_path_length": "122.6285 m",
+        "detour_ratio": "13.4281",
+        "mean_jerk": "2.6285 m/s^3",
+        "planned_tracking_error_mean": "7.4251 m"
       },
       "notes": "Path B EGO + official_forest: lap1 \u77e9\u5f62, lap2 \u6f0f\u6597(\u5bf9\u89d2\u2192\u5bbd\u2192\u5bf9\u89d2\u2192\u5bbd)",
       "evaluate_exit_code": 0,
@@ -265,8 +265,8 @@
         ],
         "tolerance_m": 1.5
       },
-      "status": "pass",
-      "launch_log_tail": "[ego_planner_node-5] \u001b[47;30m\n[ego_planner_node-5] [drone 0 replan 782]==============================================\u001b[0m\n[ego_planner_node-5] \u001b[1;33mmulti-trajs=1\u001b[1;0m\n[ego_planner_node-5] \u001b[32miter(+1)=8,time(ms)=0.027,total_t(ms)=0.027,cost=0.212\n[ego_planner_node-5] \u001b[0mtraj 1 success.\n[ego_planner_node-5] plan_success=1\n[ego_planner_node-5] total time:\u001b[42m0.00012\u001b[0m,optimize:0.00012,refine:1.8e-06,avg_time=0.00033\n[ego_planner_node-5] refine_success=1\n[ego_planner_node-5] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ\n[local_sense_cloud-6] [INFO] [1784900378.684232542] [drone_0_local_sense_cloud]: global cloud cached: 31782 points\n[map_adapter-2] [INFO] [1784900379.441282229] [map_adapter]: adapted cloud #2940 width=33370 occ=136x88 topdown_cells=650\n[ego_planner_node-5] [FSM]: state: EXEC_TRAJ\n[local_sense_cloud-6] [INFO] [1784900380.291704090] [drone_0_local_sense_cloud]: local cloud #2950: 0 pts @ (-18.8,9.4,0.0)\n[ego_planner_node-5] [FSM]: state: EXEC_TRAJ\n[map_adapter-2] [INFO] [1784900381.443497391] [map_adapter]: adapted cloud #2960 width=33370 occ=136x88 topdown_cells=650"
+      "status": "fail",
+      "launch_log_tail": "[map_adapter-2] [INFO] [1784949861.907889861] [map_adapter]: adapted cloud #2800 width=33370 occ=136x88 topdown_cells=650\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[local_sense_cloud-6] [INFO] [1784949862.968721386] [drone_0_local_sense_cloud]: global cloud cached: 31782 points\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[map_adapter-2] [INFO] [1784949863.882275363] [map_adapter]: adapted cloud #2820 width=33370 occ=136x88 topdown_cells=650\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[local_sense_cloud-6] [INFO] [1784949864.912827441] [drone_0_local_sense_cloud]: local cloud #2950: 6891 pts @ (-7.9,-6.0,1.0)\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[map_adapter-2] [INFO] [1784949865.953678458] [map_adapter]: adapted cloud #2840 width=33370 occ=136x88 topdown_cells=650\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger."
     },
     {
       "id": 5,

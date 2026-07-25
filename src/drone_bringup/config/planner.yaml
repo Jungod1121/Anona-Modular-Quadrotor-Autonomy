@@ -13,12 +13,12 @@
     auto_map_fit: true
     auto_map_margin: 2.5
     auto_inflate: true
-    auto_inflate_min: 0.08
+    auto_inflate_min: 0.15
     auto_inflate_max: 0.40
     auto_map_max_cells: 2500000.0
     replan_dist: 1.5
     goal_tolerance: 0.35
-    local_goal_lookahead: 0.8
+    local_goal_lookahead: 0.6
     control_rate: 20.0
     max_vel: 1.5
     max_acc: 2.0
@@ -26,8 +26,9 @@
     bspline_clearance_auto: true
     bspline_ts: 0.25
     cruise_z: 1.5
-    z_band: 0.35
-    vertical_cost_scale: 8.0
+    z_band: 2.0
+    vertical_cost_scale: 1.25
+    true_3d_astar: true
     free_snap_radius: 12
     seal_boundary_layers: 1
     collision_horizon: 1.5

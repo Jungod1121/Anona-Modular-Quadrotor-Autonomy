@@ -7,6 +7,7 @@ __pycache__/
 .cursor/
 *.bag
 *.csv
+!report/appendix/*.csv
 scripts/output/
 third_party/
 

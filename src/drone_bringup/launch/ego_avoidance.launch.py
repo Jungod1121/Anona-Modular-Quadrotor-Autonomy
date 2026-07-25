@@ -38,6 +38,7 @@ def launch_setup(context, *args, **kwargs):
     pose = resolve_mission_pose(map_id, pose, mission)
     init_x, init_y, init_z = pose['init_x'], pose['init_y'], pose['init_z']
     goal_x, goal_y, goal_z = pose['goal_x'], pose['goal_y'], pose['goal_z']
+    cruise_z = max(float(init_z), 1.0)
     square_wps = (
         benchmark_square_waypoints(map_id) if mission == 'square' else [])
     first_goal = square_wps[0] if square_wps else (goal_x, goal_y, goal_z)
@@ -51,7 +52,7 @@ def launch_setup(context, *args, **kwargs):
         'fsm/emergency_time': 1.0,
         'fsm/realworld_experiment': False,
         'fsm/fail_safe': True,
-        'fsm/cruise_height': 1.0,
+        'fsm/cruise_height': cruise_z,
         'fsm/waypoint_num': 1,
         'fsm/waypoint0_x': float(first_goal[0]),
         'fsm/waypoint0_y': float(first_goal[1]),
@@ -191,7 +192,7 @@ def launch_setup(context, *args, **kwargs):
             'auto_goal_delay': 8.0,
             'auto_goal_repeats': 1,
             'auto_goal_period': 0.5,
-            'cruise_height': 1.0,
+            'cruise_height': cruise_z,
         }],
     )
 

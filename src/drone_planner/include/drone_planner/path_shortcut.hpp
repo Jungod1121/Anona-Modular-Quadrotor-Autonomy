@@ -17,7 +17,9 @@ inline bool segmentCollisionFree(
   if (len < 1e-6) {
     return !grid.isOccupied(a);
   }
-  const int steps = std::max(2, static_cast<int>(std::ceil(len / grid.resolution())));
+  // Sample finer than grid res so thin gate walls are not skipped between cells.
+  const double step = std::max(0.05, 0.5 * grid.resolution());
+  const int steps = std::max(2, static_cast<int>(std::ceil(len / step)));
   for (int i = 0; i <= steps; ++i) {
     const double t = static_cast<double>(i) / static_cast<double>(steps);
     if (grid.isOccupied(a + t * (b - a))) {

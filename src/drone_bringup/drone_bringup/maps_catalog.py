@@ -151,8 +151,14 @@ FUEL_EXPLORE_POSE: Dict[str, Dict[str, float]] = {
             'init_x': 1.0, 'init_y': 5.0, 'init_z': 1.5,
             'goal_x': 17.0, 'goal_y': 5.0, 'goal_z': 1.5,
         },
-    'ego_maze2d_port': dict(POSE_HOMEMADE),
-    'ego_forest_port': dict(POSE_HOMEMADE),
+    'ego_maze2d_port': {
+        'init_x': 1.0, 'init_y': 5.0, 'init_z': 1.5,
+        'goal_x': 17.0, 'goal_y': 5.0, 'goal_z': 1.5,
+    },
+    'ego_forest_port': {
+        'init_x': 1.0, 'init_y': 5.0, 'init_z': 1.5,
+        'goal_x': 17.0, 'goal_y': 5.0, 'goal_z': 1.5,
+    },
     # Inside clear_y corridor (not outside at x=-15).
     'official_forest': {
         'init_x': -12.0, 'init_y': 0.0, 'init_z': 1.0,
@@ -248,7 +254,11 @@ MAPS: Dict[str, Dict[str, Any]] = {
         'family': 'homemade',
         'backend': 'drone_map',
         'config': 'map_ego_narrow.yaml',
-        'pose': POSE_HOMEMADE,
+        # Match map_ego_narrow.yaml start/goal (not dense-field POSE_HOMEMADE).
+        'pose': {
+            'init_x': 1.0, 'init_y': 5.0, 'init_z': 1.5,
+            'goal_x': 17.0, 'goal_y': 5.0, 'goal_z': 1.5,
+        },
         'label_en': 'Maze2D (drone_map)',
         'label_zh': '迷宫2D（drone_map）',
         'desc_en': 'Recursive-division maze in drone_map frame',
@@ -264,7 +274,11 @@ MAPS: Dict[str, Dict[str, Any]] = {
         'family': 'homemade',
         'backend': 'drone_map',
         'config': 'map_ego_dense.yaml',
-        'pose': POSE_HOMEMADE,
+        # Match map_ego_dense.yaml start/goal (not dense-field POSE_HOMEMADE).
+        'pose': {
+            'init_x': 1.0, 'init_y': 5.0, 'init_z': 1.5,
+            'goal_x': 17.0, 'goal_y': 5.0, 'goal_z': 1.5,
+        },
         'label_en': 'Random forest (drone_map)',
         'label_zh': '随机森林（drone_map）',
         'desc_en': 'Cylinders + rings in drone_map frame',
@@ -351,7 +365,7 @@ MAPS: Dict[str, Dict[str, Any]] = {
         'desc_zh': 'Voronoi 三维迷宫（Z≥0，加宽通道）',
         'source': 'mockamap · type=4',
         'difficulty': 'extreme',
-        'seed': 510,
+        'seed': 1,
         'obstacle_family': 'maze3d',
         'safety_radius': 0.30,
         'bounds': bounds_dict(-11.0, -11.0, 0.0, 11.0, 11.0, 4.0),
@@ -708,11 +722,20 @@ def homemade_planner_overrides(map_id: str, planner: str = 'homemade') -> Dict[s
     mid = normalize_map_id(map_id, planner=planner)
     # Keep cruise / speed hints; do not pin map_origin/size (auto_map_fit owns that).
     if mid == 'narrow_corridor' or mid == 'tier_medium_corridor':
+        # S-bend gates are horizontal; true-3D can thread sparse wall voxels in Z.
         return {
             'cruise_z': 1.5,
-            'max_vel': 0.7,
-            'emergency_clearance': 0.12,
-            'auto_inflate_max': 0.28,
+            'true_3d_astar': False,
+            'z_band': 0.45,
+            'vertical_cost_scale': 4.0,
+            'max_vel': 0.65,
+            'resolution': 0.15,
+            'auto_inflate': True,
+            'auto_inflate_min': 0.24,
+            'auto_inflate_max': 0.32,
+            'local_goal_lookahead': 0.40,
+            'emergency_clearance': 0.16,
+            'seal_boundary_layers': 1,
         }
     if mid in ('ego_maze2d_port', 'tier_extreme_maze'):
         return {
@@ -724,6 +747,9 @@ def homemade_planner_overrides(map_id: str, planner: str = 'homemade') -> Dict[s
     overrides: Dict[str, Any] = {
         'cruise_z': 1.0,
         'auto_map_margin': 3.0,
+        'true_3d_astar': True,
+        'z_band': 1.5,
+        'vertical_cost_scale': 1.25,
     }
     if mid == 'official_perlin':
         overrides['cruise_z'] = 1.0
@@ -731,10 +757,14 @@ def homemade_planner_overrides(map_id: str, planner: str = 'homemade') -> Dict[s
     if mid in ('official_maze2d', 'official_maze3d'):
         overrides.update({
             'cruise_z': 1.0,
-            'z_band': 1.2 if mid == 'official_maze3d' else 0.55,
-            'max_vel': 0.9,
-            'auto_inflate_max': 0.12,
+            'true_3d_astar': True,
+            'z_band': 2.5 if mid == 'official_maze3d' else 0.6,
+            'vertical_cost_scale': 1.25 if mid == 'official_maze3d' else 2.0,
+            'max_vel': 0.85,
+            'resolution': 0.15 if mid == 'official_maze3d' else 0.2,
+            'auto_inflate_max': 0.18 if mid == 'official_maze3d' else 0.14,
             'seal_boundary_layers': 1,
+            'local_goal_lookahead': 0.55,
         })
     if mid == 'official_posts':
         overrides['auto_inflate_max'] = 0.22
@@ -802,12 +832,12 @@ def gcopter_planner_overrides(map_id: str) -> Dict[str, Any]:
             'MapBound': [-12.0, 12.0, -12.0, 12.0, 0.0, 4.0],
         }
     if mid == 'official_maze3d':
-        # Thin dilate + extra Z so plate holes stay open for vertical SFC.
+        # Fine voxels + light dilate so Voronoi plate holes stay open for 3D A*.
         return {
-            'DilateRadius': 0.04,
-            'VoxelWidth': 0.15,
+            'DilateRadius': 0.05,
+            'VoxelWidth': 0.12,
             'MapBound': [-12.0, 12.0, -12.0, 12.0, 0.0, 5.5],
-            'CruiseHeight': 1.5,
+            'CruiseHeight': 1.0,
         }
     # Homemade dense fills a wide RViz frame (no perimeter walls).
     if mid == 'dense_field':

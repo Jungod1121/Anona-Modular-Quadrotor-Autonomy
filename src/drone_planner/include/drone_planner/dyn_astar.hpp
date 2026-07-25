@@ -2,7 +2,7 @@
 /**
  * EGO-style local-pool A* frontend (ego-planner path_searching/dyn_a_star).
  * Reference: dyn_a_star.{h,cpp} — geometric 3D A* on inflated occupancy grid.
- * Changes: OccupancyGrid instead of GridMap; horizontal flight band from AStarOptions.
+ * Changes: OccupancyGrid instead of GridMap; true 3D search (plate mazes).
  */
 #include "drone_planner/grid_astar.hpp"
 #include "drone_planner/occupancy_grid.hpp"

@@ -1,6 +1,6 @@
 # Seven-planner comparative benchmark
 
-- Updated: `2026-07-24T17:56:32+08:00`
+- Updated: `2026-07-25T13:58:19+08:00`
 - Matrix: `7 planners × 2 maps = 14 cases`
 - Completed latest cases: `14/14`
 - Maps: `Random Forest`, `Dense Obstacle Field`
@@ -60,11 +60,11 @@ One figure per planner×map trial (obstacles overlaid when `obstacles.csv` is pr
 | Rank | Planner | Cases | Success | Safety | Score | Avg time [s] | Efficiency | Avg clearance [m] |
 |---:|---|---:|---:|---:|---:|---:|---:|---:|
 | 1 | Path A — Grid A* + B-spline | 2/2 | 50% | 50% | 91.6 | 40.51 | 1.000 | 0.192 |
-| 2 | Path C — GCOPTER / MINCO | 2/2 | 50% | 100% | 51.8 | 124.55 | 0.530 | 0.176 |
-| 3 | Path H — Polar DrQ-SAC | 2/2 | 50% | 50% | 48.5 | 53.02 | 0.480 | 0.103 |
-| 4 | Optional F — Fast-Planner kino (lineage) | 2/2 | 0% | 100% | 28.4 | — | 0.517 | 0.231 |
-| 5 | Path G — VFH+ histogram | 2/2 | 0% | 0% | 25.4 | — | 0.670 | 0.056 |
-| 6 | Path B — EGO rebound B-spline | 2/2 | 0% | 50% | 20.8 | — | 0.284 | 0.080 |
+| 2 | Path B — EGO rebound B-spline | 2/2 | 50% | 50% | 56.6 | 131.30 | 0.746 | 0.210 |
+| 3 | Path C — GCOPTER / MINCO | 2/2 | 50% | 100% | 51.8 | 124.55 | 0.530 | 0.176 |
+| 4 | Path H — Polar DrQ-SAC | 2/2 | 50% | 50% | 48.5 | 53.02 | 0.480 | 0.103 |
+| 5 | Optional F — Fast-Planner kino (lineage) | 2/2 | 0% | 100% | 28.4 | — | 0.517 | 0.231 |
+| 6 | Path G — VFH+ histogram | 2/2 | 0% | 0% | 25.4 | — | 0.670 | 0.056 |
 | 7 | Path E — MIGHTY HGP | 2/2 | 0% | 50% | 18.1 | — | 0.383 | 0.061 |
 
 ## Per-case results
@@ -73,7 +73,7 @@ One figure per planner×map trial (obstacles overlaid when `obstacles.csv` is pr
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | Path A — Grid A* + B-spline | Random Forest | fail | FAIL | FAIL | — | — | — | — | — | — | — | — |
 | Path A — Grid A* + B-spline | Dense Obstacle Field | ok | PASS | PASS | 91.6 | 40.51 | 0.002 | 0.192 | 41.16 | 1.000 | 1.02 | 52.60 |
-| Path B — EGO rebound B-spline | Random Forest | ok | FAIL | PASS | 19.3 | — | 247.158 | 0.090 | 746.68 | 0.075 | 4.35 | 22.45 |
+| Path B — EGO rebound B-spline | Random Forest | ok | PASS | PASS | 90.8 | 131.30 | 0.162 | 0.350 | 55.11 | 1.000 | 0.42 | 2.19 |
 | Path B — EGO rebound B-spline | Dense Obstacle Field | ok | FAIL | FAIL | 22.4 | — | 0.001 | 0.070 | 85.28 | 0.492 | 0.50 | 19.70 |
 | Path C — GCOPTER / MINCO | Random Forest | ok | PASS | PASS | 86.2 | 124.55 | 0.066 | 0.256 | 56.19 | 0.997 | 0.45 | 30.79 |
 | Path C — GCOPTER / MINCO | Dense Obstacle Field | ok | FAIL | PASS | 17.3 | — | 116.103 | 0.096 | 653.00 | 0.064 | 4.13 | 254.47 |

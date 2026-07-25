@@ -119,23 +119,29 @@ bool DynAStar::search(
   grid_ = &grid;
   opt_ = opt;
 
-  start.z() = opt.cruise_z;
-  goal.z() = opt.cruise_z;
+  if (!opt.true_3d) {
+    start.z() = opt.cruise_z;
+    goal.z() = opt.cruise_z;
+  }
 
   if (!grid.findFreeNearby(start, opt.free_snap_radius) ||
       !grid.findFreeNearby(goal, opt.free_snap_radius)) {
     return false;
   }
-  start.z() = opt.cruise_z;
-  goal.z() = opt.cruise_z;
+  if (!opt.true_3d) {
+    start.z() = opt.cruise_z;
+    goal.z() = opt.cruise_z;
+  }
 
   step_size_ = grid.resolution();
   inv_step_ = 1.0 / step_size_;
   center_ = 0.5 * (start + goal);
 
-  const double span_xy = (start - goal).norm() + 6.0;
-  const int half_xy = std::clamp(static_cast<int>(span_xy / step_size_) + 8, 24, 60);
-  const int half_z = std::max(8, static_cast<int>(std::ceil(opt.z_band / step_size_)) + 4);
+  const double span_xy = (start - goal).head<2>().norm() + 6.0;
+  const double span_z = std::abs(start.z() - goal.z()) + 2.0 * opt.z_band + 2.0;
+  const int half_xy = std::clamp(static_cast<int>(span_xy / step_size_) + 8, 24, 80);
+  const int half_z = std::clamp(
+    static_cast<int>(std::ceil(span_z / step_size_)) + 4, 12, 48);
   initPool(Eigen::Vector3i(2 * half_xy + 1, 2 * half_xy + 1, 2 * half_z + 1));
 
   Eigen::Vector3i s_idx, g_idx;
@@ -157,14 +163,12 @@ bool DynAStar::search(
   start_node.parent = -1;
   start_node.state = GridNode::OPEN;
 
-  const auto & goal_node = nodes_[static_cast<size_t>(goal_addr)];
-  (void)goal_node;
-
   std::priority_queue<int, std::vector<int>, NodeCmp> open{NodeCmp{&nodes_}};
   open.push(start_addr);
 
-  const double z_min = opt.cruise_z - opt.z_band;
-  const double z_max = opt.cruise_z + opt.z_band;
+  const double z_min = std::min(start.z(), goal.z()) - opt.z_band;
+  const double z_max = std::max(start.z(), goal.z()) + opt.z_band;
+  const double timeout_s = opt.true_3d ? 1.0 : 0.25;
 
   while (!open.empty()) {
     const int cur_addr = open.top();
@@ -181,6 +185,13 @@ bool DynAStar::search(
     if (cur_addr == goal_addr) {
       const bool ok = retrievePath(goal_addr);
       if (ok) {
+        if (!opt.true_3d) {
+          for (auto & p : path_) {
+            p.z() = opt.cruise_z;
+          }
+        }
+        path_.front() = start;
+        path_.back() = goal;
         path = path_;
       }
       return ok;
@@ -192,7 +203,7 @@ bool DynAStar::search(
           if (dx == 0 && dy == 0 && dz == 0) {
             continue;
           }
-          if (dz != 0 && dx == 0 && dy == 0) {
+          if (!opt.true_3d && dz != 0 && dx == 0 && dy == 0) {
             continue;
           }
 
@@ -243,7 +254,7 @@ bool DynAStar::search(
     }
 
     const auto t1 = std::chrono::steady_clock::now();
-    if (std::chrono::duration<double>(t1 - t0).count() > 0.25) {
+    if (std::chrono::duration<double>(t1 - t0).count() > timeout_s) {
       return false;
     }
   }

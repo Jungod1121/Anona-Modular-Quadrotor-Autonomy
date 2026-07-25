@@ -5,6 +5,9 @@
 
     Path frontend: grid A* (no OMPL) for drone_ws Path C.
     convexCover / shortCut retained from upstream GCOPTER.
+
+    Workspace: 3D grid A* (maze3d plate holes) + fail-closed (never
+    emit start→goal straight lines through occupied space).
 */
 
 #ifndef SFC_GEN_HPP
@@ -25,6 +28,7 @@ namespace sfc_gen
 {
 
     // Grid A* frontend (replaces OMPL InformedRRTstar for Humble builds without libompl).
+    // Returns path cost on success; negative on failure with p left empty.
     template <typename Map>
     inline double planPath(const Eigen::Vector3d &s,
                            const Eigen::Vector3d &g,
@@ -35,7 +39,8 @@ namespace sfc_gen
                            std::vector<Eigen::Vector3d> &p)
     {
         p.clear();
-        const double res = std::max(0.25, mapPtr->getScale());
+        // Match voxel scale (do not coarsen to 0.25 m — that seals maze3d plate holes).
+        const double res = std::max(0.12, mapPtr->getScale());
         auto toKey = [&](const Eigen::Vector3i &idx) -> int64_t {
             return (static_cast<int64_t>(idx.x()) << 42) ^
                    (static_cast<int64_t>(idx.y()) << 21) ^
@@ -69,25 +74,30 @@ namespace sfc_gen
 
         Eigen::Vector3i start = worldToIdx(s);
         Eigen::Vector3i goal = worldToIdx(g);
-        const int z0 = start.z();
-        goal.z() = z0;
 
+        // 3D nudge so maze3d plate holes / thin free cells are reachable.
         auto nudge = [&](Eigen::Vector3i &cell) {
             if (free(cell)) return true;
-            for (int r = 1; r <= 6; ++r) {
+            for (int r = 1; r <= 8; ++r) {
                 for (int dx = -r; dx <= r; ++dx) {
                     for (int dy = -r; dy <= r; ++dy) {
-                        Eigen::Vector3i c(cell.x() + dx, cell.y() + dy, z0);
-                        if (free(c)) { cell = c; return true; }
+                        for (int dz = -r; dz <= r; ++dz) {
+                            if (std::abs(dx) != r && std::abs(dy) != r &&
+                                std::abs(dz) != r) {
+                                continue;
+                            }
+                            Eigen::Vector3i c(
+                                cell.x() + dx, cell.y() + dy, cell.z() + dz);
+                            if (free(c)) { cell = c; return true; }
+                        }
                     }
                 }
             }
             return false;
         };
+        // Fail closed: never hand MINCO a straight start→goal through walls.
         if (!nudge(start) || !nudge(goal)) {
-            p.push_back(s);
-            p.push_back(g);
-            return (g - s).norm();
+            return -1.0;
         }
 
         struct Node {
@@ -99,43 +109,46 @@ namespace sfc_gen
         std::unordered_map<int64_t, double> gscore;
         std::unordered_map<int64_t, Eigen::Vector3i> parent;
         auto heur = [&](const Eigen::Vector3i &a) {
-            return (idxToWorld(a) - idxToWorld(goal)).cwiseAbs().sum();
+            return (idxToWorld(a) - idxToWorld(goal)).norm();
         };
 
         open.push({start, 0.0, heur(start)});
         gscore[toKey(start)] = 0.0;
-        const int nbrs[8][2] = {
-            {1, 0}, {-1, 0}, {0, 1}, {0, -1},
-            {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
 
         bool found = false;
         size_t expands = 0;
-        while (!open.empty() && expands < 200000) {
+        while (!open.empty() && expands < 800000) {
             ++expands;
             Node cur = open.top();
             open.pop();
             if (cur.idx == goal) { found = true; break; }
             const double cg = gscore[toKey(cur.idx)];
             if (cur.g > cg + 1e-9) continue;
-            for (auto &n : nbrs) {
-                Eigen::Vector3i nxt(cur.idx.x() + n[0], cur.idx.y() + n[1], z0);
-                if (!free(nxt)) continue;
-                const double step = (n[0] != 0 && n[1] != 0) ? 1.414 : 1.0;
-                const double ng = cg + step * res;
-                const int64_t k = toKey(nxt);
-                auto it = gscore.find(k);
-                if (it == gscore.end() || ng < it->second) {
-                    gscore[k] = ng;
-                    parent[k] = cur.idx;
-                    open.push({nxt, ng, ng + heur(nxt)});
+            // 26-connected 3D neighborhood (needed for Voronoi plate mazes).
+            for (int dx = -1; dx <= 1; ++dx) {
+                for (int dy = -1; dy <= 1; ++dy) {
+                    for (int dz = -1; dz <= 1; ++dz) {
+                        if (dx == 0 && dy == 0 && dz == 0) continue;
+                        Eigen::Vector3i nxt(
+                            cur.idx.x() + dx, cur.idx.y() + dy, cur.idx.z() + dz);
+                        if (!free(nxt)) continue;
+                        const double step = std::sqrt(static_cast<double>(
+                            dx * dx + dy * dy + dz * dz));
+                        const double ng = cg + step * res;
+                        const int64_t k = toKey(nxt);
+                        auto it = gscore.find(k);
+                        if (it == gscore.end() || ng < it->second) {
+                            gscore[k] = ng;
+                            parent[k] = cur.idx;
+                            open.push({nxt, ng, ng + heur(nxt)});
+                        }
+                    }
                 }
             }
         }
 
         if (!found) {
-            p.push_back(s);
-            p.push_back(g);
-            return (g - s).norm();
+            return -1.0;
         }
 
         std::vector<Eigen::Vector3i> rev;
@@ -143,7 +156,12 @@ namespace sfc_gen
         while (true) {
             rev.push_back(c);
             if (c == start) break;
-            c = parent[toKey(c)];
+            auto it = parent.find(toKey(c));
+            if (it == parent.end()) {
+                p.clear();
+                return -1.0;
+            }
+            c = it->second;
         }
         p.push_back(s);
         for (auto it = rev.rbegin(); it != rev.rend(); ++it) {

@@ -71,12 +71,12 @@ public:
     declare_parameter("auto_map_fit", true);
     declare_parameter("auto_map_margin", 2.5);
     declare_parameter("auto_inflate", true);
-    declare_parameter("auto_inflate_min", 0.08);
+    declare_parameter("auto_inflate_min", 0.15);
     declare_parameter("auto_inflate_max", 0.40);
     declare_parameter("auto_map_max_cells", 2500000.0);
     declare_parameter("replan_dist", 1.5);
     declare_parameter("goal_tolerance", 0.35);
-    declare_parameter("local_goal_lookahead", 1.2);
+    declare_parameter("local_goal_lookahead", 0.6);
     declare_parameter("control_rate", 20.0);
     declare_parameter("max_vel", 1.5);
     declare_parameter("max_acc", 2.0);
@@ -84,8 +84,9 @@ public:
     declare_parameter("bspline_clearance_auto", true);
     declare_parameter("bspline_ts", 0.25);
     declare_parameter("cruise_z", 1.5);
-    declare_parameter("z_band", 0.35);
-    declare_parameter("vertical_cost_scale", 8.0);
+    declare_parameter("z_band", 2.0);
+    declare_parameter("vertical_cost_scale", 1.25);
+    declare_parameter("true_3d_astar", true);
     declare_parameter("free_snap_radius", 8);
     declare_parameter("seal_boundary_layers", 2);
     declare_parameter("collision_horizon", 1.5);
@@ -354,10 +355,11 @@ private:
   /** Estimate inflate from XY obstacle spacing (thin for mazes, thicker for sparse). */
   static double estimateInflate(
     const std::vector<Eigen::Vector3d> & pts,
-    double inflate_min, double inflate_max)
+    double inflate_min, double inflate_max, double resolution)
   {
+    const double body_floor = std::max(inflate_min, std::max(0.18, 0.9 * resolution));
     if (pts.size() < 16) {
-      return std::clamp(0.25, inflate_min, inflate_max);
+      return std::clamp(0.25, body_floor, inflate_max);
     }
     const size_t stride = std::max<size_t>(1, pts.size() / 400);
     std::vector<double> nn;
@@ -380,12 +382,16 @@ private:
       }
     }
     if (nn.empty()) {
-      return std::clamp(0.25, inflate_min, inflate_max);
+      return std::clamp(0.25, body_floor, inflate_max);
     }
     std::nth_element(nn.begin(), nn.begin() + nn.size() / 4, nn.end());
     const double gap = nn[nn.size() / 4];
-    // ~30% of typical gap keeps corridors open on mazes, safe on dense fields.
-    return std::clamp(0.30 * gap, inflate_min, inflate_max);
+    // Dense wall surfaces have tiny NN gaps — that is NOT a navigable slit.
+    // Floor inflate so thin gate walls still occupy planning cell centers.
+    if (gap < 0.20) {
+      return std::clamp(body_floor, inflate_min, inflate_max);
+    }
+    return std::clamp(0.30 * gap, body_floor, inflate_max);
   }
 
   void ingestMap(const sensor_msgs::msg::PointCloud2 & msg)
@@ -481,7 +487,8 @@ private:
       inflate = estimateInflate(
         raw_pts,
         get_parameter("auto_inflate_min").as_double(),
-        get_parameter("auto_inflate_max").as_double());
+        get_parameter("auto_inflate_max").as_double(),
+        resolution);
     }
 
     // Build off the hot path: downsample to ~grid resolution before inflate.
@@ -755,7 +762,10 @@ private:
         break;
       }
     }
-    cmd_p.z() = get_parameter("cruise_z").as_double();
+    // Keep planned altitude in true-3D mode (do not flatten to cruise_z).
+    if (!get_parameter("true_3d_astar").as_bool()) {
+      cmd_p.z() = get_parameter("cruise_z").as_double();
+    }
     // Soft lateral push so tracking also stays clear of peers between replans.
     // mtx_ already held by onTimer — do not try_lock again.
     {
@@ -823,7 +833,9 @@ private:
     const double margin = 0.5;
     cmd_p.x() = std::clamp(cmd_p.x(), ox + margin, ox + sx - margin);
     cmd_p.y() = std::clamp(cmd_p.y(), oy + margin, oy + sy - margin);
-    cmd_p.z() = get_parameter("cruise_z").as_double();
+    if (!get_parameter("true_3d_astar").as_bool()) {
+      cmd_p.z() = get_parameter("cruise_z").as_double();
+    }
 
     publishLocalGoal(cmd_p);
     publishTrajectoryCmd(publish_traj_cmd, cmd_p, cmd_v, cmd_a, cmd_yaw, cmd_yaw_dot);
@@ -843,8 +855,8 @@ private:
       return false;
     }
 
-    RCLCPP_INFO(get_logger(), "Planning (%.1f,%.1f)->(%.1f,%.1f)",
-      start.x(), start.y(), goal.x(), goal.y());
+    RCLCPP_INFO(get_logger(), "Planning (%.1f,%.1f,%.1f)->(%.1f,%.1f,%.1f)",
+      start.x(), start.y(), start.z(), goal.x(), goal.y(), goal.z());
 
     AStarOptions opt;
     opt.cruise_z = get_parameter("cruise_z").as_double();
@@ -854,6 +866,7 @@ private:
     }
     opt.z_band = get_parameter("z_band").as_double();
     opt.vertical_cost_scale = get_parameter("vertical_cost_scale").as_double();
+    opt.true_3d = get_parameter("true_3d_astar").as_bool();
     opt.peer_radius = get_parameter("peer_radius").as_double();
     int snap = std::max(4, static_cast<int>(get_parameter("free_snap_radius").as_int()));
     if (get_parameter("auto_map_fit").as_bool()) {
@@ -873,13 +886,15 @@ private:
         }
       }
     }
-    RCLCPP_INFO(get_logger(), "Running A* with %zu peer keep-outs",
-      opt.peer_centers.size());
+    RCLCPP_INFO(get_logger(), "Running A* with %zu peer keep-outs (true_3d=%s)",
+      opt.peer_centers.size(), opt.true_3d ? "yes" : "no");
 
     Eigen::Vector3d s = start;
     Eigen::Vector3d g = goal;
-    s.z() = opt.cruise_z;
-    g.z() = opt.cruise_z;
+    if (!opt.true_3d) {
+      s.z() = opt.cruise_z;
+      g.z() = opt.cruise_z;
+    }
 
     std::vector<Eigen::Vector3d> guide;
     const bool use_dyn = get_parameter("use_dyn_astar").as_bool();
@@ -889,8 +904,8 @@ private:
       found = dyn.search(grid_, s, g, guide, opt);
       if (!found) {
         RCLCPP_WARN(get_logger(),
-          "DynA* failed at cruise_z=%.2f (band=±%.2f) — fallback GridA*",
-          opt.cruise_z, opt.z_band);
+          "DynA* failed (true_3d=%s, band=±%.2f) — fallback GridA*",
+          opt.true_3d ? "yes" : "no", opt.z_band);
         GridAStar astar;
         found = astar.search(grid_, s, g, guide, opt);
       }
@@ -902,14 +917,16 @@ private:
       found ? "yes" : "no", guide.size());
     if (!found) {
       RCLCPP_WARN(get_logger(),
-        "A* failed at cruise_z=%.2f (band=±%.2f) — no horizontal path",
-        opt.cruise_z, opt.z_band);
+        "A* failed (true_3d=%s, band=±%.2f) — no free 3D route",
+        opt.true_3d ? "yes" : "no", opt.z_band);
       return false;
     }
 
-    // Keep optimized path at cruise altitude (no climb-over).
-    for (auto & p : guide) {
-      p.z() = opt.cruise_z;
+    // Legacy horizontal mode flattens; true 3D keeps vertical waypoints.
+    if (!opt.true_3d) {
+      for (auto & p : guide) {
+        p.z() = opt.cruise_z;
+      }
     }
     // Dense A* polyline for tracking. Optional B-spline disabled by default
     // (see ego_avoidance.launch.py for official EGO-Planner packaging).
@@ -926,8 +943,10 @@ private:
     std::vector<Eigen::Vector3d> opt_traj;
     const bool try_bspline = get_parameter("enable_bspline_opt").as_bool();
     if (try_bspline && optimizer_.optimize(free_guide, vel, opt_traj, ctrl)) {
-      for (auto & p : opt_traj) {
-        p.z() = opt.cruise_z;
+      if (!opt.true_3d) {
+        for (auto & p : opt_traj) {
+          p.z() = opt.cruise_z;
+        }
       }
       traj_ = densifyPath(opt_traj, std::min(0.25, get_parameter("resolution").as_double()));
       bspline_ctrl_ = ctrl;

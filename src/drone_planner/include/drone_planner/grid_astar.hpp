@@ -2,9 +2,8 @@
 /**
  * Grid A* front-end.
  * Reference: ego-planner-swarm path_searching/dyn_a_star.{h,cpp}
- * Changes: OccupancyGrid instead of plan_env; geometric A* with strong preference
- * for horizontal avoidance (altitude band + vertical move penalty) so the drone
- * goes AROUND obstacles instead of climbing OVER them.
+ * Changes: OccupancyGrid instead of plan_env; true 3D A* (26-connected) so
+ * maze3d plate holes can be threaded. Optional mild vertical cost bias.
  */
 #include "drone_planner/occupancy_grid.hpp"
 
@@ -20,13 +19,17 @@ namespace drone_planner
 struct AStarOptions
 {
   double cruise_z{1.5};
-  double z_band{0.35};          // only search within |z - cruise_z| <= z_band
-  double vertical_cost_scale{8.0};  // dz steps cost this much more
+  /// Search altitude envelope around start/goal (and cruise when not true_3d).
+  double z_band{2.0};
+  /// Mild preference for level flight (1.0 = isotropic 3D).
+  double vertical_cost_scale{1.25};
   /// Live peer drones (shared-field): treat as cylindrical keep-out.
   std::vector<Eigen::Vector3d> peer_centers;
   double peer_radius{0.75};
   /// Cell radius for start/goal free-space snap (mazes need larger).
   int free_snap_radius{8};
+  /// True 3D: keep start/goal z, allow pure vertical steps, do not flatten path.
+  bool true_3d{true};
 };
 
 class GridAStar
@@ -55,18 +58,19 @@ public:
       return grid.isOccupied(wp) || blockedByPeer(wp);
     };
 
-    // Snap start/goal onto cruise altitude for horizontal avoidance scenes.
-    start.z() = opt.cruise_z;
-    goal.z() = opt.cruise_z;
+    if (!opt.true_3d) {
+      start.z() = opt.cruise_z;
+      goal.z() = opt.cruise_z;
+    }
 
     if (!grid.findFreeNearby(start, opt.free_snap_radius) ||
         !grid.findFreeNearby(goal, opt.free_snap_radius)) {
       return false;
     }
-    // Keep cruise after free-space snap (findFreeNearby may drift in z).
-    start.z() = opt.cruise_z;
-    goal.z() = opt.cruise_z;
-    // Push off peer bodies if we spawned inside keep-out.
+    if (!opt.true_3d) {
+      start.z() = opt.cruise_z;
+      goal.z() = opt.cruise_z;
+    }
     for (int k = 0; k < 12 && blockedByPeer(start); ++k) {
       start.y() += (k % 2 == 0 ? 1 : -1) * (0.3 + 0.1 * k);
     }
@@ -77,8 +81,10 @@ public:
         !grid.findFreeNearby(goal, opt.free_snap_radius)) {
       return false;
     }
-    start.z() = opt.cruise_z;
-    goal.z() = opt.cruise_z;
+    if (!opt.true_3d) {
+      start.z() = opt.cruise_z;
+      goal.z() = opt.cruise_z;
+    }
 
     Eigen::Vector3i sidx, gidx;
     if (!grid.worldToIndex(start, sidx) || !grid.worldToIndex(goal, gidx)) {
@@ -107,16 +113,15 @@ public:
       const double d3 = std::max({dx, dy, dz});
       const double h = (std::sqrt(3.0) - std::sqrt(2.0)) * d1 +
                        (std::sqrt(2.0) - 1.0) * d2 + d3;
-      // Prefer planar progress toward goal
-      return (h + (opt.vertical_cost_scale - 1.0) * dz) * (1.0 + 1e-4);
+      return h * (1.0 + 1e-4);
     };
 
-    const double z_min = opt.cruise_z - opt.z_band;
-    const double z_max = opt.cruise_z + opt.z_band;
+    const double z_lo = std::min(start.z(), goal.z()) - opt.z_band;
+    const double z_hi = std::max(start.z(), goal.z()) + opt.z_band;
 
     auto inAltitudeBand = [&](const Eigen::Vector3i & nidx) {
       const Eigen::Vector3d wp = grid.indexToWorld(nidx);
-      return wp.z() >= z_min && wp.z() <= z_max;
+      return wp.z() >= z_lo && wp.z() <= z_hi;
     };
 
     std::unordered_map<int64_t, Node> nodes;
@@ -132,7 +137,7 @@ public:
     nodes[sk] = sn;
     open.push({sn.f, sk});
 
-    const int max_iters = 300000;
+    const int max_iters = opt.true_3d ? 600000 : 300000;
     int iters = 0;
     int64_t best = -1;
 
@@ -156,8 +161,7 @@ public:
             if (dx == 0 && dy == 0 && dz == 0) {
               continue;
             }
-            // Prefer planar neighbors: allow dz only with horizontal move, not pure vertical.
-            if (dz != 0 && dx == 0 && dy == 0) {
+            if (!opt.true_3d && dz != 0 && dx == 0 && dy == 0) {
               continue;
             }
             Eigen::Vector3i nidx = it->second.idx + Eigen::Vector3i(dx, dy, dz);
@@ -205,7 +209,9 @@ public:
     path.reserve(rev.size());
     for (const auto & i : rev) {
       Eigen::Vector3d p = grid.indexToWorld(i);
-      p.z() = opt.cruise_z;  // flatten to cruise altitude
+      if (!opt.true_3d) {
+        p.z() = opt.cruise_z;
+      }
       path.push_back(p);
     }
     if (!path.empty()) {

@@ -309,7 +309,8 @@ public:
             &voxelMap, 0.01, route);
 
         if (route.size() <= 1) {
-            RCLCPP_ERROR(get_logger(), "Path front-end failed");
+            RCLCPP_ERROR(get_logger(),
+                "Path front-end failed (no free 3D route; refusing straight-line fallback)");
             havePlanned = false;
             return;
         }

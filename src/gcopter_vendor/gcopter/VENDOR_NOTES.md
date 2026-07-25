@@ -11,7 +11,9 @@ raw mirror.
 ## Workspace adaptations
 
 - Removed the external OMPL dependency and replaced only the route frontend with
-  a small 2D grid A* over GCOPTER's voxel map (`include/gcopter/sfc_gen.hpp`).
+  a 3D grid A* over GCOPTER's voxel map (`include/gcopter/sfc_gen.hpp`).
+  Fail-closed: if A* finds no free path, do **not** fall back to a straight
+  start→goal segment (that previously made maze3d fly through plates).
 - Kept GCOPTER's FIRI safe-flight-corridor generation, MINCO trajectory
   optimization, flatness mapping, and visualization (headers match upstream
   except `sfc_gen.hpp`).

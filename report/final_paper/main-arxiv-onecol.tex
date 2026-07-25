@@ -1,0 +1,246 @@
+%% Anona / drone_ws 正式技术报告（单栏版）
+%% 版式：与 main-arxiv.tex 共用字体、段距、页眉页脚与正文 report-body.tex
+%% 与双栏版的区别：全文单栏，无左右分栏
+%% 编译：latexmk -xelatex -shell-escape main-arxiv-onecol.tex
+\documentclass{article}
+
+\usepackage{preprint}
+
+%% 正文字号 12pt；行距 12/14（与双栏版一致）
+\makeatletter
+\renewcommand{\normalsize}{%
+  \@setfontsize\normalsize{12}{14}%
+  \abovedisplayskip      8.5\p@ \@plus 2.5\p@ \@minus 5\p@
+  \abovedisplayshortskip \z@ \@plus 3\p@
+  \belowdisplayskip      \abovedisplayskip
+  \belowdisplayshortskip 5\p@ \@plus 3\p@ \@minus 3\p@
+}
+\normalsize
+\renewcommand{\small}{%
+  \@setfontsize\small{10.5}{12.5}%
+  \abovedisplayskip      7\p@ \@plus 2\p@ \@minus 4\p@
+  \abovedisplayshortskip \z@  \@plus 2\p@
+  \belowdisplayskip      \abovedisplayskip
+  \belowdisplayshortskip 3.5\p@ \@plus 2\p@ \@minus 2\p@
+}
+\renewcommand{\footnotesize}{\@setfontsize\footnotesize{10}{12}}
+\renewcommand{\scriptsize}{\@setfontsize\scriptsize{8.5}{10}}
+\renewcommand{\tiny}{\@setfontsize\tiny{7}{8.5}}
+\renewcommand{\large}{\@setfontsize\large{14}{16}}
+\renewcommand{\Large}{\@setfontsize\Large{16}{19}}
+\renewcommand{\LARGE}{\@setfontsize\LARGE{20}{24}}
+\renewcommand{\huge}{\@setfontsize\huge{24}{28}}
+\renewcommand{\Huge}{\@setfontsize\Huge{29}{34}}
+\makeatother
+
+\usepackage{fontspec}
+\usepackage{xeCJK}
+%% Linux：用 Liberation Serif 替代 Times New Roman
+\setmainfont{Liberation Serif}
+\setsansfont{DejaVu Sans}
+\setCJKmainfont{Noto Serif CJK SC}[
+  BoldFont = Noto Sans CJK SC,
+  ItalicFont = Noto Serif CJK SC
+]
+\setCJKsansfont{Noto Sans CJK SC}
+
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage{xurl}
+\usepackage[colorlinks=true, linkcolor=black, urlcolor=blue!55!black, citecolor=black]{hyperref}
+\setlength{\emergencystretch}{2.5em}
+\newcommand{\code}[1]{\path{#1}}
+
+\graphicspath{{figures/}}
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\DeclareCaptionLabelSeparator{cncolon}{：}
+\captionsetup{labelsep=cncolon, font=small, labelfont=bf}
+\renewcommand{\figureautorefname}{图}
+\renewcommand{\tableautorefname}{表}
+
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{5.5pt}
+
+%% 页眉：左标题、右页码（与双栏版一致）
+\makeatletter
+\fancyhf{}
+\lhead{\footnotesize\@title}
+\rhead{\thepage}
+\renewcommand{\section}{%
+  \@startsection{section}{1}{\z@}%
+                {-2.0ex \@plus -0.5ex \@minus -0.2ex}%
+                { 1.5ex \@plus  0.3ex \@minus  0.2ex}%
+                {\large\bfseries\raggedright}%
+}
+\renewcommand{\subsection}{%
+  \@startsection{subsection}{2}{\z@}%
+                {-1.8ex \@plus -0.5ex \@minus -0.2ex}%
+                { 0.8ex \@plus  0.2ex}%
+                {\normalsize\bfseries\raggedright}%
+}
+\makeatother
+
+\titlespacing\section{0pt}{12pt plus 3pt minus 3pt}{1pt plus 1pt minus 1pt}
+\titlespacing\subsection{0pt}{10pt plus 3pt minus 3pt}{1pt plus 1pt minus 1pt}
+\titlespacing\subsubsection{0pt}{8pt plus 3pt minus 3pt}{1pt plus 1pt minus 1pt}
+
+%% 章 = section；正文小节 = subsection
+\makeatletter
+\let\report@section\section
+\let\report@subsection\subsection
+\let\report@subsubsection\subsubsection
+\newcommand{\chapter}{\report@section}
+\renewcommand{\section}{\report@subsection}
+\renewcommand{\subsection}{\report@subsubsection}
+\newcommand{\chaptermark}[1]{}
+\makeatother
+
+%% 单栏：图宽相对整页正文宽；高度上限略放宽
+\newcommand{\figwidth}{0.92\textwidth}
+\newcommand{\figmaxh}{0.32\textheight}
+\raggedbottom
+\newcommand{\ProjectFigure}[3]{%
+  \par
+  \noindent\begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=\figwidth,height=\figmaxh,keepaspectratio]{#1}\par
+    \vspace{0.15em}%
+    \captionof{figure}{#2}%
+    \label{#3}%
+  \end{minipage}\par
+  \vspace{0.6em}%
+}
+\newcommand{\ProjectTable}[1]{%
+  \par\noindent\begin{minipage}{\linewidth}#1\end{minipage}\par\vspace{0.5em}%
+}
+%% 表格：超宽则满栏；否则按内容居中；与正文同字号
+\newcommand{\FitTable}[1]{%
+  \begingroup\normalsize
+  \setbox0=\hbox{#1}%
+  \ifdim\wd0>\linewidth
+    \resizebox{\linewidth}{!}{\box0}%
+  \else
+    \centerline{\box0}%
+  \fi
+  \endgroup
+}
+%% 强制铺满栏宽（用于验收摘要等需拉满的表）
+\newcommand{\FullWidthTable}[1]{%
+  \begingroup\normalsize
+  \resizebox{\linewidth}{!}{#1}%
+  \endgroup
+}
+\newcommand{\MapThumb}[1]{%
+  \includegraphics[width=0.32\linewidth,height=0.18\textheight,keepaspectratio]{#1}%
+}
+%% 场景配图：正文后紧跟，左右并排（单栏全宽）
+\newcommand{\ScenarioPair}[4]{%
+  \par
+  \noindent\begin{minipage}{\linewidth}
+    \centering
+    \begin{minipage}[t]{0.48\linewidth}
+      \centering
+      \includegraphics[width=\linewidth,height=0.26\textheight,keepaspectratio]{#1}%
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.48\linewidth}
+      \centering
+      \includegraphics[width=\linewidth,height=0.26\textheight,keepaspectratio]{#2}%
+    \end{minipage}
+    \vspace{0.15em}%
+    \captionof{figure}{#3}%
+    \label{#4}%
+  \end{minipage}\par
+  \vspace{0.55em}%
+}
+%% 四张轨迹图同一行
+\newcommand{\QuadFigures}[6]{%
+  \par
+  \noindent\begin{minipage}{\linewidth}
+    \centering
+    \setlength{\tabcolsep}{0.015\linewidth}%
+    \begin{tabular}{@{}cccc@{}}
+      \includegraphics[width=0.235\linewidth,height=0.16\textheight,keepaspectratio]{#1}&
+      \includegraphics[width=0.235\linewidth,height=0.16\textheight,keepaspectratio]{#2}&
+      \includegraphics[width=0.235\linewidth,height=0.16\textheight,keepaspectratio]{#3}&
+      \includegraphics[width=0.235\linewidth,height=0.16\textheight,keepaspectratio]{#4}
+    \end{tabular}
+    \vspace{0.2em}%
+    \captionof{figure}{#5}%
+    \label{#6}%
+  \end{minipage}\par
+  \vspace{0.55em}%
+}
+
+\setlength{\droptitle}{-2.0em}
+\title{基于 ROS~2 的模块化四旋翼仿真与多路径运动规划平台}
+\author{黄奕钧\\[0.2em]
+  {\normalsize 西北工业大学}}
+\date{}
+
+\begin{document}
+
+%% 摘要区：左右缩进同宽；每段首行缩进 2em
+\renewenvironment{abstract}{%
+  \par
+  \centerline{\large\bfseries 摘\quad 要}%
+  \vspace{0.45em}%
+  \par
+  \setlength{\leftskip}{2.5em}%
+  \setlength{\rightskip}{2.5em}%
+  \setlength{\parindent}{2em}%
+  \setlength{\parskip}{0.65em plus 0.1em}%
+}{%
+  \par
+  \setlength{\leftskip}{0pt}%
+  \setlength{\rightskip}{0pt}%
+  \setlength{\parindent}{2em}%
+  \setlength{\parskip}{3pt}%
+}
+\newcommand{\AbstractKeywords}[1]{%
+  \par
+  \setlength{\leftskip}{2.5em}%
+  \setlength{\rightskip}{2.5em}%
+  \setlength{\parindent}{0pt}%
+  \setlength{\parskip}{0.5em}%
+  \noindent\textbf{关键词：}#1\par
+  \setlength{\leftskip}{0pt}%
+  \setlength{\rightskip}{0pt}%
+  \setlength{\parindent}{2em}%
+}
+
+%% ========== 标题 / 作者 / 摘要 / 关键词 ==========
+\maketitle
+\thispagestyle{empty}
+\setlength{\parskip}{3pt}
+
+\begin{abstract}
+四旋翼仿真里，动力学、控制与规划经常写在同一条链路里。换一个规划器，执行频率、安全判据和评测脚本也跟着变，不同算法就很难放在同一条件下比。本报告给出一套可复现的模块化仿真平台：先把动力学与控制层钉死，再让多种规划后端共用同一执行条件做对照。
+
+系统跑在 Ubuntu~22.04 与 ROS~2 Humble 上。动力学侧是自研刚体状态积分、级联 PID 与 X 型混控；规划侧只通过统一话题契约发滚动局部目标或轨迹指令，不改底层实现。Path~A--H 等后端接在这条契约上；第三方规划器先去掉原仓库自带的 SO3、fake\_drone 等执行体，再接入本平台，对照的是规划算法本身。障碍用过程生成点云，覆盖森林、迷宫、密集场、窄通道等地图，经 \texttt{map\_adapter} 统一发布；另配一键验收与规划器批量评测脚本。相对 \texttt{pengyu\_sim}、MARSIM，本系统只作设计参照，不包装其动力学源码。
+
+六项验收（悬停、单目标、多航点、静态避障、窄通道、稳定性）全部通过，悬停误差落到 $0.3\,\mathrm{m}$ 以内。多规划器对照里，同一执行链路下算法表现差得很开：固定 plant 至少能把评测基准稳住。后面还要补接口适配，并把学习型规划器训稳。
+\end{abstract}
+
+\AbstractKeywords{ROS~2；四旋翼动力学；级联控制；运动规划；仿真地图；避障；仿真评测}
+\clearpage
+
+%% ========== 目录 ==========
+\tableofcontents
+\clearpage
+
+%% ========== 单栏正文（共用 report-body.tex；附件报告见 report/appendix/）==========
+\pagestyle{fancy}
+\setlength{\parskip}{5.5pt}
+
+\input{report-body}
+
+\end{document}
