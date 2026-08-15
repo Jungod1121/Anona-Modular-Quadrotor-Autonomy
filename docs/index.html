@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anona · 一套平台，八大规划</title>
+<meta name="description" content="Anona —— ROS 2 Humble 模块化四旋翼自主飞行工作台。统一被控对象，可插拔规划器，公平对比。">
+<meta property="og:title" content="Anona · 一套平台，八大规划">
+<meta property="og:description" content="One plant. Many planners. Fair comparison.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Ctext x='32' y='44' font-family='-apple-system,sans-serif' font-size='36' font-weight='700' fill='%23fff' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Anona · Apple-style intro page
+   Tokens follow the Apple Visual Design Playbook:
+   black / white / light-gray backgrounds, extreme type contrast,
+   one 2–4 stop gradient per screen, #0071E3 as the only CTA color.
+   ============================================================ */
+:root{
+  --black:#000000;
+  --white:#FFFFFF;
+  --bg:#F5F5F7;
+  --ink:#1D1D1F;
+  --gray:#86868B;
+  --gray-2:#6E6E73;
+  --line:#D2D2D7;
+  --line-dark:#2A2A2C;
+  --blue:#0071E3;
+  --blue-hover:#0077ED;
+  --r-card:24px;
+  --r-btn:980px;
+
+  /* Palette: 高能猛进 / 神通妙彩 / 超拉风 / 嘿 Siri / hello */
+  --g-hero: linear-gradient(135deg,#F06620 0%,#EEB355 28%,#164BC5 68%,#7BAED1 100%);
+  --g-magic:linear-gradient(135deg,#A07AC7 0%,#8580C7 35%,#7189BC 68%,#659955 100%);
+  --g-blue: linear-gradient(180deg,#024F97 0%,#1D6EB6 100%);
+  --g-siri: linear-gradient(135deg,#FD9F59 0%,#F487A3 35%,#C488C8 68%,#81C4FD 100%);
+  --g-hello:linear-gradient(135deg,#C9D54F 0%,#E6CA45 20%,#DC5849 40%,#E87753 55%,#905DB0 75%,#3968B9 100%);
+
+  --font-stack:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC","Inter","Noto Sans SC","思源黑体","Source Han Sans CN","Segoe UI","Microsoft YaHei",Helvetica,Arial,sans-serif;
+  --font-mono:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+}
+body{
+  font-family:var(--font-stack);
+  font-size:17px;
+  font-weight:400;
+  line-height:1.5;
+  color:var(--ink);
+  background:var(--black);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img,svg{display:block;max-width:100%}
+
+/* ---------- shared type ---------- */
+.eyebrow{
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--gray);
+  margin-bottom:20px;
+}
+.section-title{
+  font-size:clamp(36px,4.4vw,72px);
+  font-weight:800;
+  letter-spacing:-.02em;
+  line-height:1.08;
+}
+.section-sub{
+  font-size:clamp(17px,1.4vw,22px);
+  font-weight:300;
+  color:var(--gray-2);
+  margin-top:22px;
+  max-width:640px;
+  line-height:1.55;
+}
+.eng-note{
+  font-size:15px;
+  font-weight:500;
+  color:var(--gray);
+  margin-top:14px;
+  letter-spacing:.01em;
+}
+.footnote{
+  font-size:12px;
+  font-weight:300;
+  color:var(--gray);
+  line-height:1.6;
+}
+.mono{font-family:var(--font-mono)}
+
+/* gradient text (135°, clipped to glyphs).
+   NOTE: use background-image (longhand) — the background shorthand
+   would reset background-clip and turn the glyphs into a gradient box. */
+.grad-text{
+  background-image:var(--g-hero);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.grad-text-magic{background-image:var(--g-magic)}
+
+/* ---------- nav ---------- */
+.nav{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:50;
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 clamp(20px,4vw,48px);
+  background:rgba(0,0,0,.72);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+}
+.nav-brand{
+  font-size:15px;
+  font-weight:600;
+  color:var(--white);
+  letter-spacing:.02em;
+}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:26px;
+  list-style:none;
+}
+.nav-links a{
+  font-size:12px;
+  font-weight:400;
+  color:var(--gray);
+  transition:color .2s ease;
+}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{
+  font-size:12px;
+  font-weight:500;
+  color:var(--white);
+  background:var(--blue);
+  border-radius:var(--r-btn);
+  padding:5px 14px;
+  transition:background .2s ease;
+}
+.nav-cta:hover{background:var(--blue-hover)}
+@media (max-width:900px){
+  .nav-links li:not(.nav-cta-li){display:none}
+}
+
+/* ---------- sections ---------- */
+.section{padding:clamp(110px,13vw,190px) clamp(24px,8vw,160px)}
+.section-white{background:var(--white);color:var(--ink)}
+.section-gray{background:var(--bg);color:var(--ink)}
+.section-dark{background:var(--black);color:var(--white)}
+.section-dark .section-sub{color:var(--gray)}
+.section-dark .eyebrow{color:#8E8E93}
+
+/* reveal on scroll */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){
+  .rv{opacity:1;transform:none;transition:none}
+}
+
+/* ============================================================
+   Hero — one screen, one story
+   ============================================================ */
+.hero{
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:96px clamp(24px,8vw,160px) 0;
+  background:var(--black);
+  color:var(--white);
+}
+.hello{
+  font-family:"Caveat","Bradley Hand",var(--font-stack);
+  font-size:clamp(44px,4.5vw,72px);
+  font-weight:700;
+  line-height:1;
+  background:var(--g-hello);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  margin-bottom:36px;
+  transform:rotate(-2deg);
+  display:inline-block;
+}
+.hero-title{
+  font-size:clamp(56px,8.6vw,150px);
+  font-weight:900;
+  letter-spacing:-.03em;
+  line-height:1.02;
+}
+.hero-sub{
+  margin-top:30px;
+  font-size:clamp(17px,1.5vw,24px);
+  font-weight:300;
+  color:var(--gray);
+  max-width:720px;
+  line-height:1.6;
+}
+.hero-cta{
+  display:flex;
+  gap:16px;
+  margin-top:40px;
+  flex-wrap:wrap;
+}
+.btn{
+  font-size:15px;
+  font-weight:500;
+  border-radius:var(--r-btn);
+  padding:12px 26px;
+  transition:all .2s ease;
+}
+.btn-primary{background:var(--blue);color:var(--white)}
+.btn-primary:hover{background:var(--blue-hover)}
+.btn-ghost{border:1px solid var(--line-dark);color:var(--white)}
+.btn-ghost:hover{border-color:#5a5a5e}
+.hero-stats{
+  margin-top:clamp(56px,8vh,96px);
+  border-top:1px solid var(--line-dark);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  padding-top:28px;
+}
+.stat-num{
+  font-size:clamp(30px,3vw,46px);
+  font-weight:800;
+  letter-spacing:-.02em;
+  color:var(--white);
+}
+.stat-label{
+  margin-top:4px;
+  font-size:13px;
+  font-weight:300;
+  color:var(--gray);
+}
+@media (max-width:720px){
+  .hero-stats{grid-template-columns:repeat(2,1fr)}
+}
+
+/* hero flight-path animation */
+.hero-visual{
+  margin:clamp(40px,6vh,72px) auto 0;
+  max-width:1280px;
+}
+.hero-visual svg{width:100%;height:auto}
+@keyframes dashflow{to{stroke-dashoffset:-220}}
+.flow-path{
+  stroke-dasharray:7 13;
+  animation:dashflow 1.4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce){
+  .flow-path{animation:none}
+}
+
+/* ============================================================
+   Architecture — white
+   ============================================================ */
+.arch-grid{
+  margin-top:clamp(48px,6vw,80px);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+}
+@media (max-width:1100px){.arch-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.arch-grid{grid-template-columns:1fr}}
+.arch-card{
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:var(--r-card);
+  padding:32px 28px;
+  min-height:240px;
+  display:flex;
+  flex-direction:column;
+  transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s ease;
+}
+.arch-card:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,.08)}
+.chip-icon{
+  width:44px;height:44px;
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:26px;
+}
+.chip-icon svg{width:22px;height:22px}
+.arch-card h3{
+  font-size:26px;
+  font-weight:700;
+  letter-spacing:-.02em;
+  margin-bottom:4px;
+}
+.arch-card .en{
+  font-size:13px;
+  font-weight:500;
+  color:var(--gray);
+  letter-spacing:.04em;
+}
+.arch-card p{
+  margin-top:16px;
+  font-size:15px;
+  font-weight:300;
+  color:var(--gray-2);
+  line-height:1.6;
+  flex:1;
+}
+.arch-card .pkg{
+  margin-top:18px;
+  font-size:12px;
+  color:var(--gray);
+}
+
+/* ============================================================
+   Contract — dark data-flow strip
+   ============================================================ */
+.contract-title{
+  font-size:clamp(36px,4.4vw,72px);
+  font-weight:800;
+  letter-spacing:-.02em;
+  line-height:1.08;
+}
+.contract-title .grad-text{background-image:var(--g-blue)}
+.contract-flow{
+  margin-top:clamp(56px,7vw,96px);
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:12px 14px;
+}
+.topic{
+  font-family:var(--font-mono);
+  font-size:14px;
+  color:#E8E8ED;
+  background:#161617;
+  border:1px solid var(--line-dark);
+  border-radius:12px;
+  padding:10px 16px;
+  white-space:nowrap;
+}
+.flow-arrow{
+  font-size:18px;
+  color:var(--gray);
+  font-weight:300;
+}
+.contract-note{
+  margin-top:36px;
+  max-width:680px;
+}
+
+/* ============================================================
+   Planners — light gray, uniform cards (restraint)
+   ============================================================ */
+.planner-grid{
+  margin-top:clamp(48px,6vw,80px);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+}
+@media (max-width:1100px){.planner-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.planner-grid{grid-template-columns:1fr}}
+.planner-card{
+  background:var(--white);
+  border:1px solid transparent;
+  border-radius:var(--r-card);
+  padding:30px 26px;
+  transition:border-color .25s ease,transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s ease;
+}
+.planner-card:hover{
+  border-color:var(--line);
+  transform:translateY(-6px);
+  box-shadow:0 24px 48px rgba(0,0,0,.06);
+}
+.planner-card .letter{
+  font-size:52px;
+  font-weight:900;
+  letter-spacing:-.03em;
+  line-height:1;
+  color:var(--ink);
+}
+.planner-card h3{
+  margin-top:18px;
+  font-size:19px;
+  font-weight:700;
+  letter-spacing:-.01em;
+}
+.planner-card .alias{
+  margin-top:2px;
+  font-family:var(--font-mono);
+  font-size:12px;
+  color:var(--gray);
+}
+.planner-card p{
+  margin-top:14px;
+  font-size:14px;
+  font-weight:300;
+  color:var(--gray-2);
+  line-height:1.6;
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin-top:20px;
+  font-size:12px;
+  font-weight:500;
+  color:var(--gray-2);
+}
+.badge .dot{width:7px;height:7px;border-radius:50%;background:#B6B6BC}
+.badge.strong .dot{background:var(--blue)}
+.badge.mode .dot{background:#A07AC7}
+.badge.optional .dot{background:#C7C7CC}
+
+/* ============================================================
+   Maps — dark, procedurally drawn previews
+   ============================================================ */
+.map-grid{
+  margin-top:clamp(48px,6vw,80px);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+}
+@media (max-width:1100px){.map-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.map-grid{grid-template-columns:1fr}}
+.map-card{
+  background:#161617;
+  border:1px solid var(--line-dark);
+  border-radius:var(--r-card);
+  overflow:hidden;
+  transition:transform .35s cubic-bezier(.16,1,.3,1),border-color .25s ease;
+}
+.map-card:hover{transform:translateY(-6px);border-color:#4a4a4e}
+.map-card svg{width:100%;height:auto;background:#0B0B0C}
+.map-card .map-body{padding:22px 24px 26px}
+.map-card h3{font-size:19px;font-weight:700;color:var(--white);letter-spacing:-.01em}
+.map-card .map-en{margin-top:3px;font-family:var(--font-mono);font-size:12px;color:var(--gray)}
+.map-card p{margin-top:12px;font-size:14px;font-weight:300;color:var(--gray);line-height:1.6}
+.tier-row{
+  margin-top:44px;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px;
+}
+.tier-row .tier-label{font-size:13px;color:var(--gray);margin-right:6px}
+.tier{
+  font-size:12px;
+  color:var(--gray);
+  border:1px solid var(--line-dark);
+  border-radius:var(--r-btn);
+  padding:5px 14px;
+}
+
+/* ============================================================
+   Acceptance — white, one giant number
+   ============================================================ */
+.accept-wrap{
+  display:grid;
+  grid-template-columns:minmax(300px,5fr) 7fr;
+  gap:clamp(48px,6vw,96px);
+  align-items:center;
+}
+@media (max-width:1000px){.accept-wrap{grid-template-columns:1fr}}
+.big-score{
+  font-size:clamp(120px,16vw,240px);
+  font-weight:900;
+  letter-spacing:-.05em;
+  line-height:.9;
+  background:var(--g-hero);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.accept-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+@media (max-width:640px){.accept-grid{grid-template-columns:1fr}}
+.accept-item{
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:24px 22px;
+  display:flex;
+  gap:18px;
+  align-items:baseline;
+}
+.accept-item .idx{
+  font-size:13px;
+  font-weight:600;
+  color:var(--gray);
+}
+.accept-item .name{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.accept-item .en{
+  display:block;
+  margin-top:3px;
+  font-size:12px;
+  font-weight:300;
+  color:var(--gray);
+}
+.accept-foot{margin-top:32px;display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.accept-foot code{
+  font-family:var(--font-mono);
+  font-size:13px;
+  color:var(--ink);
+  background:var(--bg);
+  border-radius:8px;
+  padding:6px 12px;
+}
+
+/* ============================================================
+   Console / quick start — light gray
+   ============================================================ */
+.console-wrap{
+  margin-top:clamp(48px,6vw,80px);
+  display:grid;
+  grid-template-columns:minmax(280px,5fr) 7fr;
+  gap:clamp(40px,5vw,80px);
+  align-items:stretch;
+}
+@media (max-width:1000px){.console-wrap{grid-template-columns:1fr}}
+.console-list{
+  list-style:none;
+  margin-top:30px;
+  display:grid;
+  gap:14px;
+}
+.console-list li{
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  font-size:16px;
+  font-weight:400;
+  color:var(--ink);
+}
+.console-list .tick{
+  width:20px;height:20px;
+  flex:none;
+  border-radius:50%;
+  background:var(--blue);
+  color:var(--white);
+  font-size:11px;
+  display:flex;align-items:center;justify-content:center;
+  margin-top:2px;
+}
+.terminal{
+  background:#1D1D1F;
+  border-radius:var(--r-card);
+  overflow:hidden;
+  box-shadow:0 32px 64px rgba(0,0,0,.18);
+  display:flex;
+  flex-direction:column;
+}
+.terminal-bar{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:14px 18px;
+  border-bottom:1px solid var(--line-dark);
+}
+.tdot{width:12px;height:12px;border-radius:50%}
+.tdot.r{background:#FF5F57}
+.tdot.y{background:#FEBC2E}
+.tdot.g{background:#28C840}
+.terminal-bar .ttitle{
+  margin-left:10px;
+  font-family:var(--font-mono);
+  font-size:12px;
+  color:var(--gray);
+}
+.terminal-body{
+  padding:26px 28px 30px;
+  font-family:var(--font-mono);
+  font-size:13.5px;
+  line-height:1.9;
+  color:#F5F5F7;
+  overflow-x:auto;
+}
+.terminal-body .p{color:var(--gray)}
+.terminal-body .c{color:var(--gray)}
+.terminal-body .url{color:#7BAED1}
+
+/* ============================================================
+   Finale — black statement page
+   ============================================================ */
+.finale{
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:120px clamp(24px,8vw,160px);
+  background:var(--black);
+  color:var(--white);
+}
+.finale-title{
+  font-size:clamp(56px,9vw,160px);
+  font-weight:900;
+  letter-spacing:-.03em;
+  line-height:1.05;
+  background:var(--g-blue);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.finale .footnote{margin-top:36px;max-width:520px}
+.finale-links{margin-top:14px;display:flex;gap:26px;flex-wrap:wrap;justify-content:center}
+.finale-links a{font-size:13px;color:var(--gray);transition:color .2s ease}
+.finale-links a:hover{color:var(--white)}
+</style>
+</head>
+<body>
+
+<!-- ================= nav ================= -->
+<nav class="nav" aria-label="主导航">
+  <a class="nav-brand" href="#top">Anona</a>
+  <ul class="nav-links">
+    <li><a href="#architecture">架构</a></li>
+    <li><a href="#contract">契约</a></li>
+    <li><a href="#planners">规划器</a></li>
+    <li><a href="#maps">地图</a></li>
+    <li><a href="#acceptance">验收</a></li>
+    <li><a href="#console">快速开始</a></li>
+    <li class="nav-cta-li"><a class="nav-cta" href="https://github.com/Jungod1121/Anona-Modular-Quadrotor-Autonomy" target="_blank" rel="noopener">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<main id="top">
+
+<!-- ================= Hero ================= -->
+<section class="hero" aria-label="开场">
+  <div class="rv in">
+    <span class="hello">hello.</span>
+    <p class="eyebrow">Anona · Modular Quadrotor Autonomy</p>
+    <h1 class="hero-title">
+      一套平台。<br>
+      <span class="grad-text">八大规划。</span>
+    </h1>
+    <p class="hero-sub">
+      One plant. Many planners. Fair comparison.<br>
+      统一被控对象，可插拔规划器，在同一套标准下公平对比 —— 一个基于 ROS&nbsp;2&nbsp;Humble 的四旋翼自主飞行仿真工作台。
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#console">快速开始</a>
+      <a class="btn btn-ghost" href="https://www.bilibili.com/video/BV11Dgi6gE9A/" target="_blank" rel="noopener">观看演示 ↗</a>
+    </div>
+  </div>
+
+  <div class="hero-stats rv">
+    <div>
+      <div class="stat-num">8</div>
+      <div class="stat-label">规划器 · Path A–H</div>
+    </div>
+    <div>
+      <div class="stat-num">6/6</div>
+      <div class="stat-label">验收场景一次通过</div>
+    </div>
+    <div>
+      <div class="stat-num">500Hz</div>
+      <div class="stat-label">动力学积分频率</div>
+    </div>
+    <div>
+      <div class="stat-num">12+</div>
+      <div class="stat-label">过程化生成地图</div>
+    </div>
+  </div>
+
+  <div class="hero-visual" aria-hidden="true">
+    <svg viewBox="0 0 1600 440" role="img" aria-label="飞行轨迹示意">
+      <defs>
+        <linearGradient id="pathGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#024F97"/>
+          <stop offset="1" stop-color="#1D6EB6"/>
+        </linearGradient>
+        <radialGradient id="glowGrad">
+          <stop offset="0" stop-color="#7BAED1" stop-opacity=".9"/>
+          <stop offset="1" stop-color="#7BAED1" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <!-- obstacle scatter (forest-like) -->
+      <g fill="#2E2E30">
+        <circle cx="90" cy="80" r="9"/><circle cx="200" cy="330" r="12"/><circle cx="300" cy="180" r="8"/>
+        <circle cx="420" cy="60" r="10"/><circle cx="470" cy="380" r="9"/><circle cx="560" cy="200" r="13"/>
+        <circle cx="640" cy="90" r="8"/><circle cx="700" cy="360" r="11"/><circle cx="820" cy="220" r="9"/>
+        <circle cx="900" cy="70" r="10"/><circle cx="950" cy="350" r="8"/><circle cx="1060" cy="180" r="12"/>
+        <circle cx="1160" cy="60" r="9"/><circle cx="1220" cy="330" r="11"/><circle cx="1340" cy="120" r="8"/>
+        <circle cx="1430" cy="300" r="10"/><circle cx="1500" cy="90" r="9"/><circle cx="260" cy="420" r="10"/>
+        <circle cx="760" cy="430" r="9"/><circle cx="1120" cy="420" r="11"/><circle cx="1550" cy="400" r="8"/>
+      </g>
+      <!-- start / goal markers -->
+      <circle cx="40" cy="240" r="6" fill="#28C840"/>
+      <circle cx="1580" cy="250" r="6" fill="#FF5F57"/>
+      <text x="58" y="228" font-family="SF Mono,Menlo,monospace" font-size="19" fill="#86868B">start (−15, 0, 1)</text>
+      <text x="1448" y="298" font-family="SF Mono,Menlo,monospace" font-size="19" fill="#86868B">goal (15, 0, 1)</text>
+      <!-- planned path -->
+      <path id="flightPath" d="M 40 240 C 180 240, 220 110, 390 110 S 640 340, 810 340 S 1080 90, 1240 90 S 1520 260, 1580 250"
+            fill="none" stroke="url(#pathGrad)" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+      <path d="M 40 240 C 180 240, 220 110, 390 110 S 640 340, 810 340 S 1080 90, 1240 90 S 1520 260, 1580 250"
+            fill="none" stroke="#7BAED1" stroke-width="1.5" stroke-linecap="round" class="flow-path" opacity=".9"/>
+      <!-- drone: glow + core, following the path -->
+      <circle r="26" fill="url(#glowGrad)">
+        <animateMotion dur="9s" repeatCount="indefinite">
+          <mpath href="#flightPath"/>
+        </animateMotion>
+      </circle>
+      <circle r="4.5" fill="#FFFFFF">
+        <animateMotion dur="9s" repeatCount="indefinite">
+          <mpath href="#flightPath"/>
+        </animateMotion>
+      </circle>
+    </svg>
+  </div>
+</section>
+
+<!-- ================= Architecture ================= -->
+<section id="architecture" class="section section-white" aria-label="架构">
+  <div class="rv">
+    <p class="eyebrow">Architecture · 架构</p>
+    <h2 class="section-title">平台不变，规划可变。</h2>
+    <p class="section-sub">
+      自研动力学与级联 PID 构成唯一的被控对象。Path A–H 通过同一套接口接入 —— 换规划器，不换平台，对比才公平。
+    </p>
+    <p class="eng-note">One plant. Many planners. Fair comparison.</p>
+  </div>
+
+  <div class="arch-grid">
+    <div class="arch-card rv">
+      <div class="chip-icon" style="background:linear-gradient(180deg,#024F97,#1D6EB6)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="2.6"/><path d="M7.2 16.8v3M16.8 16.8v3M4 12h3M17 12h3M7.2 4.2v3M16.8 4.2v3M12 4v3M12 17v3"/>
+        </svg>
+      </div>
+      <h3>被控对象</h3>
+      <span class="en">PLANT</span>
+      <p>里程计、IMU、电机转速，一个四旋翼的完整动力学模型。</p>
+      <span class="pkg mono">drone_dynamics + drone_controller</span>
+    </div>
+
+    <div class="arch-card rv" style="transition-delay:.06s">
+      <div class="chip-icon" style="background:var(--g-magic)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 8l4-4h10l4 4v8l-4 4H7l-4-4z"/><path d="M3 8h18M9 4v4M15 4v4M9 20v-4M15 20v-4M3 16h18"/>
+        </svg>
+      </div>
+      <h3>世界</h3>
+      <span class="en">WORLD</span>
+      <p>种子化点云地图，同一片森林、迷宫与走廊，人人可复现。</p>
+      <span class="pkg mono">drone_map + map_adapter</span>
+    </div>
+
+    <div class="arch-card rv" style="transition-delay:.12s">
+      <div class="chip-icon" style="background:var(--g-hero)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19c3-8 5-12 16-14"/><circle cx="5" cy="19" r="1.6"/><circle cx="20" cy="5" r="1.6"/>
+        </svg>
+      </div>
+      <h3>规划</h3>
+      <span class="en">PLANNING</span>
+      <p>Path A–H 八个后端，从经典算法到强化学习，同台竞技。</p>
+      <span class="pkg mono">drone_planner + vendors + rl</span>
+    </div>
+
+    <div class="arch-card rv" style="transition-delay:.18s">
+      <div class="chip-icon" style="background:var(--g-siri)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="14" rx="2.5"/><path d="M8 21h8M12 18v3"/><path d="M7.5 8.5h4M7.5 11.5h7"/>
+        </svg>
+      </div>
+      <h3>运维</h3>
+      <span class="en">OPS</span>
+      <p>一键 launch、任务控制台、六项验收场景，开箱即用。</p>
+      <span class="pkg mono">drone_bringup + Mission Console</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Contract ================= -->
+<section id="contract" class="section section-dark" aria-label="话题契约">
+  <div class="rv">
+    <p class="eyebrow">One Contract · 话题契约</p>
+    <h2 class="contract-title">同一个契约，<span class="grad-text">公平对比。</span></h2>
+    <p class="section-sub">
+      所有规划器读写同一组 topic，从目标到轨迹、再到电机指令，接口完全一致。公平，从接口开始。
+    </p>
+  </div>
+
+  <div class="contract-flow rv" role="list" aria-label="话题数据流">
+    <span class="topic">/drone/goal</span><span class="flow-arrow">→</span>
+    <span class="topic">/map/obstacles</span><span class="flow-arrow">→</span>
+    <span class="topic">/planner/local_goal</span><span class="flow-arrow">→</span>
+    <span class="topic">/planner/trajectory_cmd</span><span class="flow-arrow">→</span>
+    <span class="topic">/drone/motor_rpm_cmd</span><span class="flow-arrow">→</span>
+    <span class="topic">/drone/odom</span>
+  </div>
+
+  <p class="footnote contract-note rv">
+    坐标系 map (ENU) → base_link。目标由 RViz 2D Goal Pose 下达；黄色为规划轨迹，蓝色为实飞轨迹。
+  </p>
+</section>
+
+<!-- ================= Planners ================= -->
+<section id="planners" class="section section-gray" aria-label="规划器">
+  <div class="rv">
+    <p class="eyebrow">Path A–H · 规划器</p>
+    <h2 class="section-title">八条路径，<span class="grad-text">一个平台。</span></h2>
+    <p class="section-sub">
+      经典、优化、学习三类方法同场竞技。强弱基线进入正式对比矩阵，其余归入模式与谱系对照。
+    </p>
+  </div>
+
+  <div class="planner-grid">
+    <div class="planner-card rv">
+      <div class="letter">A</div>
+      <h3>Dyn-A*</h3>
+      <span class="alias mono">homemade · weak</span>
+      <p>Dyn-A* + B 样条，占据栅格自动适配地图尺寸与膨胀半径。</p>
+      <span class="badge"><span class="dot"></span>经典 · 弱基线</span>
+    </div>
+    <div class="planner-card rv" style="transition-delay:.04s">
+      <div class="letter">B</div>
+      <h3>EGO-Planner</h3>
+      <span class="alias mono">ego · strong</span>
+      <p>基于梯度的 B 样条重绑定，本地感知裁剪同一张全局地图。</p>
+      <span class="badge strong"><span class="dot"></span>优化 · 强基线</span>
+    </div>
+    <div class="planner-card rv" style="transition-delay:.08s">
+      <div class="letter">C</div>
+      <h3>GCOPTER</h3>
+      <span class="alias mono">gcopter · strong</span>
+      <p>MINCO 走廊优化，直接发布契约轨迹，无需额外被控对象。</p>
+      <span class="badge strong"><span class="dot"></span>优化 · 强基线</span>
+    </div>
+    <div class="planner-card rv" style="transition-delay:.12s">
+      <div class="letter">D</div>
+      <h3>FUEL-style</h3>
+      <span class="alias mono">fuel_explore · mode</span>
+      <p>前沿探索任务模式：雾感知 + 前沿 FSM，EGO 负责轨迹执行。</p>
+      <span class="badge mode"><span class="dot"></span>模式 · 非独立规划器</span>
+    </div>
+    <div class="planner-card rv" style="transition-delay:.04s">
+      <div class="letter">E</div>
+      <h3>MIGHTY</h3>
+      <span class="alias mono">mighty · strong</span>
+      <p>HGP 引导 + Hermite-LBFGS，经桥接节点接入统一被控对象。</p>
+      <span class="badge strong"><span class="dot"></span>优化 · 强基线</span>
+    </div>
+    <div class="planner-card rv" style="transition-delay:.08s">
+      <div class="letter">F</div>
+      <h3>Fast-Planner</h3>
+      <span class="alias mono">fast_planner · optional</span>
+      <p>kino_replan 谱系基准，独立对照，不进入正式强弱矩阵。</p>
+      <span class="badge optional"><span class="dot"></span>对照 · 谱系基准</span>
+    </div>
+    <div class="planner-card rv" style="transition-delay:.12s">
+      <div class="letter">G</div>
+      <h3>VFH+</h3>
+      <span class="alias mono">vfh · weak</span>
+      <p>极坐标直方图反应式避障，可选 PPO 后端作为兼容别名。</p>
+      <span class="badge"><span class="dot"></span>经典 · 弱基线</span>
+    </div>
+    <div class="planner-card rv" style="transition-delay:.16s">
+      <div class="letter">H</div>
+      <h3>DrQ-SAC</h3>
+      <span class="alias mono">sac · strong</span>
+      <p>极坐标占据图像输入，学习策略滚动 Bézier 路径，VFH 兜底。</p>
+      <span class="badge strong"><span class="dot"></span>学习 · 强基线</span>
+    </div>
+  </div>
+
+  <p class="footnote rv" style="margin-top:32px">
+    强弱分类定义见 PLANNERS.md：canonical_comparison_ids = { homemade, ego, gcopter, mighty, vfh, sac }。
+  </p>
+</section>
+
+<!-- ================= Maps ================= -->
+<section id="maps" class="section section-dark" aria-label="地图">
+  <div class="rv">
+    <p class="eyebrow">Procedural Maps · 地图</p>
+    <h2 class="section-title">世界，由<span class="grad-text grad-text-magic">种子生成。</span></h2>
+    <p class="section-sub">
+      没有 PCD 场景文件 —— 全部为过程化点云。同一颗种子，复现同一片森林、迷宫与走廊。
+    </p>
+  </div>
+
+  <div class="map-grid">
+    <div class="map-card rv">
+      <svg viewBox="0 0 300 190" data-map="forest" role="img" aria-label="森林地图预览"></svg>
+      <div class="map-body">
+        <h3>森林</h3>
+        <span class="map-en">official_forest · 26×20×3</span>
+        <p>圆柱与偏航环随机分布，起点置于云外，东西走廊贯穿。</p>
+      </div>
+    </div>
+    <div class="map-card rv" style="transition-delay:.05s">
+      <svg viewBox="0 0 300 190" data-map="maze" role="img" aria-label="迷宫地图预览"></svg>
+      <div class="map-body">
+        <h3>迷宫</h3>
+        <span class="map-en">official_maze2d · 20×20</span>
+        <p>递归分割墙，路宽 1.2m，比上游更宽，适配膨胀半径。</p>
+      </div>
+    </div>
+    <div class="map-card rv" style="transition-delay:.1s">
+      <svg viewBox="0 0 300 190" data-map="posts" role="img" aria-label="立柱地图预览"></svg>
+      <div class="map-body">
+        <h3>立柱</h3>
+        <span class="map-en">official_posts · 20×20×4</span>
+        <p>12 根空心矩形柱，稀疏分布，留出可穿越的间隙。</p>
+      </div>
+    </div>
+    <div class="map-card rv" style="transition-delay:.15s">
+      <svg viewBox="0 0 300 190" data-map="corridor" role="img" aria-label="窄廊地图预览"></svg>
+      <div class="map-body">
+        <h3>窄廊</h3>
+        <span class="map-en">narrow_corridor · S-bend</span>
+        <p>S 形弯道，三扇 1.2–1.8m 交错门，侧翼散布干扰物。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-row rv">
+    <span class="tier-label">难度预设</span>
+    <span class="tier">简单 · simple</span>
+    <span class="tier">中等 · medium</span>
+    <span class="tier">复杂 · complex</span>
+    <span class="tier">极限 · extreme</span>
+  </div>
+
+  <p class="footnote rv" style="margin-top:26px;max-width:640px">
+    另有 Perlin 体素、3D 迷宫、密林与致密非对称变体；每张地图随 /map/metadata 发布难度与种子。
+  </p>
+</section>
+
+<!-- ================= Acceptance ================= -->
+<section id="acceptance" class="section section-white" aria-label="验收">
+  <div class="accept-wrap">
+    <div class="rv">
+      <p class="eyebrow">Acceptance · 验收</p>
+      <div class="big-score" aria-label="六项全部通过">6/6</div>
+      <p class="section-sub" style="margin-top:26px">
+        六个一键场景，一次通过。从悬停到窄道穿越，同一套脚本，自动验收。
+      </p>
+    </div>
+
+    <div>
+      <div class="accept-grid">
+        <div class="accept-item rv">
+          <span class="idx">01</span>
+          <div>
+            <span class="name">悬停</span>
+            <span class="en">Hover</span>
+          </div>
+        </div>
+        <div class="accept-item rv" style="transition-delay:.04s">
+          <span class="idx">02</span>
+          <div>
+            <span class="name">单目标</span>
+            <span class="en">Single Goal</span>
+          </div>
+        </div>
+        <div class="accept-item rv" style="transition-delay:.08s">
+          <span class="idx">03</span>
+          <div>
+            <span class="name">多航点</span>
+            <span class="en">Multi-waypoint</span>
+          </div>
+        </div>
+        <div class="accept-item rv" style="transition-delay:.12s">
+          <span class="idx">04</span>
+          <div>
+            <span class="name">静态避障</span>
+            <span class="en">Static Avoidance</span>
+          </div>
+        </div>
+        <div class="accept-item rv" style="transition-delay:.16s">
+          <span class="idx">05</span>
+          <div>
+            <span class="name">窄道穿越</span>
+            <span class="en">Narrow Passage</span>
+          </div>
+        </div>
+        <div class="accept-item rv" style="transition-delay:.2s">
+          <span class="idx">06</span>
+          <div>
+            <span class="name">稳定性</span>
+            <span class="en">Stability Demo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="accept-foot rv">
+        <code>python3 scripts/run_acceptance.py</code>
+        <span class="footnote">正式报告 · report/acceptance_report.md</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Console ================= -->
+<section id="console" class="section section-gray" aria-label="任务控制台与快速开始">
+  <div class="rv">
+    <p class="eyebrow">Mission Console · 快速开始</p>
+    <h2 class="section-title">从终端，到驾驶舱。</h2>
+    <p class="section-sub">
+      浏览器控制台或原生 app，地图与规划器即点即换，单机与多机编队一屏掌控。
+    </p>
+  </div>
+
+  <div class="console-wrap">
+    <div class="rv">
+      <ul class="console-list">
+        <li><span class="tick">✓</span>浏览器控制台 · <span class="mono" style="color:var(--gray);font-size:14px">http://127.0.0.1:8765/</span></li>
+        <li><span class="tick">✓</span>地图与规划器切换，Start / Stop 即点即用</li>
+        <li><span class="tick">✓</span>单机任务与多机编队（EGO-Swarm 内核）</li>
+        <li><span class="tick">✓</span>Ubuntu 22.04 + ROS 2 Humble，MIT 开源</li>
+      </ul>
+      <p class="footnote" style="margin-top:30px">
+        Ubuntu 22.04 · ROS 2 Humble · colcon 构建。原生 app 安装：<span class="mono">bash packaging/linux/install.sh</span>
+      </p>
+    </div>
+
+    <div class="terminal rv" role="img" aria-label="快速开始命令">
+      <div class="terminal-bar">
+        <span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span>
+        <span class="ttitle">anona — quick start</span>
+      </div>
+      <div class="terminal-body">
+        <span class="p">$</span> source /opt/ros/humble/setup.bash<br>
+        <span class="p">$</span> cd ~/drone_ws<br>
+        <span class="p">$</span> export PYTHONNOUSERSITE=1<br>
+        <span class="p">$</span> colcon build --symlink-install<br>
+        <span class="p">$</span> source install/setup.bash<br>
+        <span class="p">$</span> ros2 launch drone_bringup planner_sim.launch.py \<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;planner:=ego map:=official_forest<br>
+        <span class="p">$</span> ros2 run drone_bringup dashboard <span class="c"># 任务控制台</span><br>
+        <span class="url">→ http://127.0.0.1:8765/</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Finale ================= -->
+<section class="finale" aria-label="结语">
+  <h2 class="finale-title rv">为飞行而生。</h2>
+  <p class="footnote rv" style="transition-delay:.1s">
+    Anona · Modular Quadrotor Autonomy Workbench<br>
+    本页面依据仓库公开文档生成 · 演示视频见 Bilibili
+  </p>
+  <div class="finale-links rv" style="transition-delay:.15s">
+    <a href="https://github.com/Jungod1121/Anona-Modular-Quadrotor-Autonomy" target="_blank" rel="noopener">GitHub 仓库 ↗</a>
+    <a href="https://www.bilibili.com/video/BV11Dgi6gE9A/" target="_blank" rel="noopener">Bilibili 演示 ↗</a>
+    <span style="font-size:13px;color:var(--gray)">MIT License</span>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ---------- scroll reveal ---------- */
+(function(){
+  var els = document.querySelectorAll('.rv');
+  if(!('IntersectionObserver' in window)){
+    els.forEach(function(el){el.classList.add('in')});
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.15,rootMargin:'0px 0px -8% 0px'});
+  els.forEach(function(el){io.observe(el)});
+})();
+
+/* ---------- procedural map previews (seeded, deterministic) ---------- */
+(function(){
+  function mulberry32(a){
+    return function(){
+      a|=0;a=a+0x6D2B79F5|0;
+      var t=Math.imul(a^a>>>15,1|a);
+      t=t+Math.imul(t^t>>>7,61|t)^t;
+      return ((t^t>>>14)>>>0)/4294967296;
+    };
+  }
+
+  var PALETTE={
+    bg:'#0B0B0C', ob:'#2E2E30', ob2:'#3A3A3C',
+    pathStart:'#024F97', pathEnd:'#1D6EB6', dot:'#7BAED1'
+  };
+
+  function drawForest(svg){
+    var r=mulberry32(42);
+    for(var i=0;i<46;i++){
+      var c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      var rr=3+r()*7, x=10+r()*280, y=10+r()*170;
+      c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',rr);
+      c.setAttribute('fill',r()<0.2?PALETTE.ob2:PALETTE.ob);
+      svg.appendChild(c);
+    }
+    tracePath(svg,'M 8 150 C 60 150, 80 60, 150 60 S 220 150, 292 60');
+  }
+
+  function drawMaze(svg){
+    var cells=5, w=280/cells, h=170/cells;
+    for(var i=0;i<cells;i++){
+      for(var j=0;j<cells;j++){
+        var x=10+i*w, y=10+j*h;
+        var r=mulberry32(i*31+j*17+7);
+        var o=document.createElementNS('http://www.w3.org/2000/svg','rect');
+        o.setAttribute('x',x);o.setAttribute('y',y);
+        o.setAttribute('width',w-8);o.setAttribute('height',h-8);
+        o.setAttribute('rx',3);o.setAttribute('fill',PALETTE.ob);
+        o.setAttribute('opacity',r<0.62?0:1);
+        svg.appendChild(o);
+      }
+    }
+    tracePath(svg,'M 8 90 H 90 V 30 H 210 V 140 H 292');
+  }
+
+  function drawPosts(svg){
+    for(var i=0;i<3;i++){
+      for(var j=0;j<4;j++){
+        var o=document.createElementNS('http://www.w3.org/2000/svg','rect');
+        var x=28+i*88, y=20+j*44;
+        o.setAttribute('x',x);o.setAttribute('y',y);
+        o.setAttribute('width',20);o.setAttribute('height',16);
+        o.setAttribute('rx',3);o.setAttribute('fill',PALETTE.ob2);
+        svg.appendChild(o);
+      }
+    }
+    tracePath(svg,'M 8 90 C 60 90, 70 40, 130 40 S 190 150, 292 95');
+  }
+
+  function drawCorridor(svg){
+    function wall(pts){
+      var p=document.createElementNS('http://www.w3.org/2000/svg','polyline');
+      p.setAttribute('points',pts);
+      p.setAttribute('fill','none');p.setAttribute('stroke',PALETTE.ob2);
+      p.setAttribute('stroke-width',10);p.setAttribute('stroke-linecap','round');
+      svg.appendChild(p);
+    }
+    wall('0,8 110,8 118,70 210,70 220,182 300,182');
+    wall('0,182 110,182 120,116 200,116 212,20 300,20');
+    /* gate clutter */
+    for(var i=0;i<9;i++){
+      var r=mulberry32(99+i);
+      var c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx',30+r()*240);c.setAttribute('cy',20+r()*150);
+      c.setAttribute('r',2+r()*3.5);c.setAttribute('fill',PALETTE.ob);
+      svg.appendChild(c);
+    }
+    tracePath(svg,'M 8 95 C 50 95, 70 70, 110 70 S 150 122, 200 122 S 250 40, 292 40');
+  }
+
+  function tracePath(svg,d){
+    var p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d',d);p.setAttribute('fill','none');
+    p.setAttribute('stroke',PALETTE.pathEnd);p.setAttribute('stroke-width',2);
+    p.setAttribute('stroke-linecap','round');p.setAttribute('opacity',.85);
+    svg.appendChild(p);
+    var end=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    end.setAttribute('r',4);end.setAttribute('fill',PALETTE.dot);
+    end.setAttribute('cx',292);end.setAttribute('cy',40);
+    svg.appendChild(end);
+  }
+
+  var draws={forest:drawForest,maze:drawMaze,posts:drawPosts,corridor:drawCorridor};
+  document.querySelectorAll('[data-map]').forEach(function(svg){
+    svg.setAttribute('fill',PALETTE.bg);
+    var fn=draws[svg.getAttribute('data-map')];
+    if(fn)fn(svg);
+  });
+})();
+</script>
+</body>
+</html>
