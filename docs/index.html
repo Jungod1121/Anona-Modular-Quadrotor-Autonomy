@@ -7,16 +7,18 @@
 <meta name="description" content="Anona —— ROS 2 Humble 模块化四旋翼自主飞行工作台。统一被控对象，可插拔规划器，公平对比。">
 <meta property="og:title" content="Anona · 一套平台，八大规划">
 <meta property="og:description" content="One plant. Many planners. Fair comparison.">
+<meta property="og:image" content="https://jungod1121.github.io/Anona-Modular-Quadrotor-Autonomy/media/demo-poster.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Ctext x='32' y='44' font-family='-apple-system,sans-serif' font-size='36' font-weight='700' fill='%23fff' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   Anona · Apple-style intro page
-   Tokens follow the Apple Visual Design Playbook:
-   black / white / light-gray backgrounds, extreme type contrast,
-   one 2–4 stop gradient per screen, #0071E3 as the only CTA color.
+   Anona · Apple-style repository intro page (v2)
+   Tokens per the Apple Visual Design Playbook: black / white /
+   light-gray backgrounds, extreme type contrast, one 2–4 stop
+   gradient per screen, #0071E3 as the only CTA color.
+   Diagrams are drawn natively (SVG/CSS), recordings are images.
    ============================================================ */
 :root{
   --black:#000000;
@@ -45,9 +47,7 @@
 
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-@media (prefers-reduced-motion: reduce){
-  html{scroll-behavior:auto}
-}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
 body{
   font-family:var(--font-stack);
   font-size:17px;
@@ -82,7 +82,7 @@ img,svg{display:block;max-width:100%}
   font-weight:300;
   color:var(--gray-2);
   margin-top:22px;
-  max-width:640px;
+  max-width:660px;
   line-height:1.55;
 }
 .eng-note{
@@ -134,7 +134,7 @@ img,svg{display:block;max-width:100%}
 .nav-links{
   display:flex;
   align-items:center;
-  gap:26px;
+  gap:22px;
   list-style:none;
 }
 .nav-links a{
@@ -154,8 +154,21 @@ img,svg{display:block;max-width:100%}
   transition:background .2s ease;
 }
 .nav-cta:hover{background:var(--blue-hover)}
-@media (max-width:900px){
-  .nav-links li:not(.nav-cta-li){display:none}
+.nav-lang{
+  font-size:12px;
+  font-weight:500;
+  color:var(--gray);
+  background:none;
+  border:1px solid #3A3A3C;
+  border-radius:var(--r-btn);
+  padding:4px 12px;
+  cursor:pointer;
+  font-family:var(--font-stack);
+  transition:color .2s ease,border-color .2s ease;
+}
+.nav-lang:hover{color:var(--white);border-color:#5A5A5E}
+@media (max-width:980px){
+  .nav-links li:not(.nav-cta-li):not(.nav-lang-li){display:none}
 }
 
 /* ---------- sections ---------- */
@@ -172,6 +185,26 @@ img,svg{display:block;max-width:100%}
 @media (prefers-reduced-motion: reduce){
   .rv{opacity:1;transform:none;transition:none}
 }
+
+/* ---------- media frames (recordings) ---------- */
+.media-frame{
+  border-radius:var(--r-card);
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:#0B0B0C;
+  line-height:0;
+}
+.media-frame img{width:100%;height:auto}
+.media-cap{
+  margin-top:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.media-cap .cap-name{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.media-cap .cap-note{font-size:12px;font-weight:300;color:var(--gray)}
 
 /* ============================================================
    Hero — one screen, one story
@@ -204,12 +237,17 @@ img,svg{display:block;max-width:100%}
   letter-spacing:-.03em;
   line-height:1.02;
 }
+.hero-tag{
+  font-weight:500;
+  color:var(--white);
+  font-size:clamp(16px,1.4vw,22px);
+}
 .hero-sub{
-  margin-top:30px;
+  margin-top:26px;
   font-size:clamp(17px,1.5vw,24px);
   font-weight:300;
   color:var(--gray);
-  max-width:720px;
+  max-width:760px;
   line-height:1.6;
 }
 .hero-cta{
@@ -269,7 +307,7 @@ img,svg{display:block;max-width:100%}
 }
 
 /* ============================================================
-   Architecture — white
+   Architecture — white + native SVG diagram
    ============================================================ */
 .arch-grid{
   margin-top:clamp(48px,6vw,80px);
@@ -323,8 +361,26 @@ img,svg{display:block;max-width:100%}
   color:var(--gray);
 }
 
+/* native architecture diagram */
+.fig-scroll{overflow-x:auto;margin-top:clamp(48px,6vw,80px)}
+.arch-svg{width:100%;height:auto;min-width:840px}
+.arch-svg text{font-family:var(--font-stack)}
+.arch-svg .d-h{font-size:14px;font-weight:600;fill:var(--ink)}
+.arch-svg .d-t{font-size:15px;font-weight:700;fill:var(--ink)}
+.arch-svg .d-s{font-size:11px;font-weight:400;fill:var(--gray)}
+.arch-svg .d-m{font-family:var(--font-mono);font-size:11.5px;fill:var(--gray)}
+.arch-svg .d-l{font-size:17px;font-weight:800;fill:var(--ink)}
+.figcap{
+  margin-top:16px;
+  font-size:12px;
+  font-weight:300;
+  color:var(--gray);
+  max-width:760px;
+  line-height:1.6;
+}
+
 /* ============================================================
-   Contract — dark data-flow strip
+   Contract — dark native data-flow diagram
    ============================================================ */
 .contract-title{
   font-size:clamp(36px,4.4vw,72px);
@@ -337,9 +393,10 @@ img,svg{display:block;max-width:100%}
   margin-top:clamp(56px,7vw,96px);
   display:flex;
   flex-wrap:wrap;
-  align-items:center;
-  gap:12px 14px;
+  align-items:flex-start;
+  gap:12px 16px;
 }
+.flow-node{display:flex;flex-direction:column;align-items:center;gap:9px}
 .topic{
   font-family:var(--font-mono);
   font-size:14px;
@@ -350,13 +407,20 @@ img,svg{display:block;max-width:100%}
   padding:10px 16px;
   white-space:nowrap;
 }
+.flow-cap{
+  font-size:12px;
+  font-weight:300;
+  color:var(--gray);
+  white-space:nowrap;
+}
 .flow-arrow{
-  font-size:18px;
+  font-size:20px;
   color:var(--gray);
   font-weight:300;
+  margin-top:11px;
 }
 .contract-note{
-  margin-top:36px;
+  margin-top:40px;
   max-width:680px;
 }
 
@@ -422,6 +486,15 @@ img,svg{display:block;max-width:100%}
 .badge.strong .dot{background:var(--blue)}
 .badge.mode .dot{background:#A07AC7}
 .badge.optional .dot{background:#C7C7CC}
+.text-link{
+  display:inline-block;
+  margin-top:36px;
+  font-size:15px;
+  font-weight:500;
+  color:var(--blue);
+  transition:color .2s ease;
+}
+.text-link:hover{color:var(--blue-hover)}
 
 /* ============================================================
    Maps — dark, procedurally drawn previews
@@ -464,7 +537,19 @@ img,svg{display:block;max-width:100%}
 }
 
 /* ============================================================
-   Acceptance — white, one giant number
+   Demo — white, real recordings
+   ============================================================ */
+.demo-grid{
+  margin-top:clamp(48px,6vw,80px);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:28px;
+}
+@media (max-width:860px){.demo-grid{grid-template-columns:1fr}}
+.demo-cta{margin-top:44px}
+
+/* ============================================================
+   Acceptance — light gray, one giant number
    ============================================================ */
 .accept-wrap{
   display:grid;
@@ -478,7 +563,7 @@ img,svg{display:block;max-width:100%}
   font-weight:900;
   letter-spacing:-.05em;
   line-height:.9;
-  background:var(--g-hero);
+  background-image:var(--g-hero);
   -webkit-background-clip:text;
   background-clip:text;
   color:transparent;
@@ -490,6 +575,7 @@ img,svg{display:block;max-width:100%}
 }
 @media (max-width:640px){.accept-grid{grid-template-columns:1fr}}
 .accept-item{
+  background:var(--white);
   border:1px solid var(--line);
   border-radius:20px;
   padding:24px 22px;
@@ -515,20 +601,28 @@ img,svg{display:block;max-width:100%}
   font-family:var(--font-mono);
   font-size:13px;
   color:var(--ink);
-  background:var(--bg);
+  background:var(--white);
+  border:1px solid var(--line);
   border-radius:8px;
   padding:6px 12px;
 }
+.sc-grid{
+  margin-top:clamp(44px,5vw,64px);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+}
+@media (max-width:860px){.sc-grid{grid-template-columns:1fr}}
 
 /* ============================================================
-   Console / quick start — light gray
+   Console / quick start — white
    ============================================================ */
 .console-wrap{
   margin-top:clamp(48px,6vw,80px);
   display:grid;
   grid-template-columns:minmax(280px,5fr) 7fr;
   gap:clamp(40px,5vw,80px);
-  align-items:stretch;
+  align-items:start;
 }
 @media (max-width:1000px){.console-wrap{grid-template-columns:1fr}}
 .console-list{
@@ -555,6 +649,14 @@ img,svg{display:block;max-width:100%}
   display:flex;align-items:center;justify-content:center;
   margin-top:2px;
 }
+.console-visual{
+  margin-top:30px;
+  border-radius:var(--r-card);
+  overflow:hidden;
+  border:1px solid var(--line);
+  line-height:0;
+}
+.console-visual img{width:100%;height:auto}
 .terminal{
   background:#1D1D1F;
   border-radius:var(--r-card);
@@ -611,29 +713,31 @@ img,svg{display:block;max-width:100%}
   font-weight:900;
   letter-spacing:-.03em;
   line-height:1.05;
-  background:var(--g-blue);
+  background-image:var(--g-blue);
   -webkit-background-clip:text;
   background-clip:text;
   color:transparent;
 }
-.finale .footnote{margin-top:36px;max-width:520px}
-.finale-links{margin-top:14px;display:flex;gap:26px;flex-wrap:wrap;justify-content:center}
+.finale .footnote{margin-top:36px;max-width:560px}
+.finale-links{margin-top:16px;display:flex;gap:26px;flex-wrap:wrap;justify-content:center}
 .finale-links a{font-size:13px;color:var(--gray);transition:color .2s ease}
 .finale-links a:hover{color:var(--white)}
+.finale-links .sep{color:#3A3A3C;font-size:13px}
 </style>
 </head>
 <body>
 
 <!-- ================= nav ================= -->
-<nav class="nav" aria-label="主导航">
+<nav class="nav" aria-label="导航">
   <a class="nav-brand" href="#top">Anona</a>
   <ul class="nav-links">
-    <li><a href="#architecture">架构</a></li>
-    <li><a href="#contract">契约</a></li>
-    <li><a href="#planners">规划器</a></li>
-    <li><a href="#maps">地图</a></li>
-    <li><a href="#acceptance">验收</a></li>
-    <li><a href="#console">快速开始</a></li>
+    <li><a href="#architecture" data-i18n="nav.arch">架构</a></li>
+    <li><a href="#planners" data-i18n="nav.planners">规划器</a></li>
+    <li><a href="#maps" data-i18n="nav.maps">地图</a></li>
+    <li><a href="#demo" data-i18n="nav.demo">演示</a></li>
+    <li><a href="#acceptance" data-i18n="nav.accept">验收</a></li>
+    <li><a href="#console" data-i18n="nav.console">快速开始</a></li>
+    <li class="nav-lang-li"><button id="langBtn" class="nav-lang" type="button" data-i18n-title="nav.langTip" title="切换到英文">EN</button></li>
     <li class="nav-cta-li"><a class="nav-cta" href="https://github.com/Jungod1121/Anona-Modular-Quadrotor-Autonomy" target="_blank" rel="noopener">GitHub ↗</a></li>
   </ul>
 </nav>
@@ -644,42 +748,42 @@ img,svg{display:block;max-width:100%}
 <section class="hero" aria-label="开场">
   <div class="rv in">
     <span class="hello">hello.</span>
-    <p class="eyebrow">Anona · Modular Quadrotor Autonomy</p>
+    <p class="eyebrow" data-i18n="hero.eyebrow">Anona · 模块化四旋翼自主</p>
     <h1 class="hero-title">
-      一套平台。<br>
-      <span class="grad-text">八大规划。</span>
+      <span data-i18n="hero.t1">一套平台。</span><br>
+      <span class="grad-text" data-i18n="hero.t2">八大规划。</span>
     </h1>
     <p class="hero-sub">
-      One plant. Many planners. Fair comparison.<br>
-      统一被控对象，可插拔规划器，在同一套标准下公平对比 —— 一个基于 ROS&nbsp;2&nbsp;Humble 的四旋翼自主飞行仿真工作台。
+      <span class="hero-tag" data-i18n="hero.tag">One plant. Many planners. Fair comparison.</span><br>
+      <span data-i18n="hero.sub">统一被控对象，可插拔规划器，在同一套标准下公平对比 —— 一个基于 ROS&nbsp;2&nbsp;Humble 的四旋翼自主飞行仿真工作台。</span>
     </p>
     <div class="hero-cta">
-      <a class="btn btn-primary" href="#console">快速开始</a>
-      <a class="btn btn-ghost" href="https://www.bilibili.com/video/BV11Dgi6gE9A/" target="_blank" rel="noopener">观看演示 ↗</a>
+      <a class="btn btn-primary" href="#console" data-i18n="hero.cta1">快速开始</a>
+      <a class="btn btn-ghost" href="https://www.bilibili.com/video/BV11Dgi6gE9A/" target="_blank" rel="noopener" data-i18n="hero.cta2">观看演示 ↗</a>
     </div>
   </div>
 
   <div class="hero-stats rv">
     <div>
       <div class="stat-num">8</div>
-      <div class="stat-label">规划器 · Path A–H</div>
+      <div class="stat-label" data-i18n="stat1l">规划器 · Path A–H</div>
     </div>
     <div>
       <div class="stat-num">6/6</div>
-      <div class="stat-label">验收场景一次通过</div>
+      <div class="stat-label" data-i18n="stat2l">验收场景一次通过</div>
     </div>
     <div>
       <div class="stat-num">500Hz</div>
-      <div class="stat-label">动力学积分频率</div>
+      <div class="stat-label" data-i18n="stat3l">动力学积分频率</div>
     </div>
     <div>
       <div class="stat-num">12+</div>
-      <div class="stat-label">过程化生成地图</div>
+      <div class="stat-label" data-i18n="stat4l">过程化生成地图</div>
     </div>
   </div>
 
   <div class="hero-visual" aria-hidden="true">
-    <svg viewBox="0 0 1600 440" role="img" aria-label="飞行轨迹示意">
+    <svg viewBox="0 0 1600 440" role="img" data-i18n-aria="hero.pathAria" aria-label="飞行轨迹示意">
       <defs>
         <linearGradient id="pathGrad" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stop-color="#024F97"/>
@@ -728,12 +832,10 @@ img,svg{display:block;max-width:100%}
 <!-- ================= Architecture ================= -->
 <section id="architecture" class="section section-white" aria-label="架构">
   <div class="rv">
-    <p class="eyebrow">Architecture · 架构</p>
-    <h2 class="section-title">平台不变，规划可变。</h2>
-    <p class="section-sub">
-      自研动力学与级联 PID 构成唯一的被控对象。Path A–H 通过同一套接口接入 —— 换规划器，不换平台，对比才公平。
-    </p>
-    <p class="eng-note">One plant. Many planners. Fair comparison.</p>
+    <p class="eyebrow" data-i18n="arch.eyebrow">Architecture · 架构</p>
+    <h2 class="section-title" data-i18n="arch.title">平台不变，规划可变。</h2>
+    <p class="section-sub" data-i18n="arch.sub">自研动力学与级联 PID 构成唯一的被控对象。Path A–H 通过同一套接口接入 —— 换规划器，不换平台，对比才公平。</p>
+    <p class="eng-note" data-i18n="arch.note">One plant. Many planners. Fair comparison.</p>
   </div>
 
   <div class="arch-grid">
@@ -743,9 +845,9 @@ img,svg{display:block;max-width:100%}
           <circle cx="12" cy="12" r="2.6"/><path d="M7.2 16.8v3M16.8 16.8v3M4 12h3M17 12h3M7.2 4.2v3M16.8 4.2v3M12 4v3M12 17v3"/>
         </svg>
       </div>
-      <h3>被控对象</h3>
+      <h3 data-i18n="card1.n">被控对象</h3>
       <span class="en">PLANT</span>
-      <p>里程计、IMU、电机转速，一个四旋翼的完整动力学模型。</p>
+      <p data-i18n="card1.d">里程计、IMU、电机转速，一个四旋翼的完整动力学模型。</p>
       <span class="pkg mono">drone_dynamics + drone_controller</span>
     </div>
 
@@ -755,9 +857,9 @@ img,svg{display:block;max-width:100%}
           <path d="M3 8l4-4h10l4 4v8l-4 4H7l-4-4z"/><path d="M3 8h18M9 4v4M15 4v4M9 20v-4M15 20v-4M3 16h18"/>
         </svg>
       </div>
-      <h3>世界</h3>
+      <h3 data-i18n="card2.n">世界</h3>
       <span class="en">WORLD</span>
-      <p>种子化点云地图，同一片森林、迷宫与走廊，人人可复现。</p>
+      <p data-i18n="card2.d">种子化点云地图，同一片森林、迷宫与走廊，人人可复现。</p>
       <span class="pkg mono">drone_map + map_adapter</span>
     </div>
 
@@ -767,9 +869,9 @@ img,svg{display:block;max-width:100%}
           <path d="M4 19c3-8 5-12 16-14"/><circle cx="5" cy="19" r="1.6"/><circle cx="20" cy="5" r="1.6"/>
         </svg>
       </div>
-      <h3>规划</h3>
+      <h3 data-i18n="card3.n">规划</h3>
       <span class="en">PLANNING</span>
-      <p>Path A–H 八个后端，从经典算法到强化学习，同台竞技。</p>
+      <p data-i18n="card3.d">Path A–H 八个后端，从经典算法到强化学习，同台竞技。</p>
       <span class="pkg mono">drone_planner + vendors + rl</span>
     </div>
 
@@ -779,34 +881,134 @@ img,svg{display:block;max-width:100%}
           <rect x="3" y="4" width="18" height="14" rx="2.5"/><path d="M8 21h8M12 18v3"/><path d="M7.5 8.5h4M7.5 11.5h7"/>
         </svg>
       </div>
-      <h3>运维</h3>
+      <h3 data-i18n="card4.n">运维</h3>
       <span class="en">OPS</span>
-      <p>一键 launch、任务控制台、六项验收场景，开箱即用。</p>
+      <p data-i18n="card4.d">一键 launch、任务控制台、六项验收场景，开箱即用。</p>
       <span class="pkg mono">drone_bringup + Mission Console</span>
     </div>
+  </div>
+
+  <!-- native architecture diagram (no image asset) -->
+  <div class="fig-scroll rv">
+    <svg class="arch-svg" viewBox="0 0 1240 640" role="img" data-i18n-aria="arch.d.aria" aria-label="系统架构图：运维、规划、世界、被控对象四层与话题数据流">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="#86868B"/>
+        </marker>
+        <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="#B6B6BC"/>
+        </marker>
+      </defs>
+
+      <!-- OPS layer -->
+      <rect x="40" y="16" width="1160" height="104" rx="16" fill="#F5F5F7" stroke="#D2D2D7"/>
+      <circle cx="64" cy="40" r="5" fill="#F487A3"/>
+      <text x="80" y="45" class="d-h" data-i18n="arch.d.ops">运维 · OPS</text>
+      <rect x="60" y="56" width="320" height="50" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <text x="78" y="78" class="d-t">Mission Console</text>
+      <text x="78" y="95" class="d-s" data-i18n="arch.d.consoleSub">浏览器 · 原生 · 验收</text>
+      <rect x="404" y="56" width="330" height="50" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <text x="422" y="78" class="d-t">drone_bringup</text>
+      <text x="422" y="95" class="d-s" data-i18n="arch.d.bringupSub">一键 launch · 六项验收</text>
+
+      <!-- goal -->
+      <line x1="480" y1="120" x2="480" y2="164" stroke="#86868B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="492" y="146" class="d-m">/drone/goal</text>
+
+      <!-- PLANNING layer -->
+      <rect x="40" y="168" width="1160" height="176" rx="16" fill="#F5F5F7" stroke="#D2D2D7"/>
+      <circle cx="64" cy="192" r="5" fill="#F06620"/>
+      <text x="80" y="197" class="d-h" data-i18n="arch.d.plan">规划 · PLANNING · Path A–H</text>
+      <rect x="50"  y="212" width="134" height="72" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <rect x="194" y="212" width="134" height="72" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <rect x="338" y="212" width="134" height="72" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <rect x="482" y="212" width="134" height="72" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <rect x="626" y="212" width="134" height="72" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <rect x="770" y="212" width="134" height="72" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <rect x="914" y="212" width="134" height="72" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <rect x="1058" y="212" width="134" height="72" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <text x="66" y="238" class="d-l">A</text><text x="84" y="238" class="d-m">homemade</text>
+      <text x="210" y="238" class="d-l">B</text><text x="228" y="238" class="d-m">ego</text>
+      <text x="354" y="238" class="d-l">C</text><text x="372" y="238" class="d-m">gcopter</text>
+      <text x="498" y="238" class="d-l">D</text><text x="516" y="238" class="d-m">fuel</text>
+      <text x="642" y="238" class="d-l">E</text><text x="660" y="238" class="d-m">mighty</text>
+      <text x="786" y="238" class="d-l">F</text><text x="804" y="238" class="d-m">fast</text>
+      <text x="930" y="238" class="d-l">G</text><text x="948" y="238" class="d-m">vfh</text>
+      <text x="1074" y="238" class="d-l">H</text><text x="1092" y="238" class="d-m">sac</text>
+      <text x="66" y="264" class="d-s" data-i18n="arch.d.cls.classical">经典</text>
+      <text x="210" y="264" class="d-s" data-i18n="arch.d.cls.opt">优化</text>
+      <text x="354" y="264" class="d-s" data-i18n="arch.d.cls.opt">优化</text>
+      <text x="498" y="264" class="d-s" data-i18n="arch.d.cls.mode">模式</text>
+      <text x="642" y="264" class="d-s" data-i18n="arch.d.cls.opt">优化</text>
+      <text x="786" y="264" class="d-s" data-i18n="arch.d.cls.ref">对照</text>
+      <text x="930" y="264" class="d-s" data-i18n="arch.d.cls.classical">经典</text>
+      <text x="1074" y="264" class="d-s" data-i18n="arch.d.cls.learn">学习</text>
+
+      <!-- obstacles (world -> planning) -->
+      <line x1="410" y1="420" x2="410" y2="348" stroke="#86868B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="424" y="390" class="d-m">/map/obstacles</text>
+
+      <!-- planning -> plant -->
+      <line x1="880" y1="344" x2="880" y2="416" stroke="#86868B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="892" y="372" class="d-m">/planner/local_goal</text>
+      <text x="892" y="388" class="d-m">/planner/trajectory_cmd</text>
+
+      <!-- WORLD layer -->
+      <rect x="40" y="376" width="520" height="148" rx="16" fill="#F5F5F7" stroke="#D2D2D7"/>
+      <circle cx="64" cy="400" r="5" fill="#A07AC7"/>
+      <text x="80" y="405" class="d-h" data-i18n="arch.d.world">世界 · WORLD</text>
+      <rect x="60" y="420" width="200" height="64" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <text x="78" y="444" class="d-t">drone_map</text>
+      <text x="78" y="466" class="d-s" data-i18n="arch.d.mapSub">种子点云</text>
+      <rect x="290" y="420" width="240" height="64" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <text x="308" y="444" class="d-t">map_adapter</text>
+      <text x="308" y="466" class="d-s" data-i18n="arch.d.adapterSub">桥接 · 元数据</text>
+      <line x1="260" y1="452" x2="286" y2="452" stroke="#86868B" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- PLANT layer -->
+      <rect x="580" y="376" width="620" height="248" rx="16" fill="#F5F5F7" stroke="#D2D2D7"/>
+      <circle cx="604" cy="400" r="5" fill="#1D6EB6"/>
+      <text x="620" y="405" class="d-h" data-i18n="arch.d.plant">被控对象 · PLANT</text>
+      <rect x="600" y="420" width="560" height="76" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <text x="618" y="444" class="d-t">drone_controller</text>
+      <text x="618" y="466" class="d-s" data-i18n="arch.d.ctrlSub">级联 PID · 混控器</text>
+      <rect x="600" y="536" width="560" height="76" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
+      <text x="618" y="560" class="d-t">drone_dynamics</text>
+      <text x="618" y="582" class="d-s" data-i18n="arch.d.dynSub">500Hz 积分 · 里程计 · IMU</text>
+      <line x1="880" y1="496" x2="880" y2="532" stroke="#86868B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="892" y="518" class="d-m">/drone/motor_rpm_cmd</text>
+
+      <!-- state feedback loop -->
+      <path d="M 600 574 L 20 574 L 20 265 L 36 265" fill="none" stroke="#B6B6BC" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#arr2)"/>
+      <text text-anchor="middle" transform="rotate(-90 24 420)" x="24" y="420" class="d-m" data-i18n="arch.d.odom">/drone/odom · 状态反馈</text>
+    </svg>
+    <p class="figcap" data-i18n="arch.figcap">图 1 · 系统架构：数据从任务目标流向电机指令，状态经 /drone/odom 反馈回规划器。</p>
   </div>
 </section>
 
 <!-- ================= Contract ================= -->
 <section id="contract" class="section section-dark" aria-label="话题契约">
   <div class="rv">
-    <p class="eyebrow">One Contract · 话题契约</p>
-    <h2 class="contract-title">同一个契约，<span class="grad-text">公平对比。</span></h2>
-    <p class="section-sub">
-      所有规划器读写同一组 topic，从目标到轨迹、再到电机指令，接口完全一致。公平，从接口开始。
-    </p>
+    <p class="eyebrow" data-i18n="contract.eyebrow">One Contract · 话题契约</p>
+    <h2 class="contract-title"><span data-i18n="contract.title1">同一个契约，</span><span class="grad-text" data-i18n="contract.title2">公平对比。</span></h2>
+    <p class="section-sub" data-i18n="contract.sub">所有规划器读写同一组 topic，从目标到轨迹、再到电机指令，接口完全一致。公平，从接口开始。</p>
   </div>
 
-  <div class="contract-flow rv" role="list" aria-label="话题数据流">
-    <span class="topic">/drone/goal</span><span class="flow-arrow">→</span>
-    <span class="topic">/map/obstacles</span><span class="flow-arrow">→</span>
-    <span class="topic">/planner/local_goal</span><span class="flow-arrow">→</span>
-    <span class="topic">/planner/trajectory_cmd</span><span class="flow-arrow">→</span>
-    <span class="topic">/drone/motor_rpm_cmd</span><span class="flow-arrow">→</span>
-    <span class="topic">/drone/odom</span>
+  <div class="contract-flow rv" role="list" data-i18n-aria="contract.flowAria" aria-label="话题数据流">
+    <div class="flow-node"><span class="topic">/drone/goal</span><span class="flow-cap" data-i18n="contract.r1">任务目标 · PoseStamped</span></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node"><span class="topic">/map/obstacles</span><span class="flow-cap" data-i18n="contract.r2">障碍云 · PointCloud2</span></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node"><span class="topic">/planner/local_goal</span><span class="flow-cap" data-i18n="contract.r3">局部目标 · PoseStamped</span></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node"><span class="topic">/planner/trajectory_cmd</span><span class="flow-cap" data-i18n="contract.r4">轨迹指令 · p v a yaw</span></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node"><span class="topic">/drone/motor_rpm_cmd</span><span class="flow-cap" data-i18n="contract.r5">电机指令 · RPM</span></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node"><span class="topic">/drone/odom</span><span class="flow-cap" data-i18n="contract.r6">状态反馈 · Odometry</span></div>
   </div>
 
-  <p class="footnote contract-note rv">
+  <p class="footnote contract-note rv" data-i18n="contract.note">
     坐标系 map (ENU) → base_link。目标由 RViz 2D Goal Pose 下达；黄色为规划轨迹，蓝色为实飞轨迹。
   </p>
 </section>
@@ -814,11 +1016,9 @@ img,svg{display:block;max-width:100%}
 <!-- ================= Planners ================= -->
 <section id="planners" class="section section-gray" aria-label="规划器">
   <div class="rv">
-    <p class="eyebrow">Path A–H · 规划器</p>
-    <h2 class="section-title">八条路径，<span class="grad-text">一个平台。</span></h2>
-    <p class="section-sub">
-      经典、优化、学习三类方法同场竞技。强弱基线进入正式对比矩阵，其余归入模式与谱系对照。
-    </p>
+    <p class="eyebrow" data-i18n="planners.eyebrow">Path A–H · 规划器</p>
+    <h2 class="section-title"><span data-i18n="planners.title1">八条路径，</span><span class="grad-text" data-i18n="planners.title2">一个平台。</span></h2>
+    <p class="section-sub" data-i18n="planners.sub">经典、优化、学习三类方法同场竞技。强弱基线进入正式对比矩阵，其余归入模式与谱系对照。</p>
   </div>
 
   <div class="planner-grid">
@@ -826,132 +1026,163 @@ img,svg{display:block;max-width:100%}
       <div class="letter">A</div>
       <h3>Dyn-A*</h3>
       <span class="alias mono">homemade · weak</span>
-      <p>Dyn-A* + B 样条，占据栅格自动适配地图尺寸与膨胀半径。</p>
-      <span class="badge"><span class="dot"></span>经典 · 弱基线</span>
+      <p data-i18n="planners.a.d">Dyn-A* + B 样条，占据栅格自动适配地图尺寸与膨胀半径。</p>
+      <span class="badge"><span class="dot"></span><span data-i18n="planners.a.b">经典 · 弱基线</span></span>
     </div>
     <div class="planner-card rv" style="transition-delay:.04s">
       <div class="letter">B</div>
       <h3>EGO-Planner</h3>
       <span class="alias mono">ego · strong</span>
-      <p>基于梯度的 B 样条重绑定，本地感知裁剪同一张全局地图。</p>
-      <span class="badge strong"><span class="dot"></span>优化 · 强基线</span>
+      <p data-i18n="planners.b.d">基于梯度的 B 样条重绑定，本地感知裁剪同一张全局地图。</p>
+      <span class="badge strong"><span class="dot"></span><span data-i18n="planners.b.b">优化 · 强基线</span></span>
     </div>
     <div class="planner-card rv" style="transition-delay:.08s">
       <div class="letter">C</div>
       <h3>GCOPTER</h3>
       <span class="alias mono">gcopter · strong</span>
-      <p>MINCO 走廊优化，直接发布契约轨迹，无需额外被控对象。</p>
-      <span class="badge strong"><span class="dot"></span>优化 · 强基线</span>
+      <p data-i18n="planners.c.d">MINCO 走廊优化，直接发布契约轨迹，无需额外被控对象。</p>
+      <span class="badge strong"><span class="dot"></span><span data-i18n="planners.c.b">优化 · 强基线</span></span>
     </div>
     <div class="planner-card rv" style="transition-delay:.12s">
       <div class="letter">D</div>
       <h3>FUEL-style</h3>
       <span class="alias mono">fuel_explore · mode</span>
-      <p>前沿探索任务模式：雾感知 + 前沿 FSM，EGO 负责轨迹执行。</p>
-      <span class="badge mode"><span class="dot"></span>模式 · 非独立规划器</span>
+      <p data-i18n="planners.d.d">前沿探索任务模式：雾感知 + 前沿 FSM，EGO 负责轨迹执行。</p>
+      <span class="badge mode"><span class="dot"></span><span data-i18n="planners.d.b">模式 · 非独立规划器</span></span>
     </div>
     <div class="planner-card rv" style="transition-delay:.04s">
       <div class="letter">E</div>
       <h3>MIGHTY</h3>
       <span class="alias mono">mighty · strong</span>
-      <p>HGP 引导 + Hermite-LBFGS，经桥接节点接入统一被控对象。</p>
-      <span class="badge strong"><span class="dot"></span>优化 · 强基线</span>
+      <p data-i18n="planners.e.d">HGP 引导 + Hermite-LBFGS，经桥接节点接入统一被控对象。</p>
+      <span class="badge strong"><span class="dot"></span><span data-i18n="planners.e.b">优化 · 强基线</span></span>
     </div>
     <div class="planner-card rv" style="transition-delay:.08s">
       <div class="letter">F</div>
       <h3>Fast-Planner</h3>
       <span class="alias mono">fast_planner · optional</span>
-      <p>kino_replan 谱系基准，独立对照，不进入正式强弱矩阵。</p>
-      <span class="badge optional"><span class="dot"></span>对照 · 谱系基准</span>
+      <p data-i18n="planners.f.d">kino_replan 谱系基准，独立对照，不进入正式强弱矩阵。</p>
+      <span class="badge optional"><span class="dot"></span><span data-i18n="planners.f.b">对照 · 谱系基准</span></span>
     </div>
     <div class="planner-card rv" style="transition-delay:.12s">
       <div class="letter">G</div>
       <h3>VFH+</h3>
       <span class="alias mono">vfh · weak</span>
-      <p>极坐标直方图反应式避障，可选 PPO 后端作为兼容别名。</p>
-      <span class="badge"><span class="dot"></span>经典 · 弱基线</span>
+      <p data-i18n="planners.g.d">极坐标直方图反应式避障，可选 PPO 后端作为兼容别名。</p>
+      <span class="badge"><span class="dot"></span><span data-i18n="planners.g.b">经典 · 弱基线</span></span>
     </div>
     <div class="planner-card rv" style="transition-delay:.16s">
       <div class="letter">H</div>
       <h3>DrQ-SAC</h3>
       <span class="alias mono">sac · strong</span>
-      <p>极坐标占据图像输入，学习策略滚动 Bézier 路径，VFH 兜底。</p>
-      <span class="badge strong"><span class="dot"></span>学习 · 强基线</span>
+      <p data-i18n="planners.h.d">极坐标占据图像输入，学习策略滚动 Bézier 路径，VFH 兜底。</p>
+      <span class="badge strong"><span class="dot"></span><span data-i18n="planners.h.b">学习 · 强基线</span></span>
     </div>
   </div>
 
-  <p class="footnote rv" style="margin-top:32px">
-    强弱分类定义见 PLANNERS.md：canonical_comparison_ids = { homemade, ego, gcopter, mighty, vfh, sac }。
-  </p>
+  <div class="rv">
+    <a class="text-link" href="https://github.com/Jungod1121/Anona-Modular-Quadrotor-Autonomy/blob/main/report/planner_benchmark/comparison_report.md" target="_blank" rel="noopener" data-i18n="planners.report">阅读对比报告 ↗</a>
+    <p class="footnote" style="margin-top:12px"><span data-i18n="planners.foot">强弱分类定义见 PLANNERS.md：</span><span class="mono">canonical_comparison_ids = { homemade, ego, gcopter, mighty, vfh, sac }</span></p>
+  </div>
 </section>
 
 <!-- ================= Maps ================= -->
 <section id="maps" class="section section-dark" aria-label="地图">
   <div class="rv">
-    <p class="eyebrow">Procedural Maps · 地图</p>
-    <h2 class="section-title">世界，由<span class="grad-text grad-text-magic">种子生成。</span></h2>
-    <p class="section-sub">
-      没有 PCD 场景文件 —— 全部为过程化点云。同一颗种子，复现同一片森林、迷宫与走廊。
-    </p>
+    <p class="eyebrow" data-i18n="maps.eyebrow">Procedural Maps · 地图</p>
+    <h2 class="section-title"><span data-i18n="maps.title1">世界，由</span><span class="grad-text grad-text-magic" data-i18n="maps.title2">种子生成。</span></h2>
+    <p class="section-sub" data-i18n="maps.sub">没有 PCD 场景文件 —— 全部为过程化点云。同一颗种子，复现同一片森林、迷宫与走廊。</p>
   </div>
 
   <div class="map-grid">
     <div class="map-card rv">
-      <svg viewBox="0 0 300 190" data-map="forest" role="img" aria-label="森林地图预览"></svg>
+      <svg viewBox="0 0 300 190" data-map="forest" role="img" data-i18n-aria="maps.alt1" aria-label="森林地图预览"></svg>
       <div class="map-body">
-        <h3>森林</h3>
-        <span class="map-en">official_forest · 26×20×3</span>
-        <p>圆柱与偏航环随机分布，起点置于云外，东西走廊贯穿。</p>
+        <h3 data-i18n="maps.m1.n">森林</h3>
+        <span class="map-en mono">official_forest · 26×20×3</span>
+        <p data-i18n="maps.m1.d">圆柱与偏航环随机分布，起点置于云外，东西走廊贯穿。</p>
       </div>
     </div>
     <div class="map-card rv" style="transition-delay:.05s">
-      <svg viewBox="0 0 300 190" data-map="maze" role="img" aria-label="迷宫地图预览"></svg>
+      <svg viewBox="0 0 300 190" data-map="maze" role="img" data-i18n-aria="maps.alt2" aria-label="迷宫地图预览"></svg>
       <div class="map-body">
-        <h3>迷宫</h3>
-        <span class="map-en">official_maze2d · 20×20</span>
-        <p>递归分割墙，路宽 1.2m，比上游更宽，适配膨胀半径。</p>
+        <h3 data-i18n="maps.m2.n">迷宫</h3>
+        <span class="map-en mono">official_maze2d · 20×20</span>
+        <p data-i18n="maps.m2.d">递归分割墙，路宽 1.2m，比上游更宽，适配膨胀半径。</p>
       </div>
     </div>
     <div class="map-card rv" style="transition-delay:.1s">
-      <svg viewBox="0 0 300 190" data-map="posts" role="img" aria-label="立柱地图预览"></svg>
+      <svg viewBox="0 0 300 190" data-map="posts" role="img" data-i18n-aria="maps.alt3" aria-label="立柱地图预览"></svg>
       <div class="map-body">
-        <h3>立柱</h3>
-        <span class="map-en">official_posts · 20×20×4</span>
-        <p>12 根空心矩形柱，稀疏分布，留出可穿越的间隙。</p>
+        <h3 data-i18n="maps.m3.n">立柱</h3>
+        <span class="map-en mono">official_posts · 20×20×4</span>
+        <p data-i18n="maps.m3.d">12 根空心矩形柱，稀疏分布，留出可穿越的间隙。</p>
       </div>
     </div>
     <div class="map-card rv" style="transition-delay:.15s">
-      <svg viewBox="0 0 300 190" data-map="corridor" role="img" aria-label="窄廊地图预览"></svg>
+      <svg viewBox="0 0 300 190" data-map="corridor" role="img" data-i18n-aria="maps.alt4" aria-label="窄廊地图预览"></svg>
       <div class="map-body">
-        <h3>窄廊</h3>
-        <span class="map-en">narrow_corridor · S-bend</span>
-        <p>S 形弯道，三扇 1.2–1.8m 交错门，侧翼散布干扰物。</p>
+        <h3 data-i18n="maps.m4.n">窄廊</h3>
+        <span class="map-en mono">narrow_corridor · S-bend</span>
+        <p data-i18n="maps.m4.d">S 形弯道，三扇 1.2–1.8m 交错门，侧翼散布干扰物。</p>
       </div>
     </div>
   </div>
 
   <div class="tier-row rv">
-    <span class="tier-label">难度预设</span>
+    <span class="tier-label" data-i18n="maps.tier">难度预设</span>
     <span class="tier">简单 · simple</span>
     <span class="tier">中等 · medium</span>
     <span class="tier">复杂 · complex</span>
     <span class="tier">极限 · extreme</span>
   </div>
 
-  <p class="footnote rv" style="margin-top:26px;max-width:640px">
+  <p class="footnote rv" style="margin-top:26px;max-width:680px" data-i18n="maps.foot">
     另有 Perlin 体素、3D 迷宫、密林与致密非对称变体；每张地图随 /map/metadata 发布难度与种子。
   </p>
 </section>
 
+<!-- ================= Demo ================= -->
+<section id="demo" class="section section-white" aria-label="演示">
+  <div class="rv">
+    <p class="eyebrow" data-i18n="demo.eyebrow">Demo · 演示</p>
+    <h2 class="section-title" data-i18n="demo.title">眼见为实。</h2>
+    <p class="section-sub" data-i18n="demo.sub">单机在随机森林中回环飞行，多机编队同屏协同 —— 全部来自仓库的真实录制。</p>
+  </div>
+
+  <div class="demo-grid">
+    <figure class="rv">
+      <div class="media-frame">
+        <img src="media/forest.gif" alt="单机在随机森林中回环飞行" loading="lazy" data-i18n-alt="demo.alt1">
+      </div>
+      <figcaption class="media-cap">
+        <span class="cap-name" data-i18n="demo.cap1">单机 · 森林回环</span>
+        <span class="cap-note">docs/media/forest.gif</span>
+      </figcaption>
+    </figure>
+    <figure class="rv" style="transition-delay:.06s">
+      <div class="media-frame">
+        <img src="media/swarm-or-formation.gif" alt="多机编队演示" loading="lazy" data-i18n-alt="demo.alt2">
+      </div>
+      <figcaption class="media-cap">
+        <span class="cap-name" data-i18n="demo.cap2">多机 · 编队</span>
+        <span class="cap-note">docs/media/swarm-or-formation.gif</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="rv">
+    <a class="text-link demo-cta" href="https://www.bilibili.com/video/BV11Dgi6gE9A/" target="_blank" rel="noopener" data-i18n="demo.cta">在 Bilibili 观看完整演示 ↗</a>
+  </div>
+</section>
+
 <!-- ================= Acceptance ================= -->
-<section id="acceptance" class="section section-white" aria-label="验收">
+<section id="acceptance" class="section section-gray" aria-label="验收">
   <div class="accept-wrap">
     <div class="rv">
-      <p class="eyebrow">Acceptance · 验收</p>
-      <div class="big-score" aria-label="六项全部通过">6/6</div>
-      <p class="section-sub" style="margin-top:26px">
-        六个一键场景，一次通过。从悬停到窄道穿越，同一套脚本，自动验收。
-      </p>
+      <p class="eyebrow" data-i18n="accept.eyebrow">Acceptance · 验收</p>
+      <div class="big-score" data-i18n-aria="accept.scoreAria" aria-label="六项全部通过">6/6</div>
+      <p class="section-sub" style="margin-top:26px" data-i18n="accept.sub">六个一键场景，一次通过。从悬停到窄道穿越，同一套脚本，自动验收。</p>
     </div>
 
     <div>
@@ -959,79 +1190,97 @@ img,svg{display:block;max-width:100%}
         <div class="accept-item rv">
           <span class="idx">01</span>
           <div>
-            <span class="name">悬停</span>
-            <span class="en">Hover</span>
+            <span class="name" data-i18n="accept.i1n">悬停</span>
+            <span class="en" data-i18n="accept.i1e">Hover</span>
           </div>
         </div>
         <div class="accept-item rv" style="transition-delay:.04s">
           <span class="idx">02</span>
           <div>
-            <span class="name">单目标</span>
-            <span class="en">Single Goal</span>
+            <span class="name" data-i18n="accept.i2n">单目标</span>
+            <span class="en" data-i18n="accept.i2e">Single Goal</span>
           </div>
         </div>
         <div class="accept-item rv" style="transition-delay:.08s">
           <span class="idx">03</span>
           <div>
-            <span class="name">多航点</span>
-            <span class="en">Multi-waypoint</span>
+            <span class="name" data-i18n="accept.i3n">多航点</span>
+            <span class="en" data-i18n="accept.i3e">Multi-waypoint</span>
           </div>
         </div>
         <div class="accept-item rv" style="transition-delay:.12s">
           <span class="idx">04</span>
           <div>
-            <span class="name">静态避障</span>
-            <span class="en">Static Avoidance</span>
+            <span class="name" data-i18n="accept.i4n">静态避障</span>
+            <span class="en" data-i18n="accept.i4e">Static Avoidance</span>
           </div>
         </div>
         <div class="accept-item rv" style="transition-delay:.16s">
           <span class="idx">05</span>
           <div>
-            <span class="name">窄道穿越</span>
-            <span class="en">Narrow Passage</span>
+            <span class="name" data-i18n="accept.i5n">窄道穿越</span>
+            <span class="en" data-i18n="accept.i5e">Narrow Passage</span>
           </div>
         </div>
         <div class="accept-item rv" style="transition-delay:.2s">
           <span class="idx">06</span>
           <div>
-            <span class="name">稳定性</span>
-            <span class="en">Stability Demo</span>
+            <span class="name" data-i18n="accept.i6n">稳定性</span>
+            <span class="en" data-i18n="accept.i6e">Stability Demo</span>
           </div>
         </div>
       </div>
 
       <div class="accept-foot rv">
         <code>python3 scripts/run_acceptance.py</code>
-        <span class="footnote">正式报告 · report/acceptance_report.md</span>
+        <span class="footnote"><span data-i18n="accept.report">正式报告 ·</span> <span class="mono">report/acceptance_report.md</span></span>
       </div>
     </div>
+  </div>
+
+  <div class="sc-grid">
+    <figure class="rv">
+      <div class="media-frame">
+        <img src="media/scenario_04_avoid_rviz.png" alt="场景四：静态避障 RViz 截图" loading="lazy" data-i18n-alt="accept.alt4">
+      </div>
+      <figcaption class="media-cap">
+        <span class="cap-name" data-i18n="accept.cap4">场景 04 · 静态避障</span>
+      </figcaption>
+    </figure>
+    <figure class="rv" style="transition-delay:.06s">
+      <div class="media-frame">
+        <img src="media/scenario_05_narrow_rviz.png" alt="场景五：窄道穿越 RViz 截图" loading="lazy" data-i18n-alt="accept.alt5">
+      </div>
+      <figcaption class="media-cap">
+        <span class="cap-name" data-i18n="accept.cap5">场景 05 · 窄道穿越</span>
+      </figcaption>
+    </figure>
   </div>
 </section>
 
 <!-- ================= Console ================= -->
-<section id="console" class="section section-gray" aria-label="任务控制台与快速开始">
+<section id="console" class="section section-white" aria-label="任务控制台与快速开始">
   <div class="rv">
-    <p class="eyebrow">Mission Console · 快速开始</p>
-    <h2 class="section-title">从终端，到驾驶舱。</h2>
-    <p class="section-sub">
-      浏览器控制台或原生 app，地图与规划器即点即换，单机与多机编队一屏掌控。
-    </p>
+    <p class="eyebrow" data-i18n="console.eyebrow">Mission Console · 快速开始</p>
+    <h2 class="section-title" data-i18n="console.title">从终端，到驾驶舱。</h2>
+    <p class="section-sub" data-i18n="console.sub">浏览器控制台或原生 app，地图与规划器即点即换，单机与多机编队一屏掌控。</p>
   </div>
 
   <div class="console-wrap">
     <div class="rv">
       <ul class="console-list">
-        <li><span class="tick">✓</span>浏览器控制台 · <span class="mono" style="color:var(--gray);font-size:14px">http://127.0.0.1:8765/</span></li>
-        <li><span class="tick">✓</span>地图与规划器切换，Start / Stop 即点即用</li>
-        <li><span class="tick">✓</span>单机任务与多机编队（EGO-Swarm 内核）</li>
-        <li><span class="tick">✓</span>Ubuntu 22.04 + ROS 2 Humble，MIT 开源</li>
+        <li><span class="tick">✓</span><span><span data-i18n="console.li1">浏览器控制台 ·</span> <span class="mono" style="color:var(--gray);font-size:14px">http://127.0.0.1:8765/</span></span></li>
+        <li><span class="tick">✓</span><span data-i18n="console.li2">地图与规划器切换，Start / Stop 即点即用</span></li>
+        <li><span class="tick">✓</span><span data-i18n="console.li3">单机任务与多机编队（EGO-Swarm 内核）</span></li>
+        <li><span class="tick">✓</span><span data-i18n="console.li4">Ubuntu 22.04 + ROS 2 Humble，MIT 开源</span></li>
       </ul>
-      <p class="footnote" style="margin-top:30px">
-        Ubuntu 22.04 · ROS 2 Humble · colcon 构建。原生 app 安装：<span class="mono">bash packaging/linux/install.sh</span>
-      </p>
+      <div class="console-visual">
+        <img src="media/console-ui.png" alt="任务控制台界面" loading="lazy" data-i18n-alt="console.alt">
+      </div>
+      <p class="footnote" style="margin-top:24px"><span data-i18n="console.foot">Ubuntu 22.04 · ROS 2 Humble · colcon 构建。原生 app 安装：</span><span class="mono">bash packaging/linux/install.sh</span></p>
     </div>
 
-    <div class="terminal rv" role="img" aria-label="快速开始命令">
+    <div class="terminal rv" role="img" data-i18n-aria="console.termAria" aria-label="快速开始命令">
       <div class="terminal-bar">
         <span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span>
         <span class="ttitle">anona — quick start</span>
@@ -1053,29 +1302,262 @@ img,svg{display:block;max-width:100%}
 
 <!-- ================= Finale ================= -->
 <section class="finale" aria-label="结语">
-  <h2 class="finale-title rv">为飞行而生。</h2>
+  <h2 class="finale-title rv" data-i18n="finale.title">为飞行而生。</h2>
   <p class="footnote rv" style="transition-delay:.1s">
     Anona · Modular Quadrotor Autonomy Workbench<br>
-    本页面依据仓库公开文档生成 · 演示视频见 Bilibili
+    <span data-i18n="finale.note">本页面依据仓库公开文档生成 · 演示视频见 Bilibili</span>
   </p>
   <div class="finale-links rv" style="transition-delay:.15s">
-    <a href="https://github.com/Jungod1121/Anona-Modular-Quadrotor-Autonomy" target="_blank" rel="noopener">GitHub 仓库 ↗</a>
-    <a href="https://www.bilibili.com/video/BV11Dgi6gE9A/" target="_blank" rel="noopener">Bilibili 演示 ↗</a>
-    <span style="font-size:13px;color:var(--gray)">MIT License</span>
+    <a href="https://github.com/Jungod1121/Anona-Modular-Quadrotor-Autonomy" target="_blank" rel="noopener" data-i18n="finale.gh">GitHub 仓库 ↗</a>
+    <span class="sep">·</span>
+    <a href="https://www.bilibili.com/video/BV11Dgi6gE9A/" target="_blank" rel="noopener" data-i18n="finale.bili">Bilibili 演示 ↗</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/Jungod1121/Anona-Modular-Quadrotor-Autonomy/blob/main/report/acceptance_report.md" target="_blank" rel="noopener" data-i18n="finale.report">验收报告 ↗</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/Jungod1121/Anona-Modular-Quadrotor-Autonomy/blob/main/report/planner_benchmark/comparison_report.md" target="_blank" rel="noopener" data-i18n="finale.bench">对比报告 ↗</a>
+    <span class="sep">·</span>
+    <span style="font-size:13px;color:var(--gray)" data-i18n="finale.updated">页面更新 · 2026-08</span>
   </div>
 </section>
 
 </main>
 
+<!-- ================= i18n data ================= -->
+<script id="i18n-data">
+var I18N = {
+  zh: {
+    "title": "Anona · 一套平台，八大规划",
+    "metaDesc": "Anona —— ROS 2 Humble 模块化四旋翼自主飞行工作台。统一被控对象，可插拔规划器，公平对比。",
+    "nav.arch": "架构", "nav.planners": "规划器", "nav.maps": "地图", "nav.demo": "演示", "nav.accept": "验收", "nav.console": "快速开始",
+    "nav.langTip": "切换到英文",
+    "hero.eyebrow": "Anona · 模块化四旋翼自主",
+    "hero.t1": "一套平台。", "hero.t2": "八大规划。",
+    "hero.tag": "One plant. Many planners. Fair comparison.",
+    "hero.sub": "统一被控对象，可插拔规划器，在同一套标准下公平对比 —— 一个基于 ROS 2 Humble 的四旋翼自主飞行仿真工作台。",
+    "hero.cta1": "快速开始", "hero.cta2": "观看演示 ↗",
+    "hero.pathAria": "飞行轨迹示意",
+    "stat1l": "规划器 · Path A–H", "stat2l": "验收场景一次通过", "stat3l": "动力学积分频率", "stat4l": "过程化生成地图",
+    "arch.eyebrow": "Architecture · 架构",
+    "arch.title": "平台不变，规划可变。",
+    "arch.sub": "自研动力学与级联 PID 构成唯一的被控对象。Path A–H 通过同一套接口接入 —— 换规划器，不换平台，对比才公平。",
+    "arch.note": "One plant. Many planners. Fair comparison.",
+    "card1.n": "被控对象", "card1.d": "里程计、IMU、电机转速，一个四旋翼的完整动力学模型。",
+    "card2.n": "世界", "card2.d": "种子化点云地图，同一片森林、迷宫与走廊，人人可复现。",
+    "card3.n": "规划", "card3.d": "Path A–H 八个后端，从经典算法到强化学习，同台竞技。",
+    "card4.n": "运维", "card4.d": "一键 launch、任务控制台、六项验收场景，开箱即用。",
+    "arch.d.aria": "系统架构图：运维、规划、世界、被控对象四层与话题数据流",
+    "arch.d.ops": "运维 · OPS", "arch.d.consoleSub": "浏览器 · 原生 · 验收", "arch.d.bringupSub": "一键 launch · 六项验收",
+    "arch.d.plan": "规划 · PLANNING · Path A–H",
+    "arch.d.cls.classical": "经典", "arch.d.cls.opt": "优化", "arch.d.cls.mode": "模式", "arch.d.cls.ref": "对照", "arch.d.cls.learn": "学习",
+    "arch.d.world": "世界 · WORLD", "arch.d.mapSub": "种子点云", "arch.d.adapterSub": "桥接 · 元数据",
+    "arch.d.plant": "被控对象 · PLANT", "arch.d.ctrlSub": "级联 PID · 混控器", "arch.d.dynSub": "500Hz 积分 · 里程计 · IMU",
+    "arch.d.odom": "/drone/odom · 状态反馈",
+    "arch.figcap": "图 1 · 系统架构：数据从任务目标流向电机指令，状态经 /drone/odom 反馈回规划器。",
+    "contract.eyebrow": "One Contract · 话题契约",
+    "contract.title1": "同一个契约，", "contract.title2": "公平对比。",
+    "contract.sub": "所有规划器读写同一组 topic，从目标到轨迹、再到电机指令，接口完全一致。公平，从接口开始。",
+    "contract.flowAria": "话题数据流",
+    "contract.r1": "任务目标 · PoseStamped", "contract.r2": "障碍云 · PointCloud2",
+    "contract.r3": "局部目标 · PoseStamped", "contract.r4": "轨迹指令 · p v a yaw",
+    "contract.r5": "电机指令 · RPM", "contract.r6": "状态反馈 · Odometry",
+    "contract.note": "坐标系 map (ENU) → base_link。目标由 RViz 2D Goal Pose 下达；黄色为规划轨迹，蓝色为实飞轨迹。",
+    "planners.eyebrow": "Path A–H · 规划器",
+    "planners.title1": "八条路径，", "planners.title2": "一个平台。",
+    "planners.sub": "经典、优化、学习三类方法同场竞技。强弱基线进入正式对比矩阵，其余归入模式与谱系对照。",
+    "planners.a.d": "Dyn-A* + B 样条，占据栅格自动适配地图尺寸与膨胀半径。", "planners.a.b": "经典 · 弱基线",
+    "planners.b.d": "基于梯度的 B 样条重绑定，本地感知裁剪同一张全局地图。", "planners.b.b": "优化 · 强基线",
+    "planners.c.d": "MINCO 走廊优化，直接发布契约轨迹，无需额外被控对象。", "planners.c.b": "优化 · 强基线",
+    "planners.d.d": "前沿探索任务模式：雾感知 + 前沿 FSM，EGO 负责轨迹执行。", "planners.d.b": "模式 · 非独立规划器",
+    "planners.e.d": "HGP 引导 + Hermite-LBFGS，经桥接节点接入统一被控对象。", "planners.e.b": "优化 · 强基线",
+    "planners.f.d": "kino_replan 谱系基准，独立对照，不进入正式强弱矩阵。", "planners.f.b": "对照 · 谱系基准",
+    "planners.g.d": "极坐标直方图反应式避障，可选 PPO 后端作为兼容别名。", "planners.g.b": "经典 · 弱基线",
+    "planners.h.d": "极坐标占据图像输入，学习策略滚动 Bézier 路径，VFH 兜底。", "planners.h.b": "学习 · 强基线",
+    "planners.report": "阅读对比报告 ↗",
+    "planners.foot": "强弱分类定义见 PLANNERS.md：",
+    "maps.eyebrow": "Procedural Maps · 地图",
+    "maps.title1": "世界，由", "maps.title2": "种子生成。",
+    "maps.sub": "没有 PCD 场景文件 —— 全部为过程化点云。同一颗种子，复现同一片森林、迷宫与走廊。",
+    "maps.alt1": "森林地图预览", "maps.alt2": "迷宫地图预览", "maps.alt3": "立柱地图预览", "maps.alt4": "窄廊地图预览",
+    "maps.m1.n": "森林", "maps.m1.d": "圆柱与偏航环随机分布，起点置于云外，东西走廊贯穿。",
+    "maps.m2.n": "迷宫", "maps.m2.d": "递归分割墙，路宽 1.2m，比上游更宽，适配膨胀半径。",
+    "maps.m3.n": "立柱", "maps.m3.d": "12 根空心矩形柱，稀疏分布，留出可穿越的间隙。",
+    "maps.m4.n": "窄廊", "maps.m4.d": "S 形弯道，三扇 1.2–1.8m 交错门，侧翼散布干扰物。",
+    "maps.tier": "难度预设",
+    "maps.foot": "另有 Perlin 体素、3D 迷宫、密林与致密非对称变体；每张地图随 /map/metadata 发布难度与种子。",
+    "demo.eyebrow": "Demo · 演示",
+    "demo.title": "眼见为实。",
+    "demo.sub": "单机在随机森林中回环飞行，多机编队同屏协同 —— 全部来自仓库的真实录制。",
+    "demo.cap1": "单机 · 森林回环", "demo.cap2": "多机 · 编队",
+    "demo.alt1": "单机在随机森林中回环飞行", "demo.alt2": "多机编队演示",
+    "demo.cta": "在 Bilibili 观看完整演示 ↗",
+    "accept.eyebrow": "Acceptance · 验收",
+    "accept.scoreAria": "六项全部通过",
+    "accept.sub": "六个一键场景，一次通过。从悬停到窄道穿越，同一套脚本，自动验收。",
+    "accept.i1n": "悬停", "accept.i1e": "Hover",
+    "accept.i2n": "单目标", "accept.i2e": "Single Goal",
+    "accept.i3n": "多航点", "accept.i3e": "Multi-waypoint",
+    "accept.i4n": "静态避障", "accept.i4e": "Static Avoidance",
+    "accept.i5n": "窄道穿越", "accept.i5e": "Narrow Passage",
+    "accept.i6n": "稳定性", "accept.i6e": "Stability Demo",
+    "accept.report": "正式报告 ·",
+    "accept.cap4": "场景 04 · 静态避障", "accept.cap5": "场景 05 · 窄道穿越",
+    "accept.alt4": "场景四：静态避障 RViz 截图", "accept.alt5": "场景五：窄道穿越 RViz 截图",
+    "console.eyebrow": "Mission Console · 快速开始",
+    "console.title": "从终端，到驾驶舱。",
+    "console.sub": "浏览器控制台或原生 app，地图与规划器即点即换，单机与多机编队一屏掌控。",
+    "console.li1": "浏览器控制台 ·", "console.li2": "地图与规划器切换，Start / Stop 即点即用",
+    "console.li3": "单机任务与多机编队（EGO-Swarm 内核）", "console.li4": "Ubuntu 22.04 + ROS 2 Humble，MIT 开源",
+    "console.alt": "任务控制台界面", "console.termAria": "快速开始命令",
+    "console.foot": "Ubuntu 22.04 · ROS 2 Humble · colcon 构建。原生 app 安装：",
+    "finale.title": "为飞行而生。",
+    "finale.note": "本页面依据仓库公开文档生成 · 演示视频见 Bilibili",
+    "finale.gh": "GitHub 仓库 ↗", "finale.bili": "Bilibili 演示 ↗",
+    "finale.report": "验收报告 ↗", "finale.bench": "对比报告 ↗",
+    "finale.updated": "页面更新 · 2026-08"
+  },
+  en: {
+    "title": "Anona · One plant. Eight planners.",
+    "metaDesc": "Anona — a modular quadrotor autonomy workbench on ROS 2 Humble. One plant, many planners, fair comparison.",
+    "nav.arch": "Architecture", "nav.planners": "Planners", "nav.maps": "Maps", "nav.demo": "Demo", "nav.accept": "Acceptance", "nav.console": "Quick Start",
+    "nav.langTip": "Switch to Chinese",
+    "hero.eyebrow": "ANONA · MODULAR QUADROTOR AUTONOMY",
+    "hero.t1": "One plant.", "hero.t2": "Eight planners.",
+    "hero.tag": "一套平台。八大规划。公平对比。",
+    "hero.sub": "One fixed plant, swappable planners, compared under the same standard — a modular quadrotor autonomy workbench on ROS 2 Humble.",
+    "hero.cta1": "Quick Start", "hero.cta2": "Watch the demo ↗",
+    "hero.pathAria": "Illustrated flight path",
+    "stat1l": "Planners · Path A–H", "stat2l": "Acceptance scenarios passed", "stat3l": "Dynamics integration rate", "stat4l": "Procedural maps",
+    "arch.eyebrow": "ARCHITECTURE",
+    "arch.title": "The platform stays. The planners change.",
+    "arch.sub": "A self-built plant — dynamics plus cascade PID — is the single body every planner drives. Path A–H plugs into the same interface: swap the planner, keep the plant, and the comparison stays fair.",
+    "arch.note": "一套平台。八大规划。公平对比。",
+    "card1.n": "Plant", "card1.d": "Odometry, IMU and motor RPM — one complete quadrotor dynamics model.",
+    "card2.n": "World", "card2.d": "Seeded point-cloud maps — the same forest, maze and corridor, reproducible by anyone.",
+    "card3.n": "Planning", "card3.d": "Eight backends from Path A to H — classical, optimization and learning, on one stage.",
+    "card4.n": "Ops", "card4.d": "One-click launches, a mission console and six acceptance scenarios — ready out of the box.",
+    "arch.d.aria": "System architecture: ops, planning, world and plant layers with topic data flow",
+    "arch.d.ops": "Ops · OPS", "arch.d.consoleSub": "browser · native · acceptance", "arch.d.bringupSub": "one-click launch · acceptance",
+    "arch.d.plan": "Planning · PLANNING · Path A–H",
+    "arch.d.cls.classical": "classical", "arch.d.cls.opt": "optimization", "arch.d.cls.mode": "mode", "arch.d.cls.ref": "reference", "arch.d.cls.learn": "learning",
+    "arch.d.world": "World · WORLD", "arch.d.mapSub": "seeded point cloud", "arch.d.adapterSub": "bridge · metadata",
+    "arch.d.plant": "Plant · PLANT", "arch.d.ctrlSub": "cascade PID · mixer", "arch.d.dynSub": "500 Hz integration · odometry · IMU",
+    "arch.d.odom": "/drone/odom · state feedback",
+    "arch.figcap": "Fig. 1 · System architecture: data flows from mission goal to motor commands; state feeds back to planners via /drone/odom.",
+    "contract.eyebrow": "ONE CONTRACT",
+    "contract.title1": "One contract.", "contract.title2": "Fair comparison.",
+    "contract.sub": "Every planner reads and writes the same topics — goal, trajectory, motor command. Fairness starts at the interface.",
+    "contract.flowAria": "Topic data flow",
+    "contract.r1": "Mission goal · PoseStamped", "contract.r2": "Obstacle cloud · PointCloud2",
+    "contract.r3": "Local goal · PoseStamped", "contract.r4": "Trajectory command · p v a yaw",
+    "contract.r5": "Motor command · RPM", "contract.r6": "State feedback · Odometry",
+    "contract.note": "Frames: map (ENU) → base_link. Goals are set with RViz 2D Goal Pose; yellow is the planned path, blue the flown path.",
+    "planners.eyebrow": "PATH A–H · PLANNERS",
+    "planners.title1": "Eight paths.", "planners.title2": "One platform.",
+    "planners.sub": "Classical, optimization and learning methods on one stage. Strong and weak baselines enter the official matrix; the rest join as modes and lineage references.",
+    "planners.a.d": "Dyn-A* plus B-spline on an occupancy grid that auto-fits map bounds and inflation.", "planners.a.b": "Classical · Weak baseline",
+    "planners.b.d": "Gradient-based B-spline re-binding; local sensing crops the same global map.", "planners.b.b": "Optimization · Strong baseline",
+    "planners.c.d": "MINCO corridor optimization publishing contract trajectories directly — no extra plant.", "planners.c.b": "Optimization · Strong baseline",
+    "planners.d.d": "A frontier-exploration mission mode: fog sensing + frontier FSM, EGO executes the trajectories.", "planners.d.b": "Mode · not standalone",
+    "planners.e.d": "HGP guidance + Hermite-LBFGS, bridged into the shared plant.", "planners.e.b": "Optimization · Strong baseline",
+    "planners.f.d": "kino_replan lineage benchmark — a standalone reference outside the official matrix.", "planners.f.b": "Reference · lineage",
+    "planners.g.d": "Polar-histogram reactive avoidance; an optional PPO backend as a compatible alias.", "planners.g.b": "Classical · Weak baseline",
+    "planners.h.d": "Polar occupancy images in, a learned policy rolls a Bézier path out — with VFH fallback.", "planners.h.b": "Learning · Strong baseline",
+    "planners.report": "Read the benchmark report ↗",
+    "planners.foot": "Classification per PLANNERS.md:",
+    "maps.eyebrow": "PROCEDURAL MAPS",
+    "maps.title1": "Worlds, generated", "maps.title2": "from seeds.",
+    "maps.sub": "No PCD scene files — every scene is a procedural point cloud. The same seed reproduces the same forest, maze and corridor.",
+    "maps.alt1": "Forest map preview", "maps.alt2": "Maze map preview", "maps.alt3": "Posts map preview", "maps.alt4": "Corridor map preview",
+    "maps.m1.n": "Forest", "maps.m1.d": "Cylinders and yawed rings; the drone starts outside the cloud with an east–west corridor.",
+    "maps.m2.n": "Maze", "maps.m2.d": "Recursive-division walls with 1.2 m roads — wider than upstream for inflation.",
+    "maps.m3.n": "Posts", "maps.m3.d": "Twelve hollow pillars, sparse enough to fly between.",
+    "maps.m4.n": "Corridor", "maps.m4.d": "An S-bend with three staggered 1.2–1.8 m doors and side clutter.",
+    "maps.tier": "Difficulty presets",
+    "maps.foot": "Plus Perlin voxels, 3D mazes, denser forests and asymmetric variants; every map publishes difficulty and seed on /map/metadata.",
+    "demo.eyebrow": "DEMO",
+    "demo.title": "See it fly.",
+    "demo.sub": "A single drone looping through a random forest, a swarm holding formation — real recordings from the repository.",
+    "demo.cap1": "Single UAV · Forest loop", "demo.cap2": "Multi-UAV · Formation",
+    "demo.alt1": "A single UAV looping through a random forest", "demo.alt2": "Multi-UAV formation demo",
+    "demo.cta": "Watch the full demo on Bilibili ↗",
+    "accept.eyebrow": "ACCEPTANCE",
+    "accept.scoreAria": "All six scenarios pass",
+    "accept.sub": "Six one-click scenarios, all passing. From hover to narrow passage — one script, automated acceptance.",
+    "accept.i1n": "Hover", "accept.i1e": "悬停",
+    "accept.i2n": "Single Goal", "accept.i2e": "单目标",
+    "accept.i3n": "Multi-waypoint", "accept.i3e": "多航点",
+    "accept.i4n": "Static Avoidance", "accept.i4e": "静态避障",
+    "accept.i5n": "Narrow Passage", "accept.i5e": "窄道穿越",
+    "accept.i6n": "Stability Demo", "accept.i6e": "稳定性",
+    "accept.report": "Official report ·",
+    "accept.cap4": "Scenario 04 · Static avoidance", "accept.cap5": "Scenario 05 · Narrow passage",
+    "accept.alt4": "Scenario 4: static avoidance RViz screenshot", "accept.alt5": "Scenario 5: narrow passage RViz screenshot",
+    "console.eyebrow": "MISSION CONSOLE · QUICK START",
+    "console.title": "From terminal, to cockpit.",
+    "console.sub": "A browser console or a native app — switch maps and planners on the fly, run single and multi-UAV missions from one screen.",
+    "console.li1": "Browser console ·", "console.li2": "Map and planner switching, one-click Start / Stop",
+    "console.li3": "Single missions and multi-UAV swarms (EGO-Swarm core)", "console.li4": "Ubuntu 22.04 + ROS 2 Humble, MIT licensed",
+    "console.alt": "Mission console UI", "console.termAria": "Quick start commands",
+    "console.foot": "Ubuntu 22.04 · ROS 2 Humble · colcon build. Native app:",
+    "finale.title": "Built to fly.",
+    "finale.note": "Generated from the repository's public docs · Demo on Bilibili",
+    "finale.gh": "GitHub repository ↗", "finale.bili": "Bilibili demo ↗",
+    "finale.report": "Acceptance report ↗", "finale.bench": "Benchmark report ↗",
+    "finale.updated": "Page updated · 2026-08"
+  }
+};
+</script>
+
+<script>
+/* ---------- language switching ---------- */
+(function(){
+  var btn=document.getElementById('langBtn');
+  function applyLang(lang){
+    if(!I18N[lang])lang='zh';
+    document.documentElement.lang=(lang==='en')?'en':'zh-CN';
+    var d=I18N[lang];
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var v=d[el.getAttribute('data-i18n')];
+      if(typeof v==='string')el.textContent=v;
+    });
+    document.querySelectorAll('[data-i18n-alt]').forEach(function(el){
+      var v=d[el.getAttribute('data-i18n-alt')];
+      if(typeof v==='string')el.setAttribute('alt',v);
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function(el){
+      var v=d[el.getAttribute('data-i18n-aria')];
+      if(typeof v==='string')el.setAttribute('aria-label',v);
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(function(el){
+      var v=d[el.getAttribute('data-i18n-title')];
+      if(typeof v==='string')el.setAttribute('title',v);
+    });
+    document.title=d.title;
+    var m=document.querySelector('meta[name="description"]');
+    if(m)m.setAttribute('content',d.metaDesc);
+    var og=document.querySelector('meta[property="og:title"]');
+    if(og)og.setAttribute('content',d.title);
+    btn.textContent=(lang==='zh')?'EN':'中';
+    try{localStorage.setItem('anona-lang',lang);}catch(e){}
+  }
+  var saved='zh';
+  try{saved=localStorage.getItem('anona-lang')||'zh';}catch(e){}
+  applyLang(saved);
+  btn.addEventListener('click',function(){
+    applyLang((document.documentElement.lang==='zh-CN')?'en':'zh');
+  });
+})();
+</script>
+
 <script>
 /* ---------- scroll reveal ---------- */
 (function(){
-  var els = document.querySelectorAll('.rv');
+  var els=document.querySelectorAll('.rv');
   if(!('IntersectionObserver' in window)){
     els.forEach(function(el){el.classList.add('in')});
     return;
   }
-  var io = new IntersectionObserver(function(entries){
+  var io=new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       if(e.isIntersecting){
         e.target.classList.add('in');
