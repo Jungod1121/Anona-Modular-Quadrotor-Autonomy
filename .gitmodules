@@ -1,0 +1,6 @@
+[submodule "reference_repos/GCOPTER"]
+	path = reference_repos/GCOPTER
+	url = https://github.com/yuwei-wu/GCOPTER.git
+[submodule "reference_repos/ego-planner-swarm"]
+	path = reference_repos/ego-planner-swarm
+	url = https://github.com/ZJU-FAST-Lab/ego-planner-swarm.git
