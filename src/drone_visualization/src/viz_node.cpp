@@ -1,8 +1,8 @@
+#include <Eigen/Geometry>
+
 #include <geometry_msgs/msg/point.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <tf2/LinearMath/Quaternion.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include <visualization_msgs/msg/marker.hpp>
 #include <visualization_msgs/msg/marker_array.hpp>
 
@@ -76,6 +76,9 @@ private:
   {
     visualization_msgs::msg::MarkerArray array;
     const auto & pose = msg->pose.pose;
+    const rclcpp::Duration marker_lifetime = rclcpp::Duration::from_seconds(0.5);
+    const Eigen::Quaterniond odom_q(
+      pose.orientation.w, pose.orientation.x, pose.orientation.y, pose.orientation.z);
 
     // Central body
     visualization_msgs::msg::Marker body;
@@ -84,6 +87,7 @@ private:
     body.id = 0;
     body.type = visualization_msgs::msg::Marker::CUBE;
     body.action = visualization_msgs::msg::Marker::ADD;
+    body.lifetime = marker_lifetime;
     body.pose = pose;
     body.scale.x = body_scale_;
     body.scale.y = body_scale_;
@@ -122,7 +126,7 @@ private:
       arm.id = id++;
       arm.type = visualization_msgs::msg::Marker::LINE_STRIP;
       arm.action = visualization_msgs::msg::Marker::ADD;
-      arm.pose.orientation.w = 1.0;
+      arm.lifetime = marker_lifetime;
       arm.scale.x = 0.02;
       arm.color.r = 0.2f;
       arm.color.g = 0.2f;
@@ -130,12 +134,14 @@ private:
       arm.color.a = 1.0f;
 
       geometry_msgs::msg::Point p0, p1;
+      const Eigen::Vector3d arm_offset =
+        odom_q * Eigen::Vector3d(ux * arm_length_, uy * arm_length_, 0.0);
       p0.x = pose.position.x;
       p0.y = pose.position.y;
       p0.z = pose.position.z;
-      p1.x = pose.position.x + ux * arm_length_;
-      p1.y = pose.position.y + uy * arm_length_;
-      p1.z = pose.position.z;
+      p1.x = pose.position.x + arm_offset.x();
+      p1.y = pose.position.y + arm_offset.y();
+      p1.z = pose.position.z + arm_offset.z();
       arm.points = {p0, p1};
       array.markers.push_back(arm);
 
@@ -145,6 +151,7 @@ private:
       rotor.id = id++;
       rotor.type = visualization_msgs::msg::Marker::CYLINDER;
       rotor.action = visualization_msgs::msg::Marker::ADD;
+      rotor.lifetime = marker_lifetime;
       rotor.pose.position.x = p1.x;
       rotor.pose.position.y = p1.y;
       rotor.pose.position.z = p1.z + 0.02;
@@ -166,6 +173,7 @@ private:
     arrow.id = id++;
     arrow.type = visualization_msgs::msg::Marker::ARROW;
     arrow.action = visualization_msgs::msg::Marker::ADD;
+    arrow.lifetime = marker_lifetime;
     arrow.pose = pose;
     arrow.scale.x = arm_length_ * 1.2;
     arrow.scale.y = 0.04;
@@ -184,9 +192,10 @@ private:
         label.header = msg->header;
         label.ns = "drone_label";
         label.id = id++;
-        label.type = visualization_msgs::msg::Marker::TEXT_VIEW_FACING;
-        label.action = visualization_msgs::msg::Marker::ADD;
-        label.pose = pose;
+          label.type = visualization_msgs::msg::Marker::TEXT_VIEW_FACING;
+          label.action = visualization_msgs::msg::Marker::ADD;
+          label.lifetime = marker_lifetime;
+          label.pose = pose;
         label.pose.position.z += 0.45;
         label.scale.z = 0.45;
         label.color.r = body.color.r;
@@ -209,6 +218,7 @@ private:
           point.id = marker_id;
           point.type = visualization_msgs::msg::Marker::SPHERE;
           point.action = visualization_msgs::msg::Marker::ADD;
+          point.lifetime = marker_lifetime;
           point.pose.position.x = x;
           point.pose.position.y = y;
           point.pose.position.z = z;
@@ -225,6 +235,7 @@ private:
           visualization_msgs::msg::Marker label = point;
           label.id = marker_id + 1;
           label.type = visualization_msgs::msg::Marker::TEXT_VIEW_FACING;
+          label.lifetime = marker_lifetime;
           label.pose.position.z = z + 0.38;
           label.scale.x = 0.0;
           label.scale.y = 0.0;

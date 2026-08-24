@@ -5,7 +5,7 @@
   <version>0.0.0</version>
   <description>TODO: Package description</description>
   <maintainer email="bbt1203@gmail.com">drone</maintainer>
-  <license>TODO: License declaration</license>
+  <license>LGPL-3.0-or-later</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

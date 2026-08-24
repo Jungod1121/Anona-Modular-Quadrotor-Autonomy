@@ -306,28 +306,6 @@ private:
     }
   }
 
-  /** Overlay live peers on a copy of the static base map (cheap). */
-  void rebuildPlanningGridLocked()
-  {
-    RCLCPP_INFO(get_logger(), "rebuild: cloning base map");
-    OccupancyGrid g;
-    {
-      std::lock_guard<std::mutex> lk(mtx_);
-      if (!have_map_) {
-        return;
-      }
-      g = base_grid_.clone();
-    }
-    RCLCPP_INFO(get_logger(), "rebuild: stamping peers");
-    stampPeerBodies(g);
-    RCLCPP_INFO(get_logger(), "rebuild: swapping grid");
-    {
-      std::lock_guard<std::mutex> lk(mtx_);
-      grid_ = std::move(g);
-      optimizer_.setOccupancyGrid(&grid_);
-    }
-  }
-
   /** Requires mtx_ already held (called from onTimer). */
   bool peersThreatenPathLocked(const Eigen::Vector3d & self) const
   {
@@ -1067,43 +1045,6 @@ private:
     v = tangent * speed;
     a.setZero();
     return true;
-  }
-
-  void computeYaw(
-    const Eigen::Vector3d & pos, const Eigen::Vector3d & vel, double t,
-    double & yaw, double & yaw_dot) const
-  {
-    const double lookahead = get_parameter("yaw_lookahead").as_double();
-    Eigen::Vector3d p2 = pos;
-    Eigen::Vector3d v2 = vel;
-    sampleTrajectoryAtTime(t + lookahead, p2, v2, v2);
-    Eigen::Vector3d dir = p2 - pos;
-    if (dir.norm() < 0.15) {
-      dir = vel;
-    }
-    if (dir.norm() < 0.1) {
-      yaw = have_cmd_yaw_ ? cmd_yaw_ : 0.0;
-      yaw_dot = 0.0;
-      return;
-    }
-    const double yaw_new = std::atan2(dir.y(), dir.x());
-    yaw_dot = 0.0;
-    if (have_cmd_yaw_) {
-      double dy = yaw_new - cmd_yaw_;
-      while (dy > M_PI) {
-        dy -= 2.0 * M_PI;
-      }
-      while (dy < -M_PI) {
-        dy += 2.0 * M_PI;
-      }
-      const double max_rate = 1.5;
-      const double hz = get_parameter("control_rate").as_double();
-      dy = std::clamp(dy, -max_rate / hz, max_rate / hz);
-      yaw = cmd_yaw_ + dy;
-      yaw_dot = dy * hz;
-    } else {
-      yaw = yaw_new;
-    }
   }
 
   bool checkTrajectoryCollisionAhead(double clearance) const

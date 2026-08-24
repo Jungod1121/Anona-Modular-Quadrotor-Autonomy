@@ -125,6 +125,5 @@ install(DIRECTORY include/
   DESTINATION include)          # this line works
 
 ament_export_include_directories(include)
-ament_export_libraries(plan_manage)
 ament_package()
 

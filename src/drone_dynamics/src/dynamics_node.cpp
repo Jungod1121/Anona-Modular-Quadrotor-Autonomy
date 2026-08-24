@@ -58,6 +58,8 @@ public:
     steps_per_pub_ = std::max(1, static_cast<int>(std::lround(integ_hz / pub_hz)));
     dt_ = 1.0 / integ_hz;
     disturb_period_pubs_ = std::max(1, static_cast<int>(std::lround(pub_hz / 20.0)));  // ~20 Hz
+    path_pub_period_pubs_ =
+      std::max(1, static_cast<int>(std::lround(pub_hz / 10.0)));  // ~10 Hz (Path is large)
 
     timer_ = create_wall_timer(
       std::chrono::duration<double>(1.0 / pub_hz),
@@ -223,7 +225,11 @@ private:
     if (path_.poses.size() > 5000) {
       path_.poses.erase(path_.poses.begin(), path_.poses.begin() + 1000);
     }
-    path_pub_->publish(path_);
+    // Path republish is throttled to ~10 Hz: the full history is large and RViz
+    // does not need it at the odom rate. Pose itself still updates every tick.
+    if (pub_tick_ % path_pub_period_pubs_ == 0) {
+      path_pub_->publish(path_);
+    }
 
     ++pub_tick_;
     if (pub_tick_ % disturb_period_pubs_ == 0) {
@@ -269,6 +275,7 @@ private:
   double dt_{0.002};
   int steps_per_pub_{5};
   int disturb_period_pubs_{5};
+  int path_pub_period_pubs_{10};
   int pub_tick_{0};
   double sim_time_{0.0};
   double init_x_{0}, init_y_{0}, init_z_{0}, init_yaw_{0};

@@ -8,6 +8,7 @@
 
 #include <hgp/hgp_planner.hpp>
 
+#include <cstdlib>
 #include <fstream>
 #include <iomanip>
 
@@ -16,9 +17,13 @@ using namespace termcolor;
 // Per-call HGP debug log. Opened lazily on first use; writes voxel start/goal,
 // whether the goal was clamped (outside the map), the resulting path length,
 // and the path's first / last waypoint. Used to diagnose backward-pointing
-// global paths around x=10.
+// global paths around x=10. Off unless MIGHTY_HGP_DEBUG is set in the
+// environment (file logging to /tmp is not wanted during normal operation).
 namespace {
 std::ofstream& hgp_debug_log() {
+  static std::ofstream null_stream;  // never opened; discarded sink
+  if (std::getenv("MIGHTY_HGP_DEBUG") == nullptr) return null_stream;
+
   static std::ofstream s;
   if (!s.is_open()) {
     s.open("/tmp/mighty_hgp_debug.log", std::ios::out | std::ios::trunc);

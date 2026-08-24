@@ -172,7 +172,10 @@ class InterferenceMonitorApp:
             self.ax.tick_params(colors='#9aa0a6')
             for spine in self.ax.spines.values():
                 spine.set_color('#3c4048')
-            self.ax.set_xlabel('t [s]', color='#9aa0a6')
+            # NOTE: hist_t is wall-clock time (node clock at message arrival), NOT
+            # sim_time shown in the HUD readout above; axis label kept explicit so
+            # the two time bases are not confused.
+            self.ax.set_xlabel('t [s] (wall clock since start)', color='#9aa0a6')
             self.ax.set_ylabel('wind |F| [N] / err [m]', color='#9aa0a6')
             self.line_w, = self.ax.plot([], [], color='#4cc9f0', lw=1.6, label='|F_wind|')
             self.line_e, = self.ax.plot([], [], color='#f5a524', lw=1.6, label='hover err')

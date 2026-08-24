@@ -5,7 +5,7 @@
   <version>0.0.0</version>
   <description>TODO: Package description</description>
   <maintainer email="bbt1203@gmail.com">drone</maintainer>
-  <license>TODO: License declaration</license>
+  <license>BSD-3-Clause</license>
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
@@ -22,6 +22,7 @@
   <depend>fast_planner</depend>
   <depend>quadrotor_msgs</depend>
   <depend>builtin_interfaces</depend>
+  <depend>cv_bridge</depend>
   <exec_depend>ros2launch</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>

@@ -534,7 +534,7 @@ void MIGHTY_NODE::declareParameters() {
   this->declare_parameter("visual_level", 1);
 
   // Global planner parameters
-  this->declare_parameter("file_path", "/home/kkondo/code/dynus_ws/src/dynus/data/data.txt");
+  this->declare_parameter("file_path", "");  // benchmark CSV output; empty = disabled
   this->declare_parameter("use_benchmark", false);
   this->declare_parameter("start_yaw", -90.0);
   this->declare_parameter("global_planner", "sjps");
@@ -2337,6 +2337,12 @@ void MIGHTY_NODE::recordData(bool result) {
  * @brief Log the data to a csv file
  */
 void MIGHTY_NODE::logData() {
+  // No output file configured (file_path empty): skip logging with a one-time warn.
+  if (file_path_.empty()) {
+    RCLCPP_WARN_ONCE(this->get_logger(),
+                     "logData: 'file_path' is empty; benchmark data will not be written");
+    return;
+  }
   // Loc the computation times to csv file
   // std::ofstream log_file(file_path_, std::ios_base::app); // Open the file in append mode
   std::ofstream log_file(file_path_);  // Open the file in overwrite mode
