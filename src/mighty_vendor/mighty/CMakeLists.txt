@@ -78,11 +78,11 @@ endif()
 foreach(_p
     "${CMAKE_INSTALL_PREFIX}/../dynus_interfaces/include"
     "${CMAKE_CURRENT_BINARY_DIR}/../../install/dynus_interfaces/include"
-    "/home/jungod/drone_ws/install/dynus_interfaces/include"
-    "/home/jungod/drone_ws/install/dynus_interfaces/include/dynus_interfaces"
-    "/home/jungod/drone_ws/install/decomp_ros_msgs/include"
-    "/home/jungod/drone_ws/install/decomp_ros_msgs/include/decomp_ros_msgs"
-    "/home/jungod/drone_ws/install/decomp_rviz_plugins/include")
+    "${CMAKE_INSTALL_PREFIX}/../dynus_interfaces/include"
+    "${CMAKE_INSTALL_PREFIX}/../dynus_interfaces/include/dynus_interfaces"
+    "${CMAKE_INSTALL_PREFIX}/../decomp_ros_msgs/include"
+    "${CMAKE_INSTALL_PREFIX}/../decomp_ros_msgs/include/decomp_ros_msgs"
+    "${CMAKE_INSTALL_PREFIX}/../decomp_rviz_plugins/include")
   if(EXISTS "${_p}")
     include_directories("${_p}")
   endif()

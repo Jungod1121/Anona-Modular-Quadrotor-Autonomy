@@ -11,6 +11,7 @@ from ament_index_python.packages import get_package_share_directory
 import os
 
 from drone_bringup.maps_catalog import DEFAULT_MAP_BY_PLANNER, normalize_map_id
+from drone_bringup.planner_registry import PLANNERS, normalize_planner_id
 
 
 def launch_setup(context, *args, **kwargs):
@@ -21,62 +22,23 @@ def launch_setup(context, *args, **kwargs):
     mission = LaunchConfiguration('mission').perform(context)
 
     share = get_package_share_directory('drone_bringup')
-    mapping = {
-        'homemade': 'homemade_avoidance.launch.py',
-        'a': 'homemade_avoidance.launch.py',
-        'path_a': 'homemade_avoidance.launch.py',
-        'ego': 'ego_avoidance.launch.py',
-        'b': 'ego_avoidance.launch.py',
-        'path_b': 'ego_avoidance.launch.py',
-        'gcopter': 'gcopter_avoidance.launch.py',
-        'c': 'gcopter_avoidance.launch.py',
-        'path_c': 'gcopter_avoidance.launch.py',
-        'minco': 'gcopter_avoidance.launch.py',
-        'fuel_explore': 'fuel_explore.launch.py',
-        'fuel': 'fuel_explore.launch.py',
-        'd': 'fuel_explore.launch.py',
-        'path_d': 'fuel_explore.launch.py',
-        'mighty': 'mighty_avoidance.launch.py',
-        'e': 'mighty_avoidance.launch.py',
-        'path_e': 'mighty_avoidance.launch.py',
-        'fast_planner': 'fast_planner_avoidance.launch.py',
-        'fast': 'fast_planner_avoidance.launch.py',
-        'f': 'fast_planner_avoidance.launch.py',
-        'path_f': 'fast_planner_avoidance.launch.py',
-        'rl': 'rl_avoidance.launch.py',
-        'ppo': 'rl_avoidance.launch.py',
-        'mappo': 'rl_avoidance.launch.py',
-        'g': 'rl_avoidance.launch.py',
-        'path_g': 'rl_avoidance.launch.py',
-        'vfh': 'rl_avoidance.launch.py',
-        'sac': 'sac_avoidance.launch.py',
-        'h': 'sac_avoidance.launch.py',
-        'path_h': 'sac_avoidance.launch.py',
-        'drq_sac': 'sac_avoidance.launch.py',
-    }
-    planner_key = {
-        'homemade': 'homemade', 'a': 'homemade', 'path_a': 'homemade',
-        'ego': 'ego', 'b': 'ego', 'path_b': 'ego',
-        'gcopter': 'gcopter', 'c': 'gcopter', 'path_c': 'gcopter', 'minco': 'gcopter',
-        'fuel_explore': 'fuel_explore', 'fuel': 'fuel_explore',
-        'd': 'fuel_explore', 'path_d': 'fuel_explore',
-        'mighty': 'mighty', 'e': 'mighty', 'path_e': 'mighty',
-        'fast_planner': 'fast_planner', 'fast': 'fast_planner',
-        'f': 'fast_planner', 'path_f': 'fast_planner',
-        'rl': 'rl', 'ppo': 'rl', 'mappo': 'rl', 'g': 'rl', 'path_g': 'rl', 'vfh': 'rl',
-        'sac': 'sac', 'h': 'sac', 'path_h': 'sac', 'drq_sac': 'sac',
-    }.get(planner)
-    launch_file = mapping.get(planner)
-    if launch_file is None or planner_key is None:
+    # Single alias source: planner_registry (PLANNERS.md stays in sync).
+    meta = PLANNERS.get(normalize_planner_id(planner))
+    if meta is None:
         raise RuntimeError(
             f"Unknown planner='{planner}'. Use homemade|ego|gcopter|fuel_explore|"
             f"mighty|fast_planner|rl|vfh|sac")
+    launch_file = meta['launch']
+    canon = meta['id']
+    # Map-default table and the included rl launches key off the legacy 'rl'.
+    map_key = 'rl' if canon == 'vfh' else canon
+    pass_through = 'rl' if canon == 'vfh' else canon
 
     # Resolve auto/default aliases for pass-through clarity.
     if not map_raw.strip() or map_raw.strip().lower() in ('auto', 'default'):
-        map_id = DEFAULT_MAP_BY_PLANNER[planner_key]
+        map_id = DEFAULT_MAP_BY_PLANNER[map_key]
     else:
-        map_id = normalize_map_id(map_raw, planner=planner_key)
+        map_id = normalize_map_id(map_raw, planner=map_key)
 
     launch_args = {
         'use_rviz': use_rviz,
@@ -84,7 +46,7 @@ def launch_setup(context, *args, **kwargs):
         'map': map_id,
     }
     # Exploration Path D has no catalog/square goal switch.
-    if planner_key != 'fuel_explore':
+    if canon != 'fuel_explore':
         launch_args['mission'] = mission
 
     return [

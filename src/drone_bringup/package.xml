@@ -31,6 +31,12 @@
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>python3-numpy</exec_depend>
   <exec_depend>python3-matplotlib</exec_depend>
+  <exec_depend>gcopter</exec_depend>
+  <exec_depend>mighty</exec_depend>
+  <exec_depend>dynus_interfaces</exec_depend>
+  <exec_depend>plan_manage</exec_depend>
+  <exec_depend>drone_rl_planner</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>
