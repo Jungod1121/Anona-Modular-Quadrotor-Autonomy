@@ -136,7 +136,10 @@ def launch_setup(context, *args, **kwargs):
             # Hear /drone/goal directly (waypoint_publisher). Avoid depending only on
             # bridge fan-out to /move_base_simple/goal, which can miss one-shot goals
             # when Mission Console / other DDS participants are also online.
+            # NOTE: upstream subscribes the ABSOLUTE "/move_base_simple/goal";
+            # a relative 'goal' rule alone never matches it.
             ('goal', '/drone/goal'),
+            ('/move_base_simple/goal', '/drone/goal'),
             ('planning/bspline', '/drone_0_planning/bspline'),
             ('planning/data_display', '/drone_0_planning/data_display'),
             ('planning/broadcast_bspline_from_planner', '/broadcast_bspline'),
