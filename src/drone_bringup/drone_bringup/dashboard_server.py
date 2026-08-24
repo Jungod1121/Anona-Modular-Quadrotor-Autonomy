@@ -98,10 +98,13 @@ from drone_bringup.planner_registry import (
 ROOT = Path(__file__).resolve().parent
 STATIC_DIR = ROOT / 'dashboard_static'
 BG_USER_DIR = Path(os.environ.get('XDG_CONFIG_HOME', Path.home() / '.config')) / 'drone-ws' / 'backgrounds'
-# No practical size cap — wallpapers can be large; keep type/name checks only.
-BG_MAX_BYTES = None
-BG_ALLOWED_EXT = {'.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg'}
+# Wallpapers: cap upload size; SVG is rejected (scriptable → stored XSS when
+# served same-origin as image/svg+xml).
+BG_MAX_BYTES = 10 * 1024 * 1024
+BG_ALLOWED_EXT = {'.png', '.jpg', '.jpeg', '.webp', '.gif'}
 _BG_NAME_RE = re.compile(r'^[A-Za-z0-9][A-Za-z0-9._-]{0,120}$')
+# ROS namespaces: alnum + underscore, optionally slash-separated (no shell metachars).
+_NAMESPACE_RE = re.compile(r'^[A-Za-z0-9_]+(/[A-Za-z0-9_]+)*$')
 _STATE = {
     'ws_root': Path(os.environ.get('DRONE_WS', Path.home() / 'drone_ws')).resolve(),
 }
@@ -786,24 +789,46 @@ class LaunchManager:
         return {'ok': True}
 
     def _kill_sim_nodes(self) -> None:
-        patterns = [
-            'planner_sim.launch.py', 'ego_avoidance.launch.py',
-            'gcopter_avoidance.launch.py', 'avoidance.launch.py',
-            'homemade_avoidance.launch.py',
-            'fuel_explore.launch.py', 'rl_avoidance.launch.py', 'sac_avoidance.launch.py',
-            'ego_swarm.launch.py', 'shared_field.launch.py', 'formation.launch.py',
-            'ego_planner_node', 'global_planning_node', 'random_forest',
-            'dynamics_node', 'controller_node', 'planner_node', 'map_node',
-            'mockamap_node', 'cloud_bridge', 'formation_coordinator',
-            'traj_server', 'ego_cmd_bridge', 'viz_node', 'rl_planner_node',
-            'vfh_planner_node', 'sac_planner_node', 'safety_supervisor_node',
-            'map_adapter_node',
-            'lib/drone_exploration/exploration_fsm',
-        ]
-        for pat in patterns:
-            subprocess.run(
-                ['pkill', '-9', '-f', pat], check=False,
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        """Fallback sweep for sim processes that escaped the tracked group.
+
+        Matches ONLY processes running from this workspace's install tree;
+        never bare binary names like 'controller_node', which would kill
+        unrelated workspaces' nodes. Protects our own process ancestry so the
+        dashboard cannot kill itself or its parent shell.
+        """
+        ws_prefix = re.escape(str(ws_root() / 'install'))
+        try:
+            out = subprocess.run(
+                ['pgrep', '-f', f'^{ws_prefix}'],
+                check=False, capture_output=True, text=True,
+            ).stdout.split()
+        except Exception:
+            return
+
+        protected = {os.getpid()}
+        ancestor = os.getppid()
+        for _ in range(4):
+            if ancestor <= 1:
+                break
+            protected.add(ancestor)
+            try:
+                ancestor = int(subprocess.run(
+                    ['ps', '-o', 'ppid=', '-p', str(ancestor)],
+                    check=False, capture_output=True, text=True).stdout.strip())
+            except (ValueError, subprocess.SubprocessError):
+                break
+
+        for tok in out:
+            try:
+                pid = int(tok)
+            except ValueError:
+                continue
+            if pid in protected:
+                continue
+            try:
+                os.kill(pid, signal.SIGKILL)
+            except (ProcessLookupError, PermissionError):
+                pass
 
     def status(self) -> Dict[str, Any]:
         running = self.is_running()
@@ -811,12 +836,16 @@ class LaunchManager:
             logs = list(self.log_lines[-80:])
             cfg = dict(self.cfg)
             started = self.started_at
+        try:
+            cmd_preview = self.preview(cfg)
+        except Exception as exc:  # never let /api/status die over a bad config
+            cmd_preview = f'<config error: {exc}>'
         return {
             'running': running,
             'pid': self.proc.pid if running and self.proc else None,
             'uptime_s': (time.time() - started) if running and started else 0.0,
             'config': cfg,
-            'cmd': self.preview(cfg),
+            'cmd': cmd_preview,
             'planners': PLANNERS,
             'planner_registry': planner_public_info('en'),
             'planner_registry_zh': planner_public_info('zh'),
@@ -1824,14 +1853,21 @@ class Handler(BaseHTTPRequestHandler):
             self._json(200, MANAGER.start(data or MANAGER.cfg))
             return
         if u.path == '/api/goal':
-            x = float(data.get('x', MANAGER.cfg.get('goal_x', 15.0)))
-            y = float(data.get('y', MANAGER.cfg.get('goal_y', 0.0)))
-            z = float(data.get('z', MANAGER.cfg.get('goal_z', 1.0)))
-            yaw = float(data.get('yaw', 0.0))
+            try:
+                x = float(data.get('x', MANAGER.cfg.get('goal_x', 15.0)))
+                y = float(data.get('y', MANAGER.cfg.get('goal_y', 0.0)))
+                z = float(data.get('z', MANAGER.cfg.get('goal_z', 1.0)))
+                yaw = float(data.get('yaw', 0.0))
+            except (TypeError, ValueError):
+                self._json(400, {'ok': False, 'error': 'x/y/z/yaw must be numbers'})
+                return
             ns = str(data.get('namespace', '') or '')
+            if ns and not _NAMESPACE_RE.match(ns):
+                self._json(400, {'ok': False, 'error': f'invalid namespace: {ns!r}'})
+                return
             ok = ROS.publish_goal(x, y, z, yaw, namespace=ns)
             if not ok:
-                topic = f'/{ns}/drone/goal' if ns else '/drone/goal'
+                topic = shlex.quote(f'/{ns}/drone/goal') if ns else '/drone/goal'
                 try:
                     subprocess.run(
                         ['bash', '-lc',
@@ -1877,6 +1913,16 @@ class Handler(BaseHTTPRequestHandler):
             self._json(200, BENCHMARK.stop())
             return
         if u.path == '/api/config':
+            # Reject unknown planners up-front — a stored bogus planner would
+            # otherwise make every /api/status poll raise until restart.
+            if 'planner' in data:
+                try:
+                    probe = dict(MANAGER.cfg)
+                    probe.update(data)
+                    MANAGER.build_cmd(probe)
+                except ValueError as exc:
+                    self._json(400, {'ok': False, 'error': str(exc)})
+                    return
             MANAGER.cfg.update(data)
             # When map changes and goals not explicitly sent, apply recommended pose.
             if 'map' in data and not any(k in data for k in ('goal_x', 'goal_y', 'goal_z')):

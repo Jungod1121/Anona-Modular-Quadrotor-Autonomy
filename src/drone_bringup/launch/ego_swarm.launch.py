@@ -238,7 +238,10 @@ def _one_drone(drone_id: int, ns: str, init, goal, swarm_clearance: float,
             parameters=[{
                 'namespace': ns,
                 'drone_id': drone_id,
-                'goal_in_topic': f'/{ns}/drone/goal_unused',
+                # Interactive goals arrive on the standard contract topic
+                # (/uavN/drone/goal — what the dashboard and docs use) and are
+                # forwarded to this agent's EGO goal topic.
+                'goal_in_topic': f'/{ns}/drone/goal',
                 'goal_out_topic': f'/{ns}/ego/goal',
                 'auto_goal_enable': True,
                 'auto_goal_x': float(goal[0]),
