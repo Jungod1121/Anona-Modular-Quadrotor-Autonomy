@@ -1,44 +1,46 @@
-/* Soft console + CSS frosted glass over night artwork */
+/* Soft console · Apple design tokens over night artwork */
 
 :root,
 html[data-ambiance="night"] {
-  --bg: #0a1524;
+  --bg: #05070c;
   --bg-soft: transparent;
-  --panel: rgba(18, 36, 58, 0.42);
-  --panel-2: rgba(255, 255, 255, 0.10);
-  --ink: #f2f7ff;
-  --muted: rgba(210, 226, 245, 0.72);
-  --line: rgba(255, 255, 255, 0.18);
-  --line-strong: rgba(255, 255, 255, 0.28);
-  --accent: #9ec4ff;
-  --accent-2: #f0a8d0;
-  --accent-dim: rgba(158, 196, 255, 0.18);
-  --go: rgba(255, 255, 255, 0.92);
-  --go-ink: #12233a;
-  --warn: #ffd27a;
-  --danger: #ff8f7a;
-  --ok: #7dffb2;
-  --mono-bg: rgba(8, 18, 32, 0.35);
-  --log-bg: rgba(6, 12, 22, 0.72);
-  --log-fg: #d7e6f8;
-  --shadow: 0 16px 40px rgba(0, 8, 20, 0.35);
-  --shadow-sm: 0 6px 18px rgba(0, 8, 20, 0.22);
-  --glass: rgba(255, 255, 255, 0.10);
-  --glass-strong: rgba(255, 255, 255, 0.16);
-  --glass-border: rgba(255, 255, 255, 0.28);
-  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(255, 255, 255, 0.06);
-  --glass-blur: blur(28px) saturate(1.55);
-  --font: "Plus Jakarta Sans", "Noto Sans SC", sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, monospace;
-  --bar-h: 72px;
+  --panel: rgba(22, 26, 34, 0.46);
+  --panel-2: rgba(255, 255, 255, 0.08);
+  --ink: #f5f5f7;
+  --muted: rgba(235, 235, 245, 0.62);
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.22);
+  --accent: #2997ff;
+  --accent-2: #bf5af2;
+  --accent-dim: rgba(41, 151, 255, 0.16);
+  --go: #0a84ff;
+  --go-ink: #ffffff;
+  --warn: #ffd60a;
+  --danger: #ff453a;
+  --ok: #30d158;
+  --mono-bg: rgba(10, 14, 20, 0.42);
+  --log-bg: rgba(8, 11, 17, 0.74);
+  --log-fg: #e8e8ed;
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.38);
+  --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.24);
+  --glass: rgba(255, 255, 255, 0.09);
+  --glass-strong: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  --glass-blur: blur(28px) saturate(1.5);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+          "PingFang SC", "Hiragino Sans GB", Inter, "Noto Sans SC", "Source Han Sans CN",
+          "Segoe UI", Roboto, "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "IBM Plex Mono", monospace;
+  --bar-h: 64px;
   --rail-inset: 12px;
   --rail-inner: 220px;
   --rail-w: calc(var(--rail-inner) + var(--rail-inset) * 2);
   --radius: 22px;
   --radius-sm: 14px;
-  --ease: cubic-bezier(0.22, 0.8, 0.2, 1);
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   --bg-image: url("/bg-15-sequoia-sunrise.png");
-  --bg-veil: linear-gradient(180deg, rgba(8, 18, 34, 0.28), rgba(8, 18, 34, 0.48));
+  --bg-veil: linear-gradient(180deg, rgba(5, 8, 14, 0.30), rgba(5, 8, 14, 0.52));
   color-scheme: dark;
 }
 
@@ -47,32 +49,32 @@ html[data-ambiance="night"] {
  * Night art alone + dark --ink was washing titles into the glass.
  */
 html[data-ambiance="day"] {
-  --bg: #e7eef8;
+  --bg: #f5f5f7;
   --bg-soft: transparent;
-  --panel: rgba(255, 255, 255, 0.62);
-  --panel-2: rgba(255, 255, 255, 0.72);
-  --ink: #142033;
-  --muted: rgba(30, 48, 72, 0.62);
-  --line: rgba(40, 64, 96, 0.16);
-  --line-strong: rgba(40, 64, 96, 0.28);
-  --accent: #2f6adf;
-  --accent-2: #c44f8c;
-  --accent-dim: rgba(47, 106, 223, 0.14);
-  --go: #1a2740;
+  --panel: rgba(255, 255, 255, 0.64);
+  --panel-2: rgba(255, 255, 255, 0.74);
+  --ink: #1d1d1f;
+  --muted: rgba(60, 60, 67, 0.6);
+  --line: rgba(60, 60, 67, 0.12);
+  --line-strong: rgba(60, 60, 67, 0.22);
+  --accent: #0066cc;
+  --accent-2: #af52de;
+  --accent-dim: rgba(0, 102, 204, 0.10);
+  --go: #0071e3;
   --go-ink: #ffffff;
-  --warn: #b86e00;
-  --danger: #c43c2e;
-  --ok: #1a8a4a;
-  --mono-bg: rgba(255, 255, 255, 0.58);
-  --log-bg: rgba(24, 36, 52, 0.88);
-  --log-fg: #e4ecf7;
-  --shadow: 0 14px 36px rgba(30, 50, 80, 0.12);
-  --shadow-sm: 0 6px 18px rgba(30, 50, 80, 0.08);
+  --warn: #c93400;
+  --danger: #d70015;
+  --ok: #248a3d;
+  --mono-bg: rgba(255, 255, 255, 0.6);
+  --log-bg: rgba(29, 29, 31, 0.88);
+  --log-fg: #e8e8ed;
+  --shadow: 0 14px 36px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.07);
   --glass: rgba(255, 255, 255, 0.55);
   --glass-strong: rgba(255, 255, 255, 0.72);
   --glass-border: rgba(255, 255, 255, 0.78);
-  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.92), inset 0 -1px 0 rgba(40, 64, 96, 0.06);
-  --glass-blur: blur(26px) saturate(1.3);
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.92), inset 0 -1px 0 rgba(60, 60, 67, 0.05);
+  --glass-blur: blur(26px) saturate(1.25);
   --bg-image: url("/bg-15-sequoia-sunrise.png");
   --bg-veil: linear-gradient(
     165deg,
@@ -219,8 +221,8 @@ button, input, select { font: inherit; color: inherit; }
   border-radius: 22px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   background:
-    linear-gradient(165deg, rgba(255, 255, 255, 0.12), rgba(8, 16, 30, 0.38) 52%, rgba(8, 16, 30, 0.52)),
-    rgba(10, 18, 32, 0.36);
+    linear-gradient(165deg, rgba(255, 255, 255, 0.12), rgba(12, 15, 20, 0.38) 52%, rgba(12, 15, 20, 0.52)),
+    rgba(14, 17, 22, 0.36);
   backdrop-filter: blur(32px) saturate(1.6);
   -webkit-backdrop-filter: blur(32px) saturate(1.6);
   box-shadow:
@@ -229,7 +231,7 @@ button, input, select { font: inherit; color: inherit; }
 }
 html[data-ambiance="day"] .rail {
   background: rgba(255, 255, 255, 0.55);
-  border-color: rgba(40, 64, 96, 0.14);
+  border-color: rgba(60, 60, 67, 0.14);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.85),
     0 10px 28px rgba(30, 50, 80, 0.12);
@@ -256,7 +258,7 @@ html[data-ambiance="day"] .rail {
 }
 html[data-ambiance="day"] .rail__panel {
   background: rgba(255, 255, 255, 0.42);
-  border-color: rgba(40, 64, 96, 0.1);
+  border-color: rgba(60, 60, 67, 0.1);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 .rail__panel--brand { padding: 12px 10px; }
@@ -288,7 +290,7 @@ html[data-ambiance="day"] .rail__logo {
   background: rgba(255, 255, 255, 0.72);
 }
 .rail__name {
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.02em;
   font-size: 13px;
   line-height: 1.25;
@@ -346,7 +348,7 @@ html[data-ambiance="day"] .rail__foot {
 }
 .rail__avatar {
   width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
-  font-size: 11px; font-weight: 800; color: #fff;
+  font-size: 11px; font-weight: 700; color: #fff;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
 }
 .rail__foot strong { display: block; font-size: 13px; }
@@ -357,9 +359,9 @@ html[data-ambiance="day"] .rail__foot {
   z-index: 40;
   flex: 0 0 auto;
   min-height: var(--bar-h);
-  padding: 12px 20px;
+  padding: 10px 22px;
   /* Top blanket: thin CSS glass — never LiquidGlass (pills inside are). */
-  background: rgba(12, 20, 34, 0.28);
+  background: rgba(14, 17, 22, 0.28);
   backdrop-filter: blur(20px) saturate(1.35);
   -webkit-backdrop-filter: blur(20px) saturate(1.35);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -382,7 +384,7 @@ html[data-ambiance="day"] .rail__foot {
 }
 html[data-ambiance="day"] .deck-bar {
   background: rgba(255, 255, 255, 0.42);
-  border-bottom-color: rgba(40, 64, 96, 0.12);
+  border-bottom-color: rgba(60, 60, 67, 0.12);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
   color: var(--ink);
 }
@@ -451,15 +453,15 @@ html[data-ambiance="day"] .home-tile {
   color: var(--ink);
   backdrop-filter: blur(22px) saturate(1.35);
   -webkit-backdrop-filter: blur(22px) saturate(1.35);
-  box-shadow: 0 10px 28px rgba(40, 64, 96, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 28px rgba(60, 60, 67, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 html[data-ambiance="day"] .home-tile p,
 html[data-ambiance="day"] .home-tile .muted {
-  color: rgba(30, 48, 72, 0.68);
+  color: rgba(60, 60, 67, 0.68);
 }
 html[data-ambiance="day"] .mission-run-bar {
   background: rgba(255, 255, 255, 0.58);
-  border-color: rgba(40, 64, 96, 0.12);
+  border-color: rgba(60, 60, 67, 0.12);
 }
 html[data-ambiance="day"] #plannerShell,
 html[data-ambiance="day"] #missionLgMulti > #multiBlock,
@@ -469,9 +471,9 @@ html[data-ambiance="day"] #mapFields.map-panel-fields,
 html[data-ambiance="day"] #xyTrackPanel.map-panel--calc,
 html[data-ambiance="day"] .map-panel--calc {
   background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(40, 64, 96, 0.12);
+  border: 1px solid rgba(60, 60, 67, 0.12);
   color: var(--ink);
-  box-shadow: 0 10px 28px rgba(40, 64, 96, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 28px rgba(60, 60, 67, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(22px) saturate(1.35);
   -webkit-backdrop-filter: blur(22px) saturate(1.35);
 }
@@ -484,14 +486,14 @@ html[data-ambiance="day"] #xyTrackPanel .block__label {
 html[data-ambiance="day"] .mission-shell .block-head p,
 html[data-ambiance="day"] .map-panel > .block-head p,
 html[data-ambiance="day"] #xyTrackPanel .muted {
-  color: rgba(30, 48, 72, 0.68);
+  color: rgba(60, 60, 67, 0.68);
 }
 /* Day map “keys” + recessed display — light calculator, not night charcoal. */
 html[data-ambiance="day"] .mission-shell .planner-card,
 html[data-ambiance="day"] .mission-shell .map-card,
 html[data-ambiance="day"] .map-panel .map-card {
   background: rgba(255, 255, 255, 0.72);
-  border-color: rgba(40, 64, 96, 0.12);
+  border-color: rgba(60, 60, 67, 0.12);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 html[data-ambiance="day"] .mission-shell .map-card.is-active,
@@ -500,44 +502,43 @@ html[data-ambiance="day"] .mission-shell .map-card[aria-checked="true"],
 html[data-ambiance="day"] .map-panel .map-card[aria-checked="true"],
 html[data-ambiance="day"] .mission-shell .planner-card.is-active,
 html[data-ambiance="day"] .mission-shell .planner-card[aria-checked="true"] {
-  background: rgba(47, 106, 223, 0.1);
-  border-color: rgba(47, 106, 223, 0.45);
-  box-shadow: inset 0 0 0 1px rgba(47, 106, 223, 0.18);
+  background: rgba(0, 102, 204, 0.1);
+  border-color: rgba(0, 102, 204, 0.45);
+  box-shadow: inset 0 0 0 1px rgba(0, 102, 204, 0.18);
 }
 html[data-ambiance="day"] .mission-shell .map-card.is-active::after,
 html[data-ambiance="day"] .map-panel .map-card.is-active::after,
 html[data-ambiance="day"] .mission-shell .map-card[aria-checked="true"]::after,
 html[data-ambiance="day"] .map-panel .map-card[aria-checked="true"]::after {
-  border-color: rgba(47, 106, 223, 0.4);
+  border-color: rgba(0, 102, 204, 0.4);
 }
 html[data-ambiance="day"] #xyTrackPanel.map-panel--calc .xy-track__stage,
 html[data-ambiance="day"] .liquid-panel--map .xy-track__stage {
   background: rgba(255, 255, 255, 0.55);
-  border-color: rgba(40, 64, 96, 0.14);
+  border-color: rgba(60, 60, 67, 0.14);
   box-shadow:
-    inset 0 2px 10px rgba(40, 64, 96, 0.06),
+    inset 0 2px 10px rgba(60, 60, 67, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 html[data-ambiance="day"] #xyTrackPanel.map-panel--calc .mission-run-bar {
   background: rgba(255, 255, 255, 0.55);
-  border-color: rgba(40, 64, 96, 0.12);
+  border-color: rgba(60, 60, 67, 0.12);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 html[data-ambiance="day"] #xyTrackPanel.map-panel--calc .monitor-dock {
   background: rgba(255, 255, 255, 0.45);
-  border-color: rgba(40, 64, 96, 0.1);
+  border-color: rgba(60, 60, 67, 0.1);
 }
 .deck-bar__heading {
   margin: 0;
   flex: 0 1 auto;
   max-width: min(42vw, 20rem);
-  font-size: clamp(18px, 2.4vw, 26px);
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-size: clamp(18px, 2.2vw, 24px);
+  font-weight: 700;
+  letter-spacing: -0.022em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 2px 18px rgba(0,0,0,0.25);
 }
 .page-chip {
   flex: 0 0 auto;
@@ -634,7 +635,7 @@ html[data-ambiance="day"] #xyTrackPanel.map-panel--calc .monitor-dock {
   padding: 8px 8px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(8, 16, 30, 0.28);
+  background: rgba(12, 15, 20, 0.28);
 }
 .telem--compact dt {
   font-size: 10px;
@@ -659,7 +660,7 @@ html[data-ambiance="day"] #xyTrackPanel.map-panel--calc .monitor-dock {
   padding: 7px 8px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(8, 16, 30, 0.22);
+  background: rgba(12, 15, 20, 0.22);
 }
 .metrics--compact dt {
   font-size: 10px;
@@ -758,7 +759,7 @@ html[data-ambiance="day"] .monitor-dock #logView {
 }
 html[data-ambiance="day"] .rl-train-slot > .train-panel {
   background: rgba(255, 255, 255, 0.62);
-  border-color: rgba(40, 64, 96, 0.12);
+  border-color: rgba(60, 60, 67, 0.12);
 }
 .bg-picker__panel {
   position: absolute;
@@ -769,7 +770,7 @@ html[data-ambiance="day"] .rl-train-slot > .train-panel {
   padding: 14px;
   border-radius: 18px;
   border: 1px solid var(--glass-border);
-  background: rgba(10, 18, 32, 0.96);
+  background: rgba(14, 17, 22, 0.96);
   backdrop-filter: blur(22px) saturate(1.35);
   -webkit-backdrop-filter: blur(22px) saturate(1.35);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
@@ -806,7 +807,7 @@ html[data-ambiance="day"] .bg-picker__panel {
   cursor: pointer;
   background:
     linear-gradient(135deg, rgba(255,255,255,0.08), transparent),
-    #142033;
+    #1d1d1f;
 }
 .bg-thumb img {
   width: 100%;
@@ -892,7 +893,7 @@ html[data-ambiance="day"] .bg-picker__panel {
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn--go {
   background: var(--go); color: var(--go-ink); border-color: transparent;
-  box-shadow: 0 10px 24px rgba(255,255,255,0.18);
+  box-shadow: 0 4px 16px rgba(10, 132, 255, 0.32);
 }
 .btn--ghost { background: transparent; box-shadow: none; }
 .btn--warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, var(--line)); }
@@ -951,8 +952,8 @@ html[data-ambiance="day"] .bg-picker.chrome-pill,
 html[data-ambiance="day"] .page-chip,
 html[data-ambiance="day"] .live-pill {
   background: rgba(255, 255, 255, 0.62);
-  border-color: rgba(40, 64, 96, 0.14);
-  box-shadow: 0 6px 16px rgba(40, 64, 96, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  border-color: rgba(60, 60, 67, 0.14);
+  box-shadow: 0 6px 16px rgba(60, 60, 67, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 .seg--col { display: flex; flex-direction: column; width: 100%; border-radius: var(--radius-sm); }
 .seg__btn {
@@ -978,7 +979,7 @@ html[data-ambiance="day"] .chrome-seg .seg__btn.is-active,
 html[data-ambiance="day"] .chrome-seg .seg__btn[data-ambiance].is-active,
 html[data-ambiance="day"] .chrome-seg .lang-btn.is-active {
   background: rgba(255, 255, 255, 0.92);
-  color: #142033;
+  color: #1d1d1f;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 .segment__btn { appearance: none; border: 0; background: transparent; color: var(--muted); padding: 7px 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
@@ -1003,7 +1004,7 @@ html[data-ambiance="day"] .chrome-seg .lang-btn.is-active {
   min-width: 0;
   min-height: 0;
   flex: 1 1 auto;
-  padding: 8px 24px 28px;
+  padding: 10px clamp(20px, 3vw, 36px) 32px;
   background: transparent;
   overflow: auto;
 }
@@ -1027,14 +1028,13 @@ html[data-ambiance="day"] .chrome-seg .lang-btn.is-active {
 .page-hero__eyebrow {
   margin: 0 0 6px;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
 }
 .page-hero h1 {
-  margin: 0 0 8px; font-size: clamp(26px, 3vw, 34px); font-weight: 800; letter-spacing: -0.03em;
-  text-shadow: 0 4px 24px rgba(0,0,0,0.35);
+  margin: 0 0 8px; font-size: clamp(24px, 2.6vw, 32px); font-weight: 700; letter-spacing: -0.022em;
 }
 .page-hero p { margin: 0; max-width: 46rem; line-height: 1.55; }
 
@@ -1146,16 +1146,16 @@ html[data-ambiance="night"] .home-lg__dock.is-liquid-glass {
 /* Hover/press feedback comes from LiquidGlass button mode at night. */
 html[data-ambiance="day"] .home-tile:hover {
   transform: translateY(-3px);
-  border-color: rgba(158, 196, 255, 0.35);
+  border-color: rgba(41, 151, 255, 0.35);
 }
 html[data-ambiance="day"] .home-tile:active { transform: scale(0.985); }
 html[data-ambiance="night"] .home-tile:hover {
-  border-color: rgba(158, 196, 255, 0.35);
+  border-color: rgba(41, 151, 255, 0.35);
 }
 .home-tile__kicker {
   display: inline-block;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent-2);
@@ -1164,7 +1164,7 @@ html[data-ambiance="night"] .home-tile:hover {
 .home-tile strong {
   display: block;
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
   margin-bottom: 10px;
 }
@@ -1331,7 +1331,7 @@ html[data-page="guide"] .workspace {
 .guide-card h2 {
   margin: 0 0 10px;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.01em;
 }
 .guide-card p {
@@ -1351,7 +1351,7 @@ html[data-page="guide"] .workspace {
 .guide-list strong,
 .guide-steps strong {
   color: var(--accent-2, var(--accent));
-  font-weight: 750;
+  font-weight: 600;
 }
 @media (max-width: 900px) {
   html[data-page="guide"] .workspace {
@@ -1410,7 +1410,7 @@ html[data-page="guide"] .workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(340px, 40%);
   grid-auto-flow: row; /* not dense — avoids map cards packing into multi/planner holes */
-  gap: 12px 14px;
+  gap: 16px;
   align-items: start;
   min-width: 0;
   overflow: visible;
@@ -1493,7 +1493,7 @@ html[data-ambiance="day"] .mission-feather::before {
   padding: 16px 18px 18px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 28px;
-  background: rgba(8, 16, 30, 0.55);
+  background: rgba(12, 15, 20, 0.55);
   backdrop-filter: blur(18px) saturate(1.3);
   -webkit-backdrop-filter: blur(18px) saturate(1.3);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
@@ -1504,13 +1504,13 @@ html[data-ambiance="day"] .mission-feather::before {
   grid-column: 1 / 3;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 16px;
   min-width: 0;
 }
 .single-benchmark-row .benchmark-panel {
   grid-column: auto;
   min-width: 0;
-  background: rgba(8, 16, 30, 0.55);
+  background: rgba(12, 15, 20, 0.55);
 }
 .benchmark-duration {
   display: grid;
@@ -1558,7 +1558,7 @@ html[data-ambiance="day"] .mission-feather::before {
   position: relative;
   z-index: 1;
   top: auto;
-  background: rgba(8, 16, 30, 0.55);
+  background: rgba(12, 15, 20, 0.55);
   backdrop-filter: blur(18px) saturate(1.3);
   -webkit-backdrop-filter: blur(18px) saturate(1.3);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
@@ -1578,11 +1578,10 @@ html[data-ambiance="day"] .mission-feather::before {
 .mission-shell .block-head h2 {
   color: var(--ink) !important;
   font-size: 14px;
-  letter-spacing: 0.06em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  letter-spacing: 0.04em;
 }
 .mission-shell .block-head p {
-  color: rgba(210, 226, 245, 0.9);
+  color: rgba(235, 235, 245, 0.9);
   margin-top: 8px;
   margin-bottom: 0;
   line-height: 1.55;
@@ -1599,7 +1598,7 @@ html[data-ambiance="day"] .mission-feather::before {
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-weight: 800;
+  font-weight: 700;
 }
 #plannerGroups .planner-group__title:first-child {
   margin-top: 0;
@@ -1654,7 +1653,7 @@ html[data-ambiance="day"] .mission-feather::before {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
   padding: 10px 12px;
-  background: rgba(8, 16, 30, 0.28);
+  background: rgba(12, 15, 20, 0.28);
 }
 .liquid-panel--main {
   grid-column: 1 / 3;
@@ -1721,7 +1720,7 @@ html[data-ambiance="day"] .mission-feather::before {
 #xyTrackPanel.map-panel--calc {
   padding: 16px 16px 18px;
   border-radius: 36px;
-  background: rgba(6, 10, 18, 0.52);
+  background: rgba(10, 13, 18, 0.52);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
     0 12px 36px rgba(0, 0, 0, 0.28),
@@ -1852,7 +1851,7 @@ html[data-ambiance="day"] #xyTrackPanel.map-panel--calc .monitor-dock {
   min-height: 72px;
   border-radius: 16px;
   padding: 12px 14px;
-  background: rgba(8, 16, 30, 0.45);
+  background: rgba(12, 15, 20, 0.45);
   backdrop-filter: blur(14px) saturate(1.25);
   -webkit-backdrop-filter: blur(14px) saturate(1.25);
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -1869,27 +1868,27 @@ html[data-ambiance="day"] .map-panel .map-card {
 html[data-ambiance="day"] .mission-shell .planner-card .title,
 html[data-ambiance="day"] .mission-shell .map-card .title,
 html[data-ambiance="day"] .map-panel .map-card .title {
-  color: #142033;
+  color: #1d1d1f;
   text-shadow: none;
 }
 html[data-ambiance="day"] .mission-shell .planner-card .desc,
 html[data-ambiance="day"] .mission-shell .map-card .desc,
 html[data-ambiance="day"] .map-panel .map-card .desc {
-  color: rgba(30, 48, 72, 0.68);
+  color: rgba(60, 60, 67, 0.68);
   text-shadow: none;
 }
 html[data-ambiance="day"] .mission-shell .planner-card .choice-row__id,
 html[data-ambiance="day"] .mission-shell .map-card .choice-row__id,
 html[data-ambiance="day"] .map-panel .map-card .choice-row__id {
-  color: #142033;
+  color: #1d1d1f;
   background: rgba(255, 255, 255, 0.55);
-  border-color: rgba(40, 64, 96, 0.14);
+  border-color: rgba(60, 60, 67, 0.14);
 }
 .mission-shell .planner-card:hover,
 .mission-shell .map-card:hover,
 .map-panel .map-card:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(158, 196, 255, 0.35);
+  border-color: rgba(41, 151, 255, 0.35);
 }
 html[data-ambiance="day"] .mission-shell .planner-card:hover,
 html[data-ambiance="day"] .mission-shell .map-card:hover,
@@ -1902,9 +1901,9 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
 .mission-shell .planner-card[aria-checked="true"],
 .mission-shell .map-card[aria-checked="true"],
 .map-panel .map-card[aria-checked="true"] {
-  border-color: rgba(158, 196, 255, 0.72);
-  background: rgba(158, 196, 255, 0.12);
-  box-shadow: inset 0 0 0 1px rgba(158, 196, 255, 0.25);
+  border-color: rgba(41, 151, 255, 0.72);
+  background: rgba(41, 151, 255, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(41, 151, 255, 0.25);
 }
 .mission-shell .planner-card.is-active::after,
 .mission-shell .map-card.is-active::after,
@@ -1916,7 +1915,7 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1.5px solid rgba(158, 196, 255, 0.45);
+  border: 1.5px solid rgba(41, 151, 255, 0.45);
   pointer-events: none;
   z-index: 2;
 }
@@ -1924,7 +1923,7 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
 .mission-shell .map-card .choice-row__id,
 .map-panel .map-card .choice-row__id {
   color: #fff;
-  background: rgba(158, 196, 255, 0.18);
+  background: rgba(41, 151, 255, 0.18);
   border-color: rgba(255, 255, 255, 0.16);
 }
 .mission-shell .planner-card.is-active .choice-row__id,
@@ -1933,7 +1932,7 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
 .mission-shell .planner-card[aria-checked="true"] .choice-row__id,
 .mission-shell .map-card[aria-checked="true"] .choice-row__id,
 .map-panel .map-card[aria-checked="true"] .choice-row__id {
-  background: rgba(158, 196, 255, 0.35);
+  background: rgba(41, 151, 255, 0.35);
   border-color: transparent;
 }
 .mission-shell .planner-card .title,
@@ -1941,19 +1940,17 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
 .map-panel .map-card .title {
   color: #fff;
   font-size: 14px;
-  font-weight: 750;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+  font-weight: 600;
 }
 .mission-shell .planner-card .desc,
 .mission-shell .map-card .desc,
 .map-panel .map-card .desc {
-  color: rgba(210, 226, 245, 0.88);
+  color: rgba(235, 235, 245, 0.72);
   font-size: 12px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 }
 .mission-shell .fields input,
 .mission-shell .fields select {
-  background: rgba(8, 16, 30, 0.55);
+  background: rgba(12, 15, 20, 0.55);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -1987,7 +1984,7 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
   box-shadow: var(--glass-shine), var(--shadow-sm);
 }
 .block__label, .block-head h2, .fold__head h2 {
-  margin: 0; font-size: 12px; font-weight: 800; letter-spacing: 0.08em;
+  margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
   text-transform: uppercase; color: var(--muted);
 }
 .block-head { margin-bottom: 14px; }
@@ -2006,7 +2003,7 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
 .planner-groups:empty,
 #singleBlock:has(#plannerGroups:empty) { display: none; }
 .planner-group__title {
-  margin: 0 0 8px; font-size: 11px; font-weight: 800; letter-spacing: 0.1em;
+  margin: 0 0 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--muted);
 }
 .choice-grid,
@@ -2084,7 +2081,7 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
   gap: 2px;
 }
 .planner-card .title, .map-card .title {
-  font-weight: 650;
+  font-weight: 600;
   font-size: 13.5px;
   line-height: 1.35;
   white-space: nowrap;
@@ -2127,7 +2124,7 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
   flex-shrink: 0;
 }
 .map-card__top { display: none; }
-.diff-badge { font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-2); font-size: 10px; }
+.diff-badge { font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-2); font-size: 10px; }
 .map-seed { color: var(--muted); font-family: var(--mono); font-size: 11px; }
 
 @media (max-width: 1100px) {
@@ -2176,10 +2173,10 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
 }
 .progress__track { height: 10px; border-radius: 999px; background: rgba(255,255,255,0.12); overflow: hidden; }
 .progress__fill {
-  height: 100%; border-radius: 999px; background: linear-gradient(90deg, #7eb6ff, #d8ecff);
+  height: 100%; border-radius: 999px; background: var(--accent);
   transition: width 240ms var(--ease);
 }
-.progress__fill--accent { background: linear-gradient(90deg, var(--accent-2), var(--accent)); }
+.progress__fill--accent { background: var(--accent-2); }
 
 .telem { margin: 0; display: grid; gap: 10px; }
 .telem--row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
@@ -2207,13 +2204,13 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
   padding: 12px 14px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)),
-    rgba(8, 16, 30, 0.35);
+    rgba(12, 15, 20, 0.35);
   backdrop-filter: blur(16px) saturate(1.35);
   -webkit-backdrop-filter: blur(16px) saturate(1.35);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 .acc-item:hover {
-  border-color: rgba(158, 196, 255, 0.35);
+  border-color: rgba(41, 151, 255, 0.35);
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
     rgba(12, 24, 42, 0.45);
@@ -2226,14 +2223,14 @@ html[data-ambiance="day"] .map-panel .map-card:hover {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
   padding: 10px 12px;
-  background: rgba(8, 16, 30, 0.28);
+  background: rgba(12, 15, 20, 0.28);
   backdrop-filter: blur(12px);
 }
 .acc-item__main { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; min-width: 0; font-size: 12px; }
 .acc-item__id { font-family: var(--mono); color: var(--accent); font-weight: 700; }
 .acc-item__launch { color: var(--muted); font-size: 11px; }
-.acc-item__result.is-ok { color: var(--ok); font-weight: 800; }
-.acc-item__result.is-bad { color: var(--danger); font-weight: 800; }
+.acc-item__result.is-ok { color: var(--ok); font-weight: 700; }
+.acc-item__result.is-bad { color: var(--danger); font-weight: 700; }
 
 .cmd-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
 .cmd-list li { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; }

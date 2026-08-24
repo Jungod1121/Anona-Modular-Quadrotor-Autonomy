@@ -910,7 +910,7 @@ img,svg{display:block;max-width:100%}
       <text x="80" y="45" class="d-h" data-i18n="arch.d.ops">运维 · OPS</text>
       <rect x="60" y="56" width="320" height="50" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
       <text x="78" y="78" class="d-t">Mission Console</text>
-      <text x="78" y="95" class="d-s" data-i18n="arch.d.consoleSub">浏览器 · 原生 · 验收</text>
+      <text x="78" y="95" class="d-s" data-i18n="arch.d.consoleSub">浏览器 · 验收</text>
       <rect x="404" y="56" width="330" height="50" rx="10" fill="#FFFFFF" stroke="#D2D2D7"/>
       <text x="422" y="78" class="d-t">drone_bringup</text>
       <text x="422" y="95" class="d-s" data-i18n="arch.d.bringupSub">一键 launch · 六项验收</text>
@@ -1267,7 +1267,7 @@ img,svg{display:block;max-width:100%}
   <div class="rv">
     <p class="eyebrow" data-i18n="console.eyebrow">Mission Console · 快速开始</p>
     <h2 class="section-title" data-i18n="console.title">从终端，到驾驶舱。</h2>
-    <p class="section-sub" data-i18n="console.sub">浏览器控制台或原生 app，地图与规划器即点即换，单机与多机编队一屏掌控。</p>
+    <p class="section-sub" data-i18n="console.sub">浏览器控制台，地图与规划器即点即换，单机与多机编队一屏掌控。</p>
   </div>
 
   <div class="console-wrap">
@@ -1281,7 +1281,7 @@ img,svg{display:block;max-width:100%}
       <div class="console-visual">
         <img src="media/console-ui.png" alt="任务控制台界面" loading="lazy" data-i18n-alt="console.alt">
       </div>
-      <p class="footnote" style="margin-top:24px"><span data-i18n="console.foot">Ubuntu 22.04 · ROS 2 Humble · colcon 构建。原生 app 安装：</span><span class="mono">bash packaging/linux/install.sh</span></p>
+      <p class="footnote" style="margin-top:24px"><span data-i18n="console.foot">Ubuntu 22.04 · ROS 2 Humble · colcon 构建。启动控制台：</span><span class="mono">ros2 run drone_bringup dashboard</span></p>
     </div>
 
     <div class="terminal rv" role="img" data-i18n-aria="console.termAria" aria-label="快速开始命令">
@@ -1352,7 +1352,7 @@ var I18N = {
     "card3.n": "规划", "card3.d": "Path A–H 八个后端，从经典算法到强化学习，同台竞技。",
     "card4.n": "运维", "card4.d": "一键 launch、任务控制台、六项验收场景，开箱即用。",
     "arch.d.aria": "系统架构图：运维、规划、世界、被控对象四层与话题数据流",
-    "arch.d.ops": "运维 · OPS", "arch.d.consoleSub": "浏览器 · 原生 · 验收", "arch.d.bringupSub": "一键 launch · 六项验收",
+    "arch.d.ops": "运维 · OPS", "arch.d.consoleSub": "浏览器 · 验收", "arch.d.bringupSub": "一键 launch · 六项验收",
     "arch.d.plan": "规划 · PLANNING · Path A–H",
     "arch.d.cls.classical": "经典", "arch.d.cls.opt": "优化", "arch.d.cls.mode": "模式", "arch.d.cls.ref": "对照", "arch.d.cls.learn": "学习",
     "arch.d.world": "世界 · WORLD", "arch.d.mapSub": "种子点云", "arch.d.adapterSub": "桥接 · 元数据",
@@ -1410,11 +1410,11 @@ var I18N = {
     "accept.alt4": "场景四：静态避障 RViz 截图", "accept.alt5": "场景五：窄道穿越 RViz 截图",
     "console.eyebrow": "Mission Console · 快速开始",
     "console.title": "从终端，到驾驶舱。",
-    "console.sub": "浏览器控制台或原生 app，地图与规划器即点即换，单机与多机编队一屏掌控。",
+    "console.sub": "浏览器控制台，地图与规划器即点即换，单机与多机编队一屏掌控。",
     "console.li1": "浏览器控制台 ·", "console.li2": "地图与规划器切换，Start / Stop 即点即用",
     "console.li3": "单机任务与多机编队（EGO-Swarm 内核）", "console.li4": "Ubuntu 22.04 + ROS 2 Humble，MIT 开源",
     "console.alt": "任务控制台界面", "console.termAria": "快速开始命令",
-    "console.foot": "Ubuntu 22.04 · ROS 2 Humble · colcon 构建。原生 app 安装：",
+    "console.foot": "Ubuntu 22.04 · ROS 2 Humble · colcon 构建。启动控制台：",
     "finale.title": "为飞行而生。",
     "finale.note": "本页面依据仓库公开文档生成 · 演示视频见 Bilibili",
     "finale.gh": "GitHub 仓库 ↗", "finale.bili": "Bilibili 演示 ↗",
@@ -1444,7 +1444,7 @@ var I18N = {
     "card3.n": "Planning", "card3.d": "Eight backends from Path A to H — classical, optimization and learning, on one stage.",
     "card4.n": "Ops", "card4.d": "One-click launches, a mission console and six acceptance scenarios — ready out of the box.",
     "arch.d.aria": "System architecture: ops, planning, world and plant layers with topic data flow",
-    "arch.d.ops": "Ops · OPS", "arch.d.consoleSub": "browser · native · acceptance", "arch.d.bringupSub": "one-click launch · acceptance",
+    "arch.d.ops": "Ops · OPS", "arch.d.consoleSub": "browser · acceptance", "arch.d.bringupSub": "one-click launch · acceptance",
     "arch.d.plan": "Planning · PLANNING · Path A–H",
     "arch.d.cls.classical": "classical", "arch.d.cls.opt": "optimization", "arch.d.cls.mode": "mode", "arch.d.cls.ref": "reference", "arch.d.cls.learn": "learning",
     "arch.d.world": "World · WORLD", "arch.d.mapSub": "seeded point cloud", "arch.d.adapterSub": "bridge · metadata",
@@ -1502,11 +1502,11 @@ var I18N = {
     "accept.alt4": "Scenario 4: static avoidance RViz screenshot", "accept.alt5": "Scenario 5: narrow passage RViz screenshot",
     "console.eyebrow": "MISSION CONSOLE · QUICK START",
     "console.title": "From terminal, to cockpit.",
-    "console.sub": "A browser console or a native app — switch maps and planners on the fly, run single and multi-UAV missions from one screen.",
+    "console.sub": "The browser console — switch maps and planners on the fly, run single and multi-UAV missions from one screen.",
     "console.li1": "Browser console ·", "console.li2": "Map and planner switching, one-click Start / Stop",
     "console.li3": "Single missions and multi-UAV swarms (EGO-Swarm core)", "console.li4": "Ubuntu 22.04 + ROS 2 Humble, MIT licensed",
     "console.alt": "Mission console UI", "console.termAria": "Quick start commands",
-    "console.foot": "Ubuntu 22.04 · ROS 2 Humble · colcon build. Native app:",
+    "console.foot": "Ubuntu 22.04 · ROS 2 Humble · colcon build. Launch the console:",
     "finale.title": "Built to fly.",
     "finale.note": "Generated from the repository's public docs · Demo on Bilibili",
     "finale.gh": "GitHub repository ↗", "finale.bili": "Bilibili demo ↗",

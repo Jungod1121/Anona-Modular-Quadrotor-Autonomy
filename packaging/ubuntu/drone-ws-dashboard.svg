@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Drone WS">
-  <rect width="128" height="128" rx="22" fill="#0b0e12"/>
-  <rect x="14" y="14" width="100" height="100" rx="12" fill="#12171e" stroke="#2a3440" stroke-width="2"/>
-  <circle cx="64" cy="58" r="14" fill="none" stroke="#3dd6c3" stroke-width="4"/>
-  <path d="M64 44 L64 28 M50 58 L34 58 M78 58 L94 58 M64 72 L64 88" stroke="#3dd6c3" stroke-width="4" stroke-linecap="round"/>
-  <rect x="28" y="96" width="72" height="8" rx="2" fill="#3dd6c3" opacity="0.85"/>
-  <rect x="28" y="96" width="28" height="8" rx="2" fill="#e8a317"/>
-</svg>
