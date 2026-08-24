@@ -935,10 +935,15 @@ private:
       shortcutPath(grid_, guide),
       std::max(0.35, active_resolution_));
 
-    Eigen::Vector3d vel(
+    // REP-105: twist is body-frame; optimizer seed velocity is world-frame.
+    const Eigen::Quaterniond odom_q(
+      odom_.pose.pose.orientation.w, odom_.pose.pose.orientation.x,
+      odom_.pose.pose.orientation.y, odom_.pose.pose.orientation.z);
+    const Eigen::Vector3d vel_body(
       odom_.twist.twist.linear.x,
       odom_.twist.twist.linear.y,
       0.0);
+    const Eigen::Vector3d vel = odom_q.normalized() * vel_body;
     Eigen::MatrixXd ctrl;
     std::vector<Eigen::Vector3d> opt_traj;
     const bool try_bspline = get_parameter("enable_bspline_opt").as_bool();

@@ -164,7 +164,13 @@ public:
     void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
     {
         odomPos << msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z;
-        odomVel << msg->twist.twist.linear.x, msg->twist.twist.linear.y, msg->twist.twist.linear.z;
+        // REP-105: twist is body-frame; rotate into world/map for planning.
+        const Eigen::Quaterniond q(
+            msg->pose.pose.orientation.w, msg->pose.pose.orientation.x,
+            msg->pose.pose.orientation.y, msg->pose.pose.orientation.z);
+        odomVel = q.normalized() *
+            Eigen::Vector3d(msg->twist.twist.linear.x,
+                            msg->twist.twist.linear.y, msg->twist.twist.linear.z);
         haveOdom = true;
     }
 

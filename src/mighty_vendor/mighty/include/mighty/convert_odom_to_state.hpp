@@ -2,6 +2,8 @@
 
 #include <dynus_interfaces/msg/state.hpp>
 
+#include <Eigen/Geometry>
+
 #include "mighty/mighty.hpp"
 
 #include "rclcpp/rclcpp.hpp"

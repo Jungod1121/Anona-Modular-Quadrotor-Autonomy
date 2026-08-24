@@ -113,9 +113,17 @@ void KinoReplanFSM::odometryCallback(const nav_msgs::msg::Odometry::SharedPtr ms
   odom_pos_(1) = msg->pose.pose.position.y;
   odom_pos_(2) = msg->pose.pose.position.z;
 
-  odom_vel_(0) = msg->twist.twist.linear.x;
-  odom_vel_(1) = msg->twist.twist.linear.y;
-  odom_vel_(2) = msg->twist.twist.linear.z;
+  // REP-105: twist is body-frame; the kinodynamic search seeds in world/map.
+  const Eigen::Quaterniond q(
+    msg->pose.pose.orientation.w, msg->pose.pose.orientation.x,
+    msg->pose.pose.orientation.y, msg->pose.pose.orientation.z);
+  const Eigen::Vector3d v_body(
+    msg->twist.twist.linear.x, msg->twist.twist.linear.y,
+    msg->twist.twist.linear.z);
+  const Eigen::Vector3d odom_vel = q.normalized() * v_body;
+  odom_vel_(0) = odom_vel(0);
+  odom_vel_(1) = odom_vel(1);
+  odom_vel_(2) = odom_vel(2);
 
   odom_orient_.w() = msg->pose.pose.orientation.w;
   odom_orient_.x() = msg->pose.pose.orientation.x;

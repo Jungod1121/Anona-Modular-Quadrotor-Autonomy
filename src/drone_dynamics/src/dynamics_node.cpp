@@ -180,9 +180,13 @@ private:
     odom.pose.pose.orientation.x = s.q.x();
     odom.pose.pose.orientation.y = s.q.y();
     odom.pose.pose.orientation.z = s.q.z();
-    odom.twist.twist.linear.x = s.v.x();
-    odom.twist.twist.linear.y = s.v.y();
-    odom.twist.twist.linear.z = s.v.z();
+    // REP-105: twist is expressed in child_frame_id (base_link). The plant
+    // integrates v in the world frame — publish it rotated into the body
+    // frame; angular part is already body-frame.
+    const Eigen::Vector3d v_body = s.q.conjugate() * s.v;
+    odom.twist.twist.linear.x = v_body.x();
+    odom.twist.twist.linear.y = v_body.y();
+    odom.twist.twist.linear.z = v_body.z();
     odom.twist.twist.angular.x = s.omega.x();
     odom.twist.twist.angular.y = s.omega.y();
     odom.twist.twist.angular.z = s.omega.z();

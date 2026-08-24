@@ -204,10 +204,13 @@ private:
       return;
     }
     state_.position = p;
-    state_.velocity = Eigen::Vector3d(
+    // REP-105: twist.linear arrives in child frame (base_link); the cascade
+    // PID operates in the world/map frame, so rotate it back out.
+    const Eigen::Vector3d v_body(
       msg->twist.twist.linear.x,
       msg->twist.twist.linear.y,
       msg->twist.twist.linear.z);
+    state_.velocity = q.normalized() * v_body;
     state_.attitude = q.normalized();
     const Eigen::Vector3d omega_odom(
       msg->twist.twist.angular.x,

@@ -332,17 +332,20 @@ class RosStatus:
 
     def _pack_odom(self, msg: Any) -> Dict[str, float]:
         q = msg.pose.pose.orientation
+        v = msg.twist.twist.linear
         # Yaw from quaternion (ENU, yaw=0 faces +X).
         siny_cosp = 2.0 * (float(q.w) * float(q.z) + float(q.x) * float(q.y))
         cosy_cosp = 1.0 - 2.0 * (float(q.y) * float(q.y) + float(q.z) * float(q.z))
         yaw = math.atan2(siny_cosp, cosy_cosp)
+        # twist is body-frame (REP-105) — display world-frame velocity.
+        c, s = math.cos(yaw), math.sin(yaw)
         return {
             'x': float(msg.pose.pose.position.x),
             'y': float(msg.pose.pose.position.y),
             'z': float(msg.pose.pose.position.z),
-            'vx': float(msg.twist.twist.linear.x),
-            'vy': float(msg.twist.twist.linear.y),
-            'vz': float(msg.twist.twist.linear.z),
+            'vx': c * float(v.x) - s * float(v.y),
+            'vy': s * float(v.x) + c * float(v.y),
+            'vz': float(v.z),
             'yaw': float(yaw),
         }
 

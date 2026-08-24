@@ -23,10 +23,19 @@ void OdometryToStateNode::callback(const nav_msgs::msg::Odometry::SharedPtr odom
   state_msg.pos.y = odom_msg->pose.pose.position.y;
   state_msg.pos.z = odom_msg->pose.pose.position.z;
 
-  // Set velocity from Odometry
-  state_msg.vel.x = odom_msg->twist.twist.linear.x;
-  state_msg.vel.y = odom_msg->twist.twist.linear.y;
-  state_msg.vel.z = odom_msg->twist.twist.linear.z;
+  // Set velocity from Odometry — twist is body-frame (REP-105); dynus
+  // State.vel is world-frame, so rotate it out using the same orientation.
+  {
+    const auto &q = odom_msg->pose.pose.orientation;
+    const Eigen::Quaterniond quat(q.w, q.x, q.y, q.z);
+    const Eigen::Vector3d v_world = quat.normalized() * Eigen::Vector3d(
+        odom_msg->twist.twist.linear.x,
+        odom_msg->twist.twist.linear.y,
+        odom_msg->twist.twist.linear.z);
+    state_msg.vel.x = v_world.x();
+    state_msg.vel.y = v_world.y();
+    state_msg.vel.z = v_world.z();
+  }
 
   // Set orientation from Odometry
   state_msg.quat.x = odom_msg->pose.pose.orientation.x;

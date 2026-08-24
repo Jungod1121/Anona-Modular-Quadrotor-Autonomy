@@ -90,9 +90,16 @@ void TopoReplanFSM::odometryCallback(const nav_msgs::msg::Odometry::SharedPtr ms
     odom_pos_(1) = msg->pose.pose.position.y;
     odom_pos_(2) = msg->pose.pose.position.z;
 
-    odom_vel_(0) = msg->twist.twist.linear.x;
-    odom_vel_(1) = msg->twist.twist.linear.y;
-    odom_vel_(2) = msg->twist.twist.linear.z;
+    // REP-105: twist is body-frame; rotate into world/map for the planner.
+    const Eigen::Quaterniond q_body(
+      msg->pose.pose.orientation.w, msg->pose.pose.orientation.x,
+      msg->pose.pose.orientation.y, msg->pose.pose.orientation.z);
+    const Eigen::Vector3d odom_vel = q_body.normalized() *
+      Eigen::Vector3d(msg->twist.twist.linear.x,
+                      msg->twist.twist.linear.y, msg->twist.twist.linear.z);
+    odom_vel_(0) = odom_vel(0);
+    odom_vel_(1) = odom_vel(1);
+    odom_vel_(2) = odom_vel(2);
 
     odom_orient_.w() = msg->pose.pose.orientation.w;
     odom_orient_.x() = msg->pose.pose.orientation.x;

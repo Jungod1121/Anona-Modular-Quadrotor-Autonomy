@@ -17,6 +17,8 @@ from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Odometry, Path as NavPath
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, HistoryPolicy, QoSProfile, ReliabilityPolicy
+
+from drone_rl_planner.odom_util import world_vel_2d
 from sensor_msgs.msg import PointCloud2
 from sensor_msgs_py import point_cloud2
 from visualization_msgs.msg import Marker
@@ -294,10 +296,9 @@ class SacPlannerNode(Node):
         if self._odom is None or self._goal is None:
             return
         p = self._odom.pose.pose.position
-        v = self._odom.twist.twist.linear
         g = self._goal.pose.position
         pos = np.array([p.x, p.y], dtype=np.float64)
-        vel = np.array([v.x, v.y], dtype=np.float64)
+        vel = world_vel_2d(self._odom)
         goal = np.array([g.x, g.y], dtype=np.float64)
         to_goal = goal - pos
         dist_goal = float(np.linalg.norm(to_goal))

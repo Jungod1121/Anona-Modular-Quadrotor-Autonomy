@@ -8,6 +8,8 @@
 #  * See LICENSE file for the license information
 #  * -------------------------------------------------------------------------- */
 
+import math
+
 import rclpy
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
@@ -40,10 +42,16 @@ class OdometryToStateNode(Node):
             z=odom_msg.pose.pose.position.z
         )
 
-        # Set velocity from Odometry
+        # Set velocity from Odometry — twist is body-frame (REP-105);
+        # dynus State.vel is world-frame, so rotate it out.
+        q = odom_msg.pose.pose.orientation
+        yaw = math.atan2(
+            2.0 * (q.w * q.z + q.x * q.y),
+            1.0 - 2.0 * (q.y * q.y + q.z * q.z))
+        c, s = math.cos(yaw), math.sin(yaw)
         state_msg.vel = Vector3(
-            x=odom_msg.twist.twist.linear.x,
-            y=odom_msg.twist.twist.linear.y,
+            x=c * odom_msg.twist.twist.linear.x - s * odom_msg.twist.twist.linear.y,
+            y=s * odom_msg.twist.twist.linear.x + c * odom_msg.twist.twist.linear.y,
             z=odom_msg.twist.twist.linear.z
         )
 
