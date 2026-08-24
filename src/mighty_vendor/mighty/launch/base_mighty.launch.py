@@ -58,8 +58,19 @@ def generate_launch_description():
     # Opaque function to launch nodes
     def launch_setup(context, *args, **kwargs):
         
-        # Get the environment value from the 'env' launch argument.
+        # Get the environment value from the 'env' argument.
         env_value = LaunchConfiguration('env').perform(context)
+
+        # Gazebo worlds/assets ship with upstream but were stripped from this
+        # vendored tree (no worlds/ installed). Fail loudly instead of handing
+        # gzserver a nonexistent world file.
+        # Full plant-integrated stacks: drone_bringup/launch/mighty_avoidance.launch.py
+        raise RuntimeError(
+            "base_mighty.launch.py: Gazebo simulation assets were stripped from "
+            "this vendored mighty build (no worlds/ directory). Use "
+            "'ros2 launch drone_bringup mighty_avoidance.launch.py' for the "
+            "plant-integrated stack."
+        )
         # Map environment names to corresponding Gazebo world file names.
         world_mapping = {
             'high_res_forest': 'big_forest_high_res.world',

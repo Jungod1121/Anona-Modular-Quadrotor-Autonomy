@@ -314,6 +314,8 @@ void KinodynamicAstar::setParam(std::shared_ptr<FastPlanner> nh)
   nh->declare_parameter<float>("search/margin", 0);
   nh->declare_parameter<int>("search/allocate_num", 0);
   nh->declare_parameter<int>("search/check_num", 0);
+  nh->declare_parameter<bool>("search/optimistic", false);
+  nh->declare_parameter<float>("search/vel_margin", 0);
 
   nh->get_parameter("search/max_tau", max_tau_);
   nh->get_parameter("search/init_max_tau", init_max_tau_);
@@ -329,7 +331,7 @@ void KinodynamicAstar::setParam(std::shared_ptr<FastPlanner> nh)
   nh->get_parameter("search/optimistic", optimistic_);
   tie_breaker_ = 1.0 + 1.0 / 10000;
 
-  double vel_margin;
+  double vel_margin = 0.0;
   nh->get_parameter("search/vel_margin", vel_margin);
   max_vel_ += vel_margin;
 }

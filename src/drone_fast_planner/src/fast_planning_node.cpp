@@ -256,6 +256,8 @@ private:
     tc.velocity.y = v.y();
     tc.velocity.z = v.z();
     tc.yaw = (v.head<2>().norm() > 1e-3) ? std::atan2(v.y(), v.x()) : 0.0;
+    // The plant controller drops TrajectoryCommand unless this is set.
+    tc.trajectory_ready = true;
     traj_cmd_pub_->publish(tc);
 
     if ((odom_ - p).head<2>().norm() < 0.4 || (this->now().seconds() - last_advance_) > 0.35) {

@@ -145,6 +145,11 @@ private:
     const std::vector<Obstacle> & obstacles,
     const FieldBounds & bounds) const;
 
+  /// BFS start↔goal reachability over a voxelized point cloud (EGO forest maps).
+  bool checkCloudConnectivity(
+    const pcl::PointCloud<pcl::PointXYZ> & cloud,
+    const FieldBounds & bounds) const;
+
   bool isCellOccupied(
     double x, double y, double z,
     const std::vector<Obstacle> & obstacles) const;

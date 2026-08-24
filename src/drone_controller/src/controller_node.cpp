@@ -73,6 +73,9 @@ private:
     declare_parameter("control_rate", 100.0);
     declare_parameter("local_goal_timeout", 0.5);
     declare_parameter("trajectory_cmd_timeout", 0.25);
+    // Fail-safe: if /drone/odom stalls longer than this, stop trusting the
+    // stale state and cut motors instead of integrating against phantom error.
+    declare_parameter("odom_timeout_sec", 0.2);
     // When false, ignore /drone/goal ballistic fallback (multi/EGO-Swarm: goals
     // must not bypass the planner).
     declare_parameter("use_drone_goal_fallback", true);
@@ -288,7 +291,6 @@ private:
     fallback_goal_.yaw = yawFromQuaternion(msg->pose.orientation);
     // New hard goal only used until planner publishes its first local_goal.
     fallback_goal_.valid = !planner_guided_;
-    last_goal_time_ = now();
   }
 
   GoalState activeGoal() const
@@ -325,6 +327,21 @@ private:
       return;
     }
 
+    // Odometry staleness watchdog: dynamics crash / QoS drop must not leave
+    // the integrator and disturbance observer running against a frozen pose.
+    const double odom_age = (now() - last_odom_time_).seconds();
+    if (odom_age > std::max(0.0, get_parameter("odom_timeout_sec").as_double())) {
+      state_.valid = false;
+      RCLCPP_ERROR_THROTTLE(get_logger(), *get_clock(), 1000,
+        "Odometry stale (%.2f s > %.2f s) — cutting motors", odom_age,
+        get_parameter("odom_timeout_sec").as_double());
+      drone_msgs::msg::MotorCommand cmd;
+      cmd.header.stamp = now();
+      cmd.header.frame_id = "base_link";
+      motor_pub_->publish(cmd);
+      return;
+    }
+
     const double dt = 1.0 / get_parameter("control_rate").as_double();
     const GoalState goal = activeGoal();
     const Eigen::Vector4d rpm = controller_.compute(state_, goal, dt);
@@ -350,7 +367,6 @@ private:
   rclcpp::Time last_odom_time_{0, 0, RCL_ROS_TIME};
   rclcpp::Time last_local_goal_time_{0, 0, RCL_ROS_TIME};
   rclcpp::Time last_traj_cmd_time_{0, 0, RCL_ROS_TIME};
-  rclcpp::Time last_goal_time_{0, 0, RCL_ROS_TIME};
 
   rclcpp::Publisher<drone_msgs::msg::MotorCommand>::SharedPtr motor_pub_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;

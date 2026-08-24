@@ -24,9 +24,14 @@ from drone_bringup.launch_utils import (
     square_mission_process,
     square_speed_params,
     visualization_node,
+    workspace_root,
 )
 
-_NLOPT_LIB = '/home/jungod/drone_ws/third_party/nlopt_install/lib'
+
+def _nlopt_lib_dir() -> str:
+    """nlopt built out-of-tree under <ws>/third_party; empty when absent."""
+    path = os.path.join(workspace_root(), 'third_party', 'nlopt_install', 'lib')
+    return path if os.path.isdir(path) else ''
 
 
 def _narrow_s_bend_waypoints(
@@ -347,10 +352,16 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
+    nlopt_lib = _nlopt_lib_dir()
     ld = os.environ.get('LD_LIBRARY_PATH', '')
-    nlopt_ld = f'{_NLOPT_LIB}:{ld}' if ld else _NLOPT_LIB
-    return LaunchDescription([
-        SetEnvironmentVariable('LD_LIBRARY_PATH', nlopt_ld),
+    actions: list = []
+    if nlopt_lib:
+        nlopt_ld = f'{nlopt_lib}:{ld}' if ld else nlopt_lib
+        actions.append(SetEnvironmentVariable('LD_LIBRARY_PATH', nlopt_ld))
+    else:
+        print('[fast_planner_avoidance] third_party/nlopt_install/lib not found — '
+              'assuming system nlopt')
+    actions.extend([
         DeclareLaunchArgument('use_rviz', default_value='true'),
         DeclareLaunchArgument('seed', default_value='1'),
         DeclareLaunchArgument('map', default_value='official_forest'),
@@ -359,3 +370,4 @@ def generate_launch_description():
             description='catalog = single catalog goal; square = map-specific square'),
         OpaqueFunction(function=launch_setup),
     ])
+    return LaunchDescription(actions)

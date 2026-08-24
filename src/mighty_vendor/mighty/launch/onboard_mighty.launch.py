@@ -112,6 +112,28 @@ def generate_launch_description():
         sim_frame_offset_qz_str = LaunchConfiguration('sim_frame_offset_qz').perform(context)
         sim_frame_offset_qw_str = LaunchConfiguration('sim_frame_offset_qw').perform(context)
 
+        # This vendored tree strips the upstream sim/HW helper packages
+        # (fake_sim, local_sensing/pcl_render_node, mpc, vicon bridge). Only the
+        # `mighty` planner node and `convert_odom_to_state` are built here, so
+        # fail loudly instead of crashing later on a missing executable.
+        # Full plant-integrated stacks: drone_bringup/launch/mighty_avoidance.launch.py
+        hw_quadruped = use_hardware and robot_type in ('star_robot', 'red_rover')
+        needs_stripped = (
+            not use_hardware or                       # sim needs fake_sim / pcl_render / mpc
+            hw_quadruped or                           # ground robots need the mpc package
+            (use_hardware and not use_onboard_localization)  # vicon converter was stripped
+        )
+        if needs_stripped:
+            raise RuntimeError(
+                "onboard_mighty.launch.py: this vendored mighty build only supports "
+                "hardware quadrotor with onboard localization (use_hardware:=true "
+                "use_onboard_localization:=true). Sim/ground-robot/vicon modes require "
+                "upstream helper packages that were stripped (fake_sim, local_sensing, "
+                "mpc, convert_vicon_to_state). Use "
+                "'ros2 launch drone_bringup mighty_avoidance.launch.py' for the full "
+                "plant-integrated stack."
+            )
+
         # The path to the urdf file - select based on robot type
         urdf_filename = 'p3at.urdf.xacro' if use_ground_robot else 'quadrotor.urdf.xacro'
         urdf_path=PathJoinSubstitution([FindPackageShare('mighty'), 'urdf', urdf_filename])

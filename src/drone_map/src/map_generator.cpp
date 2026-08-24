@@ -228,10 +228,16 @@ MapGenerationResult MapGenerator::generate()
       fc.goal_y = config_.goal_y;
       fc.clearance_radius = config_.clearance_radius;
       result.attempt = attempt;
-      result.connected = true;
       result.cloud = downsampleCloud(ego::generateRandomForest(fc));
-      return result;
+      if (checkCloudConnectivity(result.cloud, result.bounds)) {
+        result.connected = true;
+        return result;
+      }
+      // Blocked: retry with a different effective seed; publish the last try
+      // with connected=false so the node logs the degraded state honestly.
     }
+    result.connected = false;
+    return result;
   }
 
   int target_count = obstacleCountForMode(config_.mode);
@@ -618,6 +624,95 @@ bool MapGenerator::checkConnectivity(
         continue;
       }
       const size_t id = static_cast<size_t>(idx(nx_c, ny_c));
+      if (visited[id] || blocked[id]) {
+        continue;
+      }
+      visited[id] = 1;
+      q.emplace(nx_c, ny_c);
+    }
+  }
+
+  return false;
+}
+
+bool MapGenerator::checkCloudConnectivity(
+  const pcl::PointCloud<pcl::PointXYZ> & cloud,
+  const FieldBounds & bounds) const
+{
+  const double res = config_.grid_resolution;
+  const int nx = std::max(1, static_cast<int>(std::ceil((bounds.x_max - bounds.x_min) / res)));
+  const int ny = std::max(1, static_cast<int>(std::ceil((bounds.y_max - bounds.y_min) / res)));
+
+  const int sx = gridIndex(config_.start_x, bounds.x_min, res);
+  const int sy = gridIndex(config_.start_y, bounds.y_min, res);
+  const int gx = gridIndex(config_.goal_x, bounds.x_min, res);
+  const int gy = gridIndex(config_.goal_y, bounds.y_min, res);
+
+  if (sx < 0 || sx >= nx || sy < 0 || sy >= ny ||
+    gx < 0 || gx >= nx || gy < 0 || gy >= ny)
+  {
+    return false;
+  }
+
+  // Trunk/canopy points within the flight band block their horizontal cell
+  // (inflated by the configured safety distance). Points above the band
+  // (suspended EGO circles) are ignored — they do not obstruct cruise flight.
+  const double z_band_top =
+    std::max(config_.start_z, config_.goal_z) + 0.5;
+  const double inflate = config_.safety_distance;
+
+  std::vector<uint8_t> blocked(static_cast<size_t>(nx * ny), 0);
+  for (const auto & p : cloud.points) {
+    if (p.z > z_band_top) {
+      continue;
+    }
+    // Mark every cell whose center lies within `inflate` of the point (XY).
+    const int ix_min = std::max(0,
+      static_cast<int>(std::floor((p.x - inflate - bounds.x_min) / res)));
+    const int ix_max = std::min(nx - 1,
+      static_cast<int>(std::floor((p.x + inflate - bounds.x_min) / res)));
+    const int iy_min = std::max(0,
+      static_cast<int>(std::floor((p.y - inflate - bounds.y_min) / res)));
+    const int iy_max = std::min(ny - 1,
+      static_cast<int>(std::floor((p.y + inflate - bounds.y_min) / res)));
+    for (int iy = iy_min; iy <= iy_max; ++iy) {
+      for (int ix = ix_min; ix <= ix_max; ++ix) {
+        const double cx = bounds.x_min + (ix + 0.5) * res;
+        const double cy = bounds.y_min + (iy + 0.5) * res;
+        if ((cx - p.x) * (cx - p.x) + (cy - p.y) * (cy - p.y) <= inflate * inflate) {
+          blocked[static_cast<size_t>(iy * nx + ix)] = 1;
+        }
+      }
+    }
+  }
+
+  if (blocked[static_cast<size_t>(sy * nx + sx)] ||
+    blocked[static_cast<size_t>(gy * nx + gx)])
+  {
+    return false;
+  }
+
+  std::vector<uint8_t> visited(static_cast<size_t>(nx * ny), 0);
+  std::queue<std::pair<int, int>> q;
+  q.emplace(sx, sy);
+  visited[static_cast<size_t>(sy * nx + sx)] = 1;
+
+  const int dx[4] = {1, -1, 0, 0};
+  const int dy[4] = {0, 0, 1, -1};
+
+  while (!q.empty()) {
+    const auto [cx, cy] = q.front();
+    q.pop();
+    if (cx == gx && cy == gy) {
+      return true;
+    }
+    for (int k = 0; k < 4; ++k) {
+      const int nx_c = cx + dx[k];
+      const int ny_c = cy + dy[k];
+      if (nx_c < 0 || nx_c >= nx || ny_c < 0 || ny_c >= ny) {
+        continue;
+      }
+      const size_t id = static_cast<size_t>(ny_c * nx + nx_c);
       if (visited[id] || blocked[id]) {
         continue;
       }
