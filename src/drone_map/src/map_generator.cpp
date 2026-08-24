@@ -185,9 +185,11 @@ MapGenerationResult MapGenerator::generate()
   if (config_.mode == MapMode::EGO_MAZE2D) {
     ego::MazeConfig mc;
     mc.seed = config_.seed;
-    // Match EGO mockamap maze2d.launch (20×20 m); centered on field via origin_*.
-    mc.x_length = 20.0;
-    mc.y_length = 20.0;
+    // Honor custom bounds; fall back to the EGO mockamap 20×20 m default.
+    const bool have_bounds = config_.use_custom_bounds &&
+      config_.x_max > config_.x_min && config_.y_max > config_.y_min;
+    mc.x_length = have_bounds ? field_x : 20.0;
+    mc.y_length = have_bounds ? field_y : 20.0;
     mc.z_length = field_z;
     mc.resolution = config_.ego_resolution;
     mc.road_width = config_.ego_road_width;
@@ -242,7 +244,9 @@ MapGenerationResult MapGenerator::generate()
 
   int target_count = obstacleCountForMode(config_.mode);
   if (config_.mode == MapMode::SPARSE) {
-    target_count = effectiveSeed(0) % 3;
+    // "Sparse" still means a few pillars — seed % 3 could legally produce 0,
+    // yielding an empty cloud that contradicted the catalog entry.
+    target_count = std::max(2, effectiveSeed(0) % 5);
   }
   if (config_.mode == MapMode::DENSE_FIELD) {
     // Keep pillar density ≈ 80 / (24×14) while the field grows.
@@ -543,9 +547,11 @@ bool MapGenerator::isCellOccupied(
         break;
       }
       case Obstacle::Shape::WALL: {
-        const double half_l = obs.length * 0.5;
+        // Inflate all three dimensions symmetrically — ends and tops of
+        // walls are just as lethal as their faces.
+        const double half_l = obs.length * 0.5 + config_.safety_distance;
         const double half_t = obs.thickness * 0.5 + config_.safety_distance;
-        const double half_h = obs.height * 0.5;
+        const double half_h = obs.height * 0.5 + config_.safety_distance;
         const double dx = x - obs.center.x();
         const double dy = y - obs.center.y();
         const bool inside_xy = obs.length_along_y ?
@@ -582,7 +588,12 @@ bool MapGenerator::checkConnectivity(
     return false;
   }
 
-  const double check_z = 0.5 * (config_.start_z + config_.goal_z);
+  // Sample the vertical flight band at three planes — a single mid-plane
+  // misses spheres / overhangs floating above or below it.
+  const double z_lo = std::min(config_.start_z, config_.goal_z);
+  const double z_hi = std::max(config_.start_z, config_.goal_z);
+  const double check_zs[3] = {
+    z_lo, 0.5 * (config_.start_z + config_.goal_z), z_hi};
 
   auto idx = [nx](int ix, int iy) { return iy * nx + ix; };
 
@@ -591,8 +602,11 @@ bool MapGenerator::checkConnectivity(
     for (int ix = 0; ix < nx; ++ix) {
       const double x = bounds.x_min + (ix + 0.5) * res;
       const double y = bounds.y_min + (iy + 0.5) * res;
-      if (isCellOccupied(x, y, check_z, obstacles)) {
-        blocked[static_cast<size_t>(idx(ix, iy))] = 1;
+      for (const double check_z : check_zs) {
+        if (isCellOccupied(x, y, check_z, obstacles)) {
+          blocked[static_cast<size_t>(idx(ix, iy))] = 1;
+          break;
+        }
       }
     }
   }

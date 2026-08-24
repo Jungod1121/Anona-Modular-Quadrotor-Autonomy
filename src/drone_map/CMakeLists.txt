@@ -53,4 +53,10 @@ install(TARGETS map_generator map_node
 )
 install(DIRECTORY include/ DESTINATION include)
 
+if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(test_ego_map test/test_ego_map.cpp)
+  target_link_libraries(test_ego_map map_generator)
+endif()
+
 ament_package()

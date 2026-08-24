@@ -41,7 +41,7 @@ void recursiveDivision(int xl, int xh, int yl, int yh, Eigen::MatrixXi & maze)
         }
       }
 
-      else if (xh + 1 <= maze.cols() - 1)
+      else if (xh + 1 <= maze.rows() - 1)
       { // there is a point at xh+1,ym
         if (maze(xh + 1, ym) == 0)
         { // this is an opening,need to change random number
@@ -57,7 +57,7 @@ void recursiveDivision(int xl, int xh, int yl, int yh, Eigen::MatrixXi & maze)
         }
       }
 
-      else if (yh + 1 <= maze.rows() - 1)
+      else if (yh + 1 <= maze.cols() - 1)
       { // there is a point at xm,yh+1
         if (maze(xm, yh + 1) == 0)
         { // this is an opening,need to change random number
@@ -119,7 +119,7 @@ void recursiveDivision(int xl, int xh, int yl, int yh, Eigen::MatrixXi & maze)
       }
     }
 
-    if (yh + 1 <= maze.rows() - 1)
+    if (yh + 1 <= maze.cols() - 1)
     {
       if (maze(xm, yh + 1) == 0)
       {
@@ -135,7 +135,7 @@ void recursiveDivision(int xl, int xh, int yl, int yh, Eigen::MatrixXi & maze)
       }
     }
 
-    if (xh + 1 <= maze.cols() - 1)
+    if (xh + 1 <= maze.rows() - 1)
     {
       if (maze(xh + 1, ym) == 0)
       {
@@ -180,7 +180,7 @@ void recursiveDivision(int xl, int xh, int yl, int yh, Eigen::MatrixXi & maze)
       }
     }
 
-    if (yh + 1 <= maze.rows() - 1)
+    if (yh + 1 <= maze.cols() - 1)
     {
       if (maze(xm, yh + 1) == 0)
       {
@@ -198,7 +198,7 @@ void recursiveDivision(int xl, int xh, int yl, int yh, Eigen::MatrixXi & maze)
       }
     }
 
-    if (xh + 1 <= maze.cols() - 1)
+    if (xh + 1 <= maze.rows() - 1)
     {
       if (maze(xh + 1, ym) == 0)
       {
@@ -259,7 +259,7 @@ void recursiveDivision(int xl, int xh, int yl, int yh, Eigen::MatrixXi & maze)
         doorcount++;
       }
     }
-    if (yh + 1 <= maze.rows() - 1)
+    if (yh + 1 <= maze.cols() - 1)
     {
       if (maze(xl + 1, yh + 1) == 0)
       {
@@ -290,7 +290,7 @@ void recursiveDivision(int xl, int xh, int yl, int yh, Eigen::MatrixXi & maze)
         doorcount++;
       }
     }
-    if (xh + 1 <= maze.cols() - 1)
+    if (xh + 1 <= maze.rows() - 1)
     {
       if (maze(xh + 1, yl + 1) == 0)
       {
@@ -360,7 +360,9 @@ pcl::PointCloud<pcl::PointXYZ> generateMaze2D(const MazeConfig & cfg)
   Eigen::MatrixXi maze(mx, my);
   maze.setZero();
 
-  recursiveDivision(0, maze.cols() - 1, 0, maze.rows() - 1, maze);
+  // Convention inside recursiveDivision: FIRST index = x (matrix ROWS),
+  // second = y (COLS) — matching the world mapping below (i↔X, j↔Y).
+  recursiveDivision(0, maze.rows() - 1, 0, maze.cols() - 1, maze);
 
   if (cfg.add_wall_x) {
     for (int i = 0; i < mx; ++i) {
