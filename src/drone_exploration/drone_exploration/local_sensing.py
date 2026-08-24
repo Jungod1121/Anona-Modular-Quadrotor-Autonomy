@@ -94,7 +94,10 @@ class LocalSensingNode(Node):
         pts = list(point_cloud2.read_points(
             msg, field_names=('x', 'y', 'z'), skip_nans=True))
         if not pts:
-            self._cloud = np.zeros((0, 3), dtype=np.float64)
+            # An empty latched publish must not wipe stored knowledge — that
+            # painted phantom FREE space across unobserved area.
+            self.get_logger().warn('empty obstacle cloud — keeping previous map',
+                                   throttle_duration_sec=5.0)
             return
         arr = np.asarray([[p[0], p[1], p[2]] for p in pts], dtype=np.float64)
         # Light downsample for realtime.

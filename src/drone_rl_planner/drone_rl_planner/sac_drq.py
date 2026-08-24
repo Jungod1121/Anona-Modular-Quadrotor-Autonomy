@@ -320,6 +320,7 @@ class SACAgent:
         vec_dim: int,
         act_dim: int,
         cfg: Optional[SACConfig] = None,
+        seed: int = 0,
     ) -> None:
         self.cfg = cfg or SACConfig()
         self.device = torch.device(self.cfg.device)
@@ -328,6 +329,8 @@ class SACAgent:
         ch = img_shape[0]
         fd = int(self.cfg.feat_dim)
         hid = int(self.cfg.hidden)
+
+        torch.manual_seed(seed)
 
         self.encoder = SharedEncoder(ch, fd).to(self.device)
         self.actor = ActorHead(fd, vec_dim, act_dim, hidden=hid).to(self.device)
@@ -350,7 +353,7 @@ class SACAgent:
             if self.cfg.target_entropy is not None
             else -float(act_dim)
         )
-        self.rng = np.random.default_rng(0)
+        self.rng = np.random.default_rng(seed)
         self.arch = 'shared_drq_v2'
 
     @property
@@ -506,5 +509,7 @@ class SACAgent:
             if key in ckpt:
                 try:
                     opt.load_state_dict(ckpt[key])
-                except Exception:
-                    pass
+                except Exception as exc:
+                    # A corrupt/incompatible Adam blob must not pass silently.
+                    print(f'[sac_drq] WARNING: {key}.load_state_dict failed '
+                          f'({exc}) — optimizer state reset')

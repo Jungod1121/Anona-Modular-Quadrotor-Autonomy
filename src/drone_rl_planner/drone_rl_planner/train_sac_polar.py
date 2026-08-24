@@ -409,7 +409,10 @@ def main(argv=None) -> None:
         else:
             cfg.start_steps = 0
 
-    agent = SACAgent(env0.image_shape, env0.vec_dim, env0.act_dim, cfg)
+    torch.manual_seed(args.seed)
+    np.random.seed(args.seed)
+    agent = SACAgent(env0.image_shape, env0.vec_dim, env0.act_dim, cfg,
+                     seed=args.seed)
     resume_path = Path(args.resume) if args.resume else None
     curriculum_resume = bool(stage_needs_resume or args.reset_buffer)
     if resume_path and resume_path.is_file():

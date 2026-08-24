@@ -366,6 +366,11 @@ class SacPlannerNode(Node):
                 max_speed=self.max_speed, world_scale=self.world_scale,
             )
             raw = self._agent.act({'image': img, 'vector': vec}, deterministic=True)
+            if not np.all(np.isfinite(raw)):
+                self.get_logger().error(
+                    'policy produced non-finite action — falling back to goal heading',
+                    throttle_duration_sec=2.0)
+                raw = np.zeros_like(raw)
             action = self._ema(raw)
             heading, look, _speed = decode_action(action, goal, pos)
             self._prev_action = action.copy()

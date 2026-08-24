@@ -41,10 +41,11 @@ class LocalNavGymEnv(gym.Env):
         self, action: np.ndarray
     ) -> Tuple[np.ndarray, float, bool, bool, Dict[str, Any]]:
         obs, reward, done, info = self._core.step(action)
-        terminated = done
-        truncated = False
-        if self._core.t >= self._core.cfg.max_steps and not info.get("success"):
-            truncated = True
+        # Gymnasium semantics: a pure time-out is `truncated` only — setting
+        # both flags made SB3 zero the bootstrap on non-terminal episodes.
+        timed_out = self._core.t >= self._core.cfg.max_steps and not info.get("success")
+        truncated = bool(timed_out)
+        terminated = bool(done and not timed_out)
         return obs.astype(np.float32), float(reward), terminated, truncated, info
 
 

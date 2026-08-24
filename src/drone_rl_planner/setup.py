@@ -12,7 +12,10 @@ setup(
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/config', glob('config/*')),
-        ('share/' + package_name + '/checkpoints', glob('checkpoints/*')),
+        # Only ship trained weights — the checkpoints dir also holds GB-scale
+        # replay memmaps (directories) and shell scripts that break install.
+        ('share/' + package_name + '/checkpoints',
+         [f for f in glob('checkpoints/*') if f.endswith(('.pt', '.pth'))]),
     ],
     install_requires=['setuptools', 'numpy'],
     zip_safe=True,

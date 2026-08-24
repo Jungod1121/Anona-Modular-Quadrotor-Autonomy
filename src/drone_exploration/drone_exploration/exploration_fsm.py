@@ -222,17 +222,29 @@ class ExplorationFsm(Node):
             return False
 
         min_range = max(2.5, 0.6 * self.min_goal_sep)
-        scored: List[Tuple[float, np.ndarray]] = []
-        for c, size in self._candidates():
-            if self._too_close_visited(c):
-                continue
-            dist = float(np.hypot(c[0] - self._odom[0], c[1] - self._odom[1]))
-            if dist < min_range:
-                continue
-            if self._current is not None and not force:
-                if np.hypot(c[0] - self._current[0], c[1] - self._current[1]) < 1.0:
+
+        def collect() -> List[Tuple[float, np.ndarray]]:
+            out: List[Tuple[float, np.ndarray]] = []
+            for c, size in self._candidates():
+                if self._too_close_visited(c):
                     continue
-            scored.append((self._score(c, size, dist), c))
+                dist = float(np.hypot(c[0] - self._odom[0], c[1] - self._odom[1]))
+                if dist < min_range:
+                    continue
+                if self._current is not None and not force:
+                    if np.hypot(c[0] - self._current[0], c[1] - self._current[1]) < 1.0:
+                        continue
+                out.append((self._score(c, size, dist), c))
+            return out
+
+        scored = collect()
+        if not scored and self.seed_viewpoints:
+            # Frontiers exist but every candidate was filtered out (visited /
+            # too close). Without forward seeds the FSM idles out to a false
+            # "FINISHED stalled" although explorable area remains.
+            for seed in self._forward_seeds():
+                dist = float(np.hypot(seed[0] - self._odom[0], seed[1] - self._odom[1]))
+                scored.append((self._score(seed, 1.0, dist), seed))
         if not scored:
             return False
         scored.sort(key=lambda t: t[0])

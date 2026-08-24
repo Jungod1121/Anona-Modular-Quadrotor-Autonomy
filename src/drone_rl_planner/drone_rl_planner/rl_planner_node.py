@@ -409,6 +409,11 @@ class RlPlannerNode(Node):
         if self.sb3_model is not None:
             raw, _ = self.sb3_model.predict(obs, deterministic=True)
             raw = np.asarray(raw, dtype=np.float64).ravel()
+            if not np.all(np.isfinite(raw)):
+                self.get_logger().error(
+                    'policy produced non-finite action — zeroing',
+                    throttle_duration_sec=2.0)
+                raw = np.zeros_like(raw)
             mode = 'SB3-PPO'
         elif self.ac is not None and obs.shape[0] == self.ac.obs_dim:
             raw = self.ac.mean_of(obs)
