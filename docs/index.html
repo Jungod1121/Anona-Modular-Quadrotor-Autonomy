@@ -98,6 +98,7 @@ img,svg{display:block;max-width:100%}
   color:var(--gray);
   line-height:1.6;
 }
+.footnote a{text-decoration:underline;text-underline-offset:2px}
 .mono{font-family:var(--font-mono)}
 
 /* gradient text (135°, clipped to glyphs).
@@ -210,6 +211,7 @@ img,svg{display:block;max-width:100%}
    Hero — one screen, one story
    ============================================================ */
 .hero{
+  min-height:100vh;
   min-height:100svh;
   display:flex;
   flex-direction:column;
@@ -698,6 +700,7 @@ img,svg{display:block;max-width:100%}
    Finale — black statement page
    ============================================================ */
 .finale{
+  min-height:100vh;
   min-height:100svh;
   display:flex;
   flex-direction:column;
@@ -724,11 +727,12 @@ img,svg{display:block;max-width:100%}
 .finale-links a:hover{color:var(--white)}
 .finale-links .sep{color:#3A3A3C;font-size:13px}
 </style>
+<noscript><style>.rv{opacity:1;transform:none}</style></noscript>
 </head>
 <body>
 
 <!-- ================= nav ================= -->
-<nav class="nav" aria-label="导航">
+<nav class="nav" data-i18n-aria="aria.nav" aria-label="导航">
   <a class="nav-brand" href="#top">Anona</a>
   <ul class="nav-links">
     <li><a href="#architecture" data-i18n="nav.arch">架构</a></li>
@@ -745,7 +749,7 @@ img,svg{display:block;max-width:100%}
 <main id="top">
 
 <!-- ================= Hero ================= -->
-<section class="hero" aria-label="开场">
+<section class="hero" data-i18n-aria="aria.hero" aria-label="开场">
   <div class="rv in">
     <span class="hello">hello.</span>
     <p class="eyebrow" data-i18n="hero.eyebrow">Anona · 模块化四旋翼自主</p>
@@ -783,7 +787,7 @@ img,svg{display:block;max-width:100%}
   </div>
 
   <div class="hero-visual" aria-hidden="true">
-    <svg viewBox="0 0 1600 440" role="img" data-i18n-aria="hero.pathAria" aria-label="飞行轨迹示意">
+    <svg viewBox="0 0 1600 440" xmlns:xlink="http://www.w3.org/1999/xlink">
       <defs>
         <linearGradient id="pathGrad" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stop-color="#024F97"/>
@@ -817,12 +821,12 @@ img,svg{display:block;max-width:100%}
       <!-- drone: glow + core, following the path -->
       <circle r="26" fill="url(#glowGrad)">
         <animateMotion dur="9s" repeatCount="indefinite">
-          <mpath href="#flightPath"/>
+          <mpath href="#flightPath" xlink:href="#flightPath"/>
         </animateMotion>
       </circle>
       <circle r="4.5" fill="#FFFFFF">
         <animateMotion dur="9s" repeatCount="indefinite">
-          <mpath href="#flightPath"/>
+          <mpath href="#flightPath" xlink:href="#flightPath"/>
         </animateMotion>
       </circle>
     </svg>
@@ -830,7 +834,7 @@ img,svg{display:block;max-width:100%}
 </section>
 
 <!-- ================= Architecture ================= -->
-<section id="architecture" class="section section-white" aria-label="架构">
+<section id="architecture" class="section section-white" data-i18n-aria="aria.architecture" aria-label="架构">
   <div class="rv">
     <p class="eyebrow" data-i18n="arch.eyebrow">Architecture · 架构</p>
     <h2 class="section-title" data-i18n="arch.title">平台不变，规划可变。</h2>
@@ -987,7 +991,7 @@ img,svg{display:block;max-width:100%}
 </section>
 
 <!-- ================= Contract ================= -->
-<section id="contract" class="section section-dark" aria-label="话题契约">
+<section id="contract" class="section section-dark" data-i18n-aria="aria.contract" aria-label="话题契约">
   <div class="rv">
     <p class="eyebrow" data-i18n="contract.eyebrow">One Contract · 话题契约</p>
     <h2 class="contract-title"><span data-i18n="contract.title1">同一个契约，</span><span class="grad-text" data-i18n="contract.title2">公平对比。</span></h2>
@@ -995,17 +999,17 @@ img,svg{display:block;max-width:100%}
   </div>
 
   <div class="contract-flow rv" role="list" data-i18n-aria="contract.flowAria" aria-label="话题数据流">
-    <div class="flow-node"><span class="topic">/drone/goal</span><span class="flow-cap" data-i18n="contract.r1">任务目标 · PoseStamped</span></div>
-    <span class="flow-arrow">→</span>
-    <div class="flow-node"><span class="topic">/map/obstacles</span><span class="flow-cap" data-i18n="contract.r2">障碍云 · PointCloud2</span></div>
-    <span class="flow-arrow">→</span>
-    <div class="flow-node"><span class="topic">/planner/local_goal</span><span class="flow-cap" data-i18n="contract.r3">局部目标 · PoseStamped</span></div>
-    <span class="flow-arrow">→</span>
-    <div class="flow-node"><span class="topic">/planner/trajectory_cmd</span><span class="flow-cap" data-i18n="contract.r4">轨迹指令 · p v a yaw</span></div>
-    <span class="flow-arrow">→</span>
-    <div class="flow-node"><span class="topic">/drone/motor_rpm_cmd</span><span class="flow-cap" data-i18n="contract.r5">电机指令 · RPM</span></div>
-    <span class="flow-arrow">→</span>
-    <div class="flow-node"><span class="topic">/drone/odom</span><span class="flow-cap" data-i18n="contract.r6">状态反馈 · Odometry</span></div>
+    <div class="flow-node" role="listitem"><span class="topic">/drone/goal</span><span class="flow-cap" data-i18n="contract.r1">任务目标 · PoseStamped</span></div>
+    <span class="flow-arrow" aria-hidden="true">→</span>
+    <div class="flow-node" role="listitem"><span class="topic">/map/obstacles</span><span class="flow-cap" data-i18n="contract.r2">障碍云 · PointCloud2</span></div>
+    <span class="flow-arrow" aria-hidden="true">→</span>
+    <div class="flow-node" role="listitem"><span class="topic">/planner/local_goal</span><span class="flow-cap" data-i18n="contract.r3">局部目标 · PoseStamped</span></div>
+    <span class="flow-arrow" aria-hidden="true">→</span>
+    <div class="flow-node" role="listitem"><span class="topic">/planner/trajectory_cmd</span><span class="flow-cap" data-i18n="contract.r4">轨迹指令 · p v a yaw</span></div>
+    <span class="flow-arrow" aria-hidden="true">→</span>
+    <div class="flow-node" role="listitem"><span class="topic">/drone/motor_rpm_cmd</span><span class="flow-cap" data-i18n="contract.r5">电机指令 · RPM</span></div>
+    <span class="flow-arrow" aria-hidden="true">→</span>
+    <div class="flow-node" role="listitem"><span class="topic">/drone/odom</span><span class="flow-cap" data-i18n="contract.r6">状态反馈 · Odometry</span></div>
   </div>
 
   <p class="footnote contract-note rv" data-i18n="contract.note">
@@ -1014,7 +1018,7 @@ img,svg{display:block;max-width:100%}
 </section>
 
 <!-- ================= Planners ================= -->
-<section id="planners" class="section section-gray" aria-label="规划器">
+<section id="planners" class="section section-gray" data-i18n-aria="aria.planners" aria-label="规划器">
   <div class="rv">
     <p class="eyebrow" data-i18n="planners.eyebrow">Path A–H · 规划器</p>
     <h2 class="section-title"><span data-i18n="planners.title1">八条路径，</span><span class="grad-text" data-i18n="planners.title2">一个平台。</span></h2>
@@ -1082,12 +1086,12 @@ img,svg{display:block;max-width:100%}
 
   <div class="rv">
     <a class="text-link" href="https://github.com/Jungod1121/Anona-Modular-Quadrotor-Autonomy/blob/main/report/planner_benchmark/comparison_report.md" target="_blank" rel="noopener" data-i18n="planners.report">阅读对比报告 ↗</a>
-    <p class="footnote" style="margin-top:12px"><span data-i18n="planners.foot">强弱分类定义见 PLANNERS.md：</span><span class="mono">canonical_comparison_ids = { homemade, ego, gcopter, mighty, vfh, sac }</span></p>
+    <p class="footnote" style="margin-top:12px"><span data-i18n="planners.footPre">强弱分类定义见</span> <a href="https://github.com/Jungod1121/Anona-Modular-Quadrotor-Autonomy/blob/main/src/drone_bringup/PLANNERS.md" target="_blank" rel="noopener">PLANNERS.md</a><span data-i18n="planners.footSep">：</span> <span class="mono">canonical_comparison_ids = { homemade, ego, gcopter, mighty, vfh, sac }</span></p>
   </div>
 </section>
 
 <!-- ================= Maps ================= -->
-<section id="maps" class="section section-dark" aria-label="地图">
+<section id="maps" class="section section-dark" data-i18n-aria="aria.maps" aria-label="地图">
   <div class="rv">
     <p class="eyebrow" data-i18n="maps.eyebrow">Procedural Maps · 地图</p>
     <h2 class="section-title"><span data-i18n="maps.title1">世界，由</span><span class="grad-text grad-text-magic" data-i18n="maps.title2">种子生成。</span></h2>
@@ -1143,7 +1147,7 @@ img,svg{display:block;max-width:100%}
 </section>
 
 <!-- ================= Demo ================= -->
-<section id="demo" class="section section-white" aria-label="演示">
+<section id="demo" class="section section-white" data-i18n-aria="aria.demo" aria-label="演示">
   <div class="rv">
     <p class="eyebrow" data-i18n="demo.eyebrow">Demo · 演示</p>
     <h2 class="section-title" data-i18n="demo.title">眼见为实。</h2>
@@ -1177,11 +1181,11 @@ img,svg{display:block;max-width:100%}
 </section>
 
 <!-- ================= Acceptance ================= -->
-<section id="acceptance" class="section section-gray" aria-label="验收">
+<section id="acceptance" class="section section-gray" data-i18n-aria="aria.acceptance" aria-label="验收">
   <div class="accept-wrap">
     <div class="rv">
       <p class="eyebrow" data-i18n="accept.eyebrow">Acceptance · 验收</p>
-      <div class="big-score" data-i18n-aria="accept.scoreAria" aria-label="六项全部通过">6/6</div>
+      <div class="big-score" role="img" data-i18n-aria="accept.scoreAria" aria-label="六项全部通过">6/6</div>
       <p class="section-sub" style="margin-top:26px" data-i18n="accept.sub">六个一键场景，一次通过。从悬停到窄道穿越，同一套脚本，自动验收。</p>
     </div>
 
@@ -1259,7 +1263,7 @@ img,svg{display:block;max-width:100%}
 </section>
 
 <!-- ================= Console ================= -->
-<section id="console" class="section section-white" aria-label="任务控制台与快速开始">
+<section id="console" class="section section-white" data-i18n-aria="aria.console" aria-label="任务控制台与快速开始">
   <div class="rv">
     <p class="eyebrow" data-i18n="console.eyebrow">Mission Console · 快速开始</p>
     <h2 class="section-title" data-i18n="console.title">从终端，到驾驶舱。</h2>
@@ -1301,7 +1305,7 @@ img,svg{display:block;max-width:100%}
 </section>
 
 <!-- ================= Finale ================= -->
-<section class="finale" aria-label="结语">
+<section class="finale" data-i18n-aria="aria.finale" aria-label="结语">
   <h2 class="finale-title rv" data-i18n="finale.title">为飞行而生。</h2>
   <p class="footnote rv" style="transition-delay:.1s">
     Anona · Modular Quadrotor Autonomy Workbench<br>
@@ -1330,12 +1334,14 @@ var I18N = {
     "metaDesc": "Anona —— ROS 2 Humble 模块化四旋翼自主飞行工作台。统一被控对象，可插拔规划器，公平对比。",
     "nav.arch": "架构", "nav.planners": "规划器", "nav.maps": "地图", "nav.demo": "演示", "nav.accept": "验收", "nav.console": "快速开始",
     "nav.langTip": "切换到英文",
+    "aria.nav": "导航", "aria.hero": "开场", "aria.architecture": "架构", "aria.contract": "话题契约",
+    "aria.planners": "规划器", "aria.maps": "地图", "aria.demo": "演示", "aria.acceptance": "验收",
+    "aria.console": "任务控制台与快速开始", "aria.finale": "结语",
     "hero.eyebrow": "Anona · 模块化四旋翼自主",
     "hero.t1": "一套平台。", "hero.t2": "八大规划。",
     "hero.tag": "One plant. Many planners. Fair comparison.",
     "hero.sub": "统一被控对象，可插拔规划器，在同一套标准下公平对比 —— 一个基于 ROS 2 Humble 的四旋翼自主飞行仿真工作台。",
     "hero.cta1": "快速开始", "hero.cta2": "观看演示 ↗",
-    "hero.pathAria": "飞行轨迹示意",
     "stat1l": "规划器 · Path A–H", "stat2l": "验收场景一次通过", "stat3l": "动力学积分频率", "stat4l": "过程化生成地图",
     "arch.eyebrow": "Architecture · 架构",
     "arch.title": "平台不变，规划可变。",
@@ -1373,7 +1379,7 @@ var I18N = {
     "planners.g.d": "极坐标直方图反应式避障，可选 PPO 后端作为兼容别名。", "planners.g.b": "经典 · 弱基线",
     "planners.h.d": "极坐标占据图像输入，学习策略滚动 Bézier 路径，VFH 兜底。", "planners.h.b": "学习 · 强基线",
     "planners.report": "阅读对比报告 ↗",
-    "planners.foot": "强弱分类定义见 PLANNERS.md：",
+    "planners.footPre": "强弱分类定义见", "planners.footSep": "：",
     "maps.eyebrow": "Procedural Maps · 地图",
     "maps.title1": "世界，由", "maps.title2": "种子生成。",
     "maps.sub": "没有 PCD 场景文件 —— 全部为过程化点云。同一颗种子，复现同一片森林、迷宫与走廊。",
@@ -1420,12 +1426,14 @@ var I18N = {
     "metaDesc": "Anona — a modular quadrotor autonomy workbench on ROS 2 Humble. One plant, many planners, fair comparison.",
     "nav.arch": "Architecture", "nav.planners": "Planners", "nav.maps": "Maps", "nav.demo": "Demo", "nav.accept": "Acceptance", "nav.console": "Quick Start",
     "nav.langTip": "Switch to Chinese",
+    "aria.nav": "Navigation", "aria.hero": "Introduction", "aria.architecture": "Architecture", "aria.contract": "One Contract",
+    "aria.planners": "Planners", "aria.maps": "Maps", "aria.demo": "Demo", "aria.acceptance": "Acceptance",
+    "aria.console": "Mission Console · Quick Start", "aria.finale": "Closing",
     "hero.eyebrow": "ANONA · MODULAR QUADROTOR AUTONOMY",
     "hero.t1": "One plant.", "hero.t2": "Eight planners.",
     "hero.tag": "一套平台。八大规划。公平对比。",
     "hero.sub": "One fixed plant, swappable planners, compared under the same standard — a modular quadrotor autonomy workbench on ROS 2 Humble.",
     "hero.cta1": "Quick Start", "hero.cta2": "Watch the demo ↗",
-    "hero.pathAria": "Illustrated flight path",
     "stat1l": "Planners · Path A–H", "stat2l": "Acceptance scenarios passed", "stat3l": "Dynamics integration rate", "stat4l": "Procedural maps",
     "arch.eyebrow": "ARCHITECTURE",
     "arch.title": "The platform stays. The planners change.",
@@ -1463,7 +1471,7 @@ var I18N = {
     "planners.g.d": "Polar-histogram reactive avoidance; an optional PPO backend as a compatible alias.", "planners.g.b": "Classical · Weak baseline",
     "planners.h.d": "Polar occupancy images in, a learned policy rolls a Bézier path out — with VFH fallback.", "planners.h.b": "Learning · Strong baseline",
     "planners.report": "Read the benchmark report ↗",
-    "planners.foot": "Classification per PLANNERS.md:",
+    "planners.footPre": "Classification per", "planners.footSep": ":",
     "maps.eyebrow": "PROCEDURAL MAPS",
     "maps.title1": "Worlds, generated", "maps.title2": "from seeds.",
     "maps.sub": "No PCD scene files — every scene is a procedural point cloud. The same seed reproduces the same forest, maze and corridor.",
@@ -1550,22 +1558,34 @@ var I18N = {
 </script>
 
 <script>
+/* ---------- honor prefers-reduced-motion for SMIL too (CSS can't stop it) ---------- */
+(function(){
+  if(!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches))return;
+  var s=document.querySelectorAll('svg');
+  for(var i=0;i<s.length;i++){if(s[i].pauseAnimations)s[i].pauseAnimations();}
+})();
+
 /* ---------- scroll reveal ---------- */
 (function(){
   var els=document.querySelectorAll('.rv');
+  function reveal(el){
+    el.classList.add('in');
+    /* drop the stagger delay once revealed so :hover stays immediate */
+    setTimeout(function(){el.style.transitionDelay=''},1000);
+  }
   if(!('IntersectionObserver' in window)){
-    els.forEach(function(el){el.classList.add('in')});
+    for(var i=0;i<els.length;i++)reveal(els[i]);
     return;
   }
   var io=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){
-        e.target.classList.add('in');
-        io.unobserve(e.target);
+    for(var i=0;i<entries.length;i++){
+      if(entries[i].isIntersecting){
+        reveal(entries[i].target);
+        io.unobserve(entries[i].target);
       }
-    });
+    }
   },{threshold:.15,rootMargin:'0px 0px -8% 0px'});
-  els.forEach(function(el){io.observe(el)});
+  for(var j=0;j<els.length;j++)io.observe(els[j]);
 })();
 
 /* ---------- procedural map previews (seeded, deterministic) ---------- */
@@ -1593,7 +1613,7 @@ var I18N = {
       c.setAttribute('fill',r()<0.2?PALETTE.ob2:PALETTE.ob);
       svg.appendChild(c);
     }
-    tracePath(svg,'M 8 150 C 60 150, 80 60, 150 60 S 220 150, 292 60');
+    tracePath(svg,'M 8 150 C 60 150, 80 60, 150 60 S 220 150, 292 60',292,60);
   }
 
   function drawMaze(svg){
@@ -1601,7 +1621,7 @@ var I18N = {
     for(var i=0;i<cells;i++){
       for(var j=0;j<cells;j++){
         var x=10+i*w, y=10+j*h;
-        var r=mulberry32(i*31+j*17+7);
+        var r=mulberry32(i*31+j*17+7)();
         var o=document.createElementNS('http://www.w3.org/2000/svg','rect');
         o.setAttribute('x',x);o.setAttribute('y',y);
         o.setAttribute('width',w-8);o.setAttribute('height',h-8);
@@ -1610,7 +1630,7 @@ var I18N = {
         svg.appendChild(o);
       }
     }
-    tracePath(svg,'M 8 90 H 90 V 30 H 210 V 140 H 292');
+    tracePath(svg,'M 8 90 H 90 V 30 H 210 V 140 H 292',292,140);
   }
 
   function drawPosts(svg){
@@ -1624,7 +1644,7 @@ var I18N = {
         svg.appendChild(o);
       }
     }
-    tracePath(svg,'M 8 90 C 60 90, 70 40, 130 40 S 190 150, 292 95');
+    tracePath(svg,'M 8 90 C 60 90, 70 40, 130 40 S 190 150, 292 95',292,95);
   }
 
   function drawCorridor(svg){
@@ -1645,10 +1665,10 @@ var I18N = {
       c.setAttribute('r',2+r()*3.5);c.setAttribute('fill',PALETTE.ob);
       svg.appendChild(c);
     }
-    tracePath(svg,'M 8 95 C 50 95, 70 70, 110 70 S 150 122, 200 122 S 250 40, 292 40');
+    tracePath(svg,'M 8 95 C 50 95, 70 70, 110 70 S 150 122, 200 122 S 250 40, 292 40',292,40);
   }
 
-  function tracePath(svg,d){
+  function tracePath(svg,d,endX,endY){
     var p=document.createElementNS('http://www.w3.org/2000/svg','path');
     p.setAttribute('d',d);p.setAttribute('fill','none');
     p.setAttribute('stroke',PALETTE.pathEnd);p.setAttribute('stroke-width',2);
@@ -1656,7 +1676,7 @@ var I18N = {
     svg.appendChild(p);
     var end=document.createElementNS('http://www.w3.org/2000/svg','circle');
     end.setAttribute('r',4);end.setAttribute('fill',PALETTE.dot);
-    end.setAttribute('cx',292);end.setAttribute('cy',40);
+    end.setAttribute('cx',endX);end.setAttribute('cy',endY);
     svg.appendChild(end);
   }
 
