@@ -34,6 +34,7 @@ uniform_real_distribution<double> rand_inf;
 // 定义订阅者和发布者
 rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr _local_map_pub;
 rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr _all_map_pub;
+static std::shared_ptr<rclcpp::Node> _map_node;
 rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr click_map_pub_;
 rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr _odom_sub;
 
@@ -315,45 +316,19 @@ void pubSensedPoints() {
     // 将点云转换为 ROS2 消息格式并发布
     pcl::toROSMsg(cloudMap, globalMap_pcd);
     globalMap_pcd.header.frame_id = "map";
+    if (_map_node) {
+        // Stamp with the node clock (honours use_sim_time) — consumers key
+        // replans off the cloud stamp.
+        globalMap_pcd.header.stamp = _map_node->now();
+    }
     _all_map_pub->publish(globalMap_pcd);
 
-    return; // 有这个return后续的代码都不会执行
-
-    /* ---------- only publish points around current position ---------- */
-    // 只有地图生成完毕且有位置信息（里程计数据）时，才会发布局部地图
-    if (!_map_ok || !_has_odom) return;
-
-    pcl::PointCloud<pcl::PointXYZ> localMap;
-
-    // 设置搜索点
-    pcl::PointXYZ searchPoint(_state[0], _state[1], _state[2]);
-    pointIdxRadiusSearch.clear();
-    pointRadiusSquaredDistance.clear();
-
-    if (std::isnan(searchPoint.x) || std::isnan(searchPoint.y) || std::isnan(searchPoint.z))
-        return;
-
-    // 搜索感知范围内的点并构建局部地图
-    if (kdtreeLocalMap.radiusSearch(searchPoint, _sensing_range,
-                                    pointIdxRadiusSearch,
-                                    pointRadiusSquaredDistance) > 0) {
-        for (size_t i = 0; i < pointIdxRadiusSearch.size(); ++i) {
-            pcl::PointXYZ pt = cloudMap.points[pointIdxRadiusSearch[i]];
-            localMap.points.push_back(pt);
-        }
-    } else {
-        RCLCPP_ERROR(rclcpp::get_logger("map_server"), "No obstacles.");
-        return;
-    }
-
-    // 发布局部地图
-    localMap.width = localMap.points.size();
-    localMap.height = 1;
-    localMap.is_dense = true;
-
-    pcl::toROSMsg(localMap, localMap_pcd);
-    localMap_pcd.header.frame_id = "world";
-    _local_map_pub->publish(localMap_pcd);
+    /* ---------- only publish points around current position ----------
+     * Local-cloud path removed: this plant stack consumes only the latched
+     * global cloud (/map_generator/global_cloud); the kdtree local branch
+     * after an unconditional return was unreachable dead code and published
+     * an unstamped cloud in a stale "world" frame.
+     */
 }
 
 // 根据点击的位置，在地图中添加一个随机大小的柱状障碍物，并将其发布为一个局部地图
@@ -407,6 +382,7 @@ int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
     auto node = std::make_shared<rclcpp::Node>("random_map_sensing");
+    _map_node = node;
 
     // Latched global forest so late grid_map subscribers still receive the cloud.
     auto map_qos = rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable();

@@ -154,7 +154,6 @@ void BsplineOptimizer::optimize() {
 
   try {
     double        final_cost;
-    RCLCPP_WARN(rclcpp::get_logger("BsplineOptimizer"), "%f", final_cost);
     // std::cout << "Vector size: " << q.size() << std::endl;
     // for (size_t i = 0; i < q.size(); ++i) {
     //     std::cout << "q[" << i << "]: " << q[i] << std::endl;

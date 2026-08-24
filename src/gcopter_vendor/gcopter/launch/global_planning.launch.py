@@ -52,7 +52,9 @@ def generate_launch_description():
                 'fractal': 1,
                 'attenuation': 0.1,
             }],
-            remappings=[('/mock_map', '/voxel_map')],
+            # Planner reads config MapTopic (/map_generator/global_cloud) —
+            # route the demo map onto that topic.
+            remappings=[('/mock_map', '/map_generator/global_cloud')],
         ),
 
         Node(

@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
 project(gcopter)
 
-set(CMAKE_CXX_STANDARD 14)
+# Humble rclcpp requires C++17; ament_target_dependencies forces it anyway.
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Release)
 add_compile_options(-Wall -O3)

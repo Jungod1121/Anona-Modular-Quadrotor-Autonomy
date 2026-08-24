@@ -69,15 +69,15 @@ private:
   double start_time_;                  // global time for moving obstacles
 
   /* optimization parameters */
-  int    order_;                  // bspline degree
-  double lambda1_;                // jerk smoothness weight
-  double lambda2_;                // distance weight
-  double lambda3_;                // feasibility weight
-  double lambda4_;                // end point weight
-  double lambda5_;                // guide cost weight
-  double lambda6_;                // visibility cost weight
-  double lambda7_;                // waypoints cost weight
-  double lambda8_;                // acc smoothness
+  int    order_{3};                  // bspline degree
+  double lambda1_{0.0};              // jerk smoothness weight
+  double lambda2_{0.0};              // distance weight
+  double lambda3_{0.0};              // feasibility weight
+  double lambda4_{0.0};              // end point weight
+  double lambda5_{0.0};              // guide cost weight
+  double lambda6_{0.0};              // visibility cost weight
+  double lambda7_{0.0};              // waypoints cost weight
+  double lambda8_{0.0};              // acc smoothness
                                   //
   double dist0_;                  // safe distance
   double max_vel_, max_acc_;      // dynamic limits

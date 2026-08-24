@@ -13,12 +13,17 @@ KinoReplanFSM::~KinoReplanFSM() {
 }
 
 void KinoReplanFSM::init(std::shared_ptr<FastPlanner> nh) {
+  nh_ = nh;
   current_wp_  = 0;
   exec_state_  = FSM_EXEC_STATE::INIT;
   have_target_ = false;
   have_odom_   = false;
 
   nh->declare_parameter("fsm/flight_type", -1);
+  // Fly-band clamp for replan seeds (defaults preserve the previous hard-coded
+  // [0.5, 2.3] m behavior; override for taller/shorter cruise scenarios).
+  nh->declare_parameter("fsm/seed_z_min", 0.5);
+  nh->declare_parameter("fsm/seed_z_max", 2.3);
   nh->declare_parameter("fsm/thresh_replan", -1.0);
   nh->declare_parameter("fsm/thresh_no_replan", -1.0);
   nh->declare_parameter("fsm/waypoint_num", -1);
@@ -172,7 +177,9 @@ void KinoReplanFSM::execFSMCallback() {
       start_pt_ = odom_pos_;
       // Keep replan seeds in the fly band — corrupt B-splines can otherwise
       // feed underground / over-ceil starts and lock the FSM.
-      start_pt_(2) = std::max(0.5, std::min(start_pt_(2), 2.3));
+      const double zmin = nh_->get_parameter("fsm/seed_z_min").as_double();
+      const double zmax = nh_->get_parameter("fsm/seed_z_max").as_double();
+      start_pt_(2) = std::max(zmin, std::min(start_pt_(2), zmax));
       start_vel_ = odom_vel_;
       start_acc_.setZero();
       start_yaw_(0) = atan2(odom_orient_.toRotationMatrix()(1, 0), odom_orient_.toRotationMatrix()(0, 0));
@@ -186,7 +193,7 @@ void KinoReplanFSM::execFSMCallback() {
       case EXEC_TRAJ: {
             /* determine if need to replan */
             LocalTrajData* info     = &planner_manager_->local_data_;
-            rclcpp::Time time_now = rclcpp::Clock().now();
+            rclcpp::Time time_now = nh_->now();
             double         t_cur    = (time_now - info->start_time_).seconds();
             t_cur                   = min(info->duration_, t_cur);
 
@@ -240,7 +247,7 @@ void KinoReplanFSM::execFSMCallback() {
           }
     case REPLAN_TRAJ:{
       LocalTrajData* info     = &planner_manager_->local_data_;
-      rclcpp::Time time_now = rclcpp::Clock().now();
+      rclcpp::Time time_now = nh_->now();
       double         t_cur    = (time_now - info->start_time_).seconds();
 
       // Prefer odom over a diving B-spline sample when the traj went underground.
@@ -253,7 +260,9 @@ void KinoReplanFSM::execFSMCallback() {
         start_vel_ = odom_vel_;
         start_acc_.setZero();
       }
-      start_pt_(2) = std::max(0.5, std::min(start_pt_(2), 2.3));
+      const double zmin = nh_->get_parameter("fsm/seed_z_min").as_double();
+      const double zmax = nh_->get_parameter("fsm/seed_z_max").as_double();
+      start_pt_(2) = std::max(zmin, std::min(start_pt_(2), zmax));
 
       start_yaw_(0) = info->yaw_traj_.evaluateDeBoorT(t_cur)[0];
       start_yaw_(1) = info->yawdot_traj_.evaluateDeBoorT(t_cur)[0];

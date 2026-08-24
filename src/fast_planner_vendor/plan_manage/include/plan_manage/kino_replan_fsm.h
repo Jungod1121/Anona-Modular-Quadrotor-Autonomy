@@ -59,6 +59,7 @@ private:
   /* planning utils */
   FastPlannerManager::Ptr planner_manager_;
   PlanningVisualization::Ptr visualization_;
+  std::shared_ptr<FastPlanner> nh_;
 
   /* parameters */
   int target_type_;  // 1 mannual select, 2 hard code

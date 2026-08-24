@@ -6,7 +6,6 @@ global_planning_node:
     DilateRadius: 0.35
     VoxelWidth: 0.25
     MapBound: [-18.0, 18.0, -12.0, 12.0, 0.0, 4.0]
-    TimeoutRRT: 0.02
     MaxVelMag: 1.5
     MaxBdrMag: 2.1
     MaxTiltAngle: 0.45

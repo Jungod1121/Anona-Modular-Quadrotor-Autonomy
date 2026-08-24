@@ -38,6 +38,11 @@ public:
   void planYaw(const Eigen::Vector3d& start_yaw);
 
   void initPlanModules(std::shared_ptr<FastPlanner> nh);
+
+  // Node clock — all plan timestamps must share one time source with the
+  // traj_server node clock (system vs sim time mixing caused "invalid time").
+  std::shared_ptr<FastPlanner> node_;
+
   void setGlobalWaypoints(std::vector<Eigen::Vector3d>& waypoints);
 
   bool checkTrajCollision(double& distance);

@@ -48,7 +48,7 @@ void SDFMap::initMap(std::shared_ptr<FastPlanner> node) {
   node->declare_parameter<float>("sdf_map/cy", 0.5);
   node->declare_parameter<float>("sdf_map/fx", 0.5);
   node->declare_parameter<float>("sdf_map/fy", 0.5);
-  node->declare_parameter<bool>("sdf_map/use_depth_filter", "true");
+  node->declare_parameter<bool>("sdf_map/use_depth_filter", true);
   node->declare_parameter<float>("sdf_map/depth_filter_tolerance", 0.5);
   node->declare_parameter<float>("sdf_map/depth_filter_maxdist", 0.5);
   node->declare_parameter<float>("sdf_map/depth_filter_mindist", 0.5);
@@ -66,7 +66,7 @@ void SDFMap::initMap(std::shared_ptr<FastPlanner> node) {
   node->declare_parameter<float>("sdf_map/visualization_truncate_height", 0.5);
   node->declare_parameter<float>("sdf_map/virtual_ceil_height", 0.5);
   node->declare_parameter<bool>("sdf_map/show_occ_time", false);
-  node->declare_parameter<bool>("sdf_map/show_esdf_time", 0.5);
+  node->declare_parameter<bool>("sdf_map/show_esdf_time", false);
   node->declare_parameter<int>("sdf_map/pose_type", 0);
   node->declare_parameter<string>("sdf_map/frame_id", "map");
 

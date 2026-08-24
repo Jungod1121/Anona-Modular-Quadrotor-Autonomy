@@ -20,6 +20,7 @@ FastPlannerManager::~FastPlannerManager() {
 }
 
 void FastPlannerManager::initPlanModules(std::shared_ptr<FastPlanner> nh) {
+  node_ = nh;
   /* read algorithm parameters */
 
   nh->declare_parameter<double>("manager/max_vel", 0.0);
@@ -29,16 +30,21 @@ void FastPlannerManager::initPlanModules(std::shared_ptr<FastPlanner> nh) {
   nh->declare_parameter<double>("manager/local_segment_length", 0.0);
   nh->declare_parameter<double>("manager/clearance_threshold", 0.0);
   nh->declare_parameter<double>("manager/control_points_distance", 0.0);
-  nh->declare_parameter<bool>("manager/use_geometric_path", "false");
-  nh->declare_parameter<bool>("manager/use_kinodynamic_path", "false");
-  nh->declare_parameter<bool>("manager/use_topo_path", "false");
-  nh->declare_parameter<bool>("manager/use_optimization", "false");
+  nh->declare_parameter<bool>("manager/use_geometric_path", false);
+  nh->declare_parameter<bool>("manager/use_kinodynamic_path", false);
+  nh->declare_parameter<bool>("manager/use_topo_path", false);
+  nh->declare_parameter<bool>("manager/use_optimization", false);
 
  // Decalred paramters from Bspilne optimser to avoid again decalration of same paramters
   nh->declare_parameter<float>("optimization/lambda1", 0);
   nh->declare_parameter<float>("optimization/lambda2", 0);
   nh->declare_parameter<float>("optimization/lambda3", 0);
   nh->declare_parameter<float>("optimization/lambda4", 0);
+  // lambda5 (guide) / lambda6 (visibility) are read by BsplineOptimizer but
+  // were never declared — get_parameter left the members uninitialized.
+  nh->declare_parameter<float>("optimization/lambda5", 0);
+  nh->declare_parameter<float>("optimization/lambda6", 0);
+  nh->declare_parameter<float>("optimization/lambda8", 0);
   nh->declare_parameter<float>("optimization/lambda7", 0);
   nh->declare_parameter<float>("optimization/dist0", 0);
   nh->declare_parameter<float>("optimization/max_vel", 0);
@@ -111,7 +117,7 @@ void FastPlannerManager::setGlobalWaypoints(std::vector<Eigen::Vector3d>& waypoi
 }
 
 bool FastPlannerManager::checkTrajCollision(double& distance) {
-  double t_now = (rclcpp::Clock().now() - local_data_.start_time_).seconds();
+  double t_now = (node_->now() - local_data_.start_time_).seconds();
 
   double tm, tmp;
   local_data_.position_traj_.getTimeSpan(tm, tmp);
@@ -149,8 +155,8 @@ bool FastPlannerManager::kinodynamicReplan( Eigen::Vector3d start_pt, Eigen::Vec
     return false;
   }
 
-  auto t1 = rclcpp::Clock().now();
-  local_data_.start_time_ = rclcpp::Clock().now();
+  auto t1 = node_->now();
+  local_data_.start_time_ = node_->now();
   double t_search = 0.0, t_opt = 0.0, t_adjust = 0.0;
 
   Eigen::Vector3d init_pos = start_pt;
@@ -159,7 +165,7 @@ bool FastPlannerManager::kinodynamicReplan( Eigen::Vector3d start_pt, Eigen::Vec
 
   // kinodynamic path searching
 
-  t1 = rclcpp::Clock().now();
+  t1 = node_->now();
 
   kino_path_finder_->reset();
 
@@ -185,7 +191,7 @@ bool FastPlannerManager::kinodynamicReplan( Eigen::Vector3d start_pt, Eigen::Vec
 
   plan_data_.kino_path_ = kino_path_finder_->getKinoTraj(0.01);
 
-  t_search = (rclcpp::Clock().now() - t1).seconds();
+  t_search = (node_->now() - t1).seconds();
 
   // parameterize the path to bspline
 
@@ -199,7 +205,7 @@ bool FastPlannerManager::kinodynamicReplan( Eigen::Vector3d start_pt, Eigen::Vec
 
   // bspline trajectory optimization
 
-  t1 = rclcpp::Clock().now();
+  t1 = node_->now();
 
   int cost_function = BsplineOptimizer::NORMAL_PHASE;
 
@@ -209,11 +215,11 @@ bool FastPlannerManager::kinodynamicReplan( Eigen::Vector3d start_pt, Eigen::Vec
 
   ctrl_pts = bspline_optimizers_[0]->BsplineOptimizeTraj(ctrl_pts, ts, cost_function, 1, 1);
 
-  t_opt = (rclcpp::Clock().now() - t1).seconds();
+  t_opt = (node_->now() - t1).seconds();
 
   // iterative time adjustment
 
-  t1 = rclcpp::Clock().now();
+  t1 = node_->now();
   NonUniformBspline pos = NonUniformBspline(ctrl_pts, 3, ts);
 
   double to = pos.getTimeSum();
@@ -235,7 +241,7 @@ bool FastPlannerManager::kinodynamicReplan( Eigen::Vector3d start_pt, Eigen::Vec
     std::cout << "reallocate error." << std::endl;
   }
 
-  t_adjust = (rclcpp::Clock().now() - t1).seconds();
+  t_adjust = (node_->now() - t1).seconds();
 
   // save planned results
 
@@ -609,7 +615,7 @@ void FastPlannerManager::updateTrajInfo() {
 
 void FastPlannerManager::planYaw(const Eigen::Vector3d& start_yaw) {
   RCLCPP_INFO(rclcpp::get_logger("INFO:planner_manager"), "plan yaw");
-  auto t1 = rclcpp::Clock().now();
+  auto t1 = node_->now();
   // calculate waypoints of heading
 
   auto&  pos      = local_data_.position_traj_;
@@ -676,7 +682,7 @@ void FastPlannerManager::planYaw(const Eigen::Vector3d& start_yaw) {
   plan_data_.dt_yaw_      = dt_yaw;
   plan_data_.dt_yaw_path_ = dt_yaw;
 
-  std::cout << "plan heading: " << (rclcpp::Clock().now() - t1).seconds() << std::endl;
+  std::cout << "plan heading: " << (node_->now() - t1).seconds() << std::endl;
 }
 
 

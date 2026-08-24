@@ -62,7 +62,7 @@ public:
         routeMarker.id = 0;
         routeMarker.type = Marker::LINE_LIST;
         routeMarker.header.stamp = node_.now();
-        routeMarker.header.frame_id = "odom";
+        routeMarker.header.frame_id = "map";
         routeMarker.pose.orientation.w = 1.0;
         routeMarker.action = Marker::ADD;
         routeMarker.ns = "route";
@@ -159,7 +159,7 @@ public:
         Marker meshMarker, edgeMarker;
         meshMarker.id = 0;
         meshMarker.header.stamp = node_.now();
-        meshMarker.header.frame_id = "odom";
+        meshMarker.header.frame_id = "map";
         meshMarker.pose.orientation.w = 1.0;
         meshMarker.action = Marker::ADD;
         meshMarker.type = Marker::TRIANGLE_LIST;
@@ -209,7 +209,7 @@ public:
         sphereMarker.id = 0;
         sphereMarker.type = Marker::SPHERE_LIST;
         sphereMarker.header.stamp = node_.now();
-        sphereMarker.header.frame_id = "odom";
+        sphereMarker.header.frame_id = "map";
         sphereMarker.pose.orientation.w = 1.0;
         sphereMarker.action = Marker::ADD;
         sphereMarker.ns = "spheres";
@@ -232,7 +232,7 @@ public:
         marker.id = sg;
         marker.type = Marker::SPHERE_LIST;
         marker.header.stamp = node_.now();
-        marker.header.frame_id = "odom";
+        marker.header.frame_id = "map";
         marker.pose.orientation.w = 1.0;
         marker.action = Marker::ADD;
         marker.ns = "StartGoal";
