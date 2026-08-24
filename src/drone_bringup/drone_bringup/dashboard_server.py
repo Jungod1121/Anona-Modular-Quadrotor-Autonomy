@@ -1671,6 +1671,14 @@ class Handler(BaseHTTPRequestHandler):
         # Keep server quiet; UI shows process logs.
         return
 
+    def _write(self, data: bytes) -> None:
+        # Browsers cancel requests mid-transfer (prefetch, aborted polls);
+        # a dead socket is not a server error — swallow and move on.
+        try:
+            self._write(data)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+
     def _json(self, code: int, payload: Any) -> None:
         body = json.dumps(payload).encode('utf-8')
         self.send_response(code)
@@ -1678,7 +1686,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Length', str(len(body)))
         self.send_header('Cache-Control', 'no-store')
         self.end_headers()
-        self.wfile.write(body)
+        self._write(body)
 
     def _read_json(self) -> Dict[str, Any]:
         n = int(self.headers.get('Content-Length', '0') or 0)
@@ -1717,7 +1725,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Type', ctype)
         self.send_header('Content-Length', str(len(data)))
         self.end_headers()
-        self.wfile.write(data)
+        self._write(data)
 
     def do_GET(self) -> None:
         u = urlparse(self.path)
@@ -1787,7 +1795,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header('Content-Length', str(len(data)))
             self.send_header('Cache-Control', 'no-cache')
             self.end_headers()
-            self.wfile.write(data)
+            self._write(data)
             return
         if u.path.startswith('/api/'):
             self._json(404, {'error': 'not found'})
