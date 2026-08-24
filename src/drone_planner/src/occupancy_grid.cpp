@@ -241,6 +241,8 @@ void OccupancyGrid::integrateRayHit(const Eigen::Vector3d & sensor, const Eigen:
   }
 
   Eigen::Vector3d vox;
+  std::vector<Eigen::Vector3i> raw_neighbors;
+  const int r = inflate_cells_;
   while (caster.step(vox)) {
     const int ix = static_cast<int>(vox.x());
     const int iy = static_cast<int>(vox.y());
@@ -251,6 +253,29 @@ void OccupancyGrid::integrateRayHit(const Eigen::Vector3d & sensor, const Eigen:
     const size_t id = cellIndex(ix, iy, iz);
     occ_raw_[id] = 0;
     occ_inflate_[id] = 0;
+    // Clearing a cell must not erase the inflation contributed by nearby raw
+    // obstacles whose own voxel is off-ray — otherwise repeated sensor updates
+    // eat holes into the safety margin. Remember them and re-inflate below.
+    for (int dz = -r; dz <= r; ++dz) {
+      for (int dy = -r; dy <= r; ++dy) {
+        for (int dx = -r; dx <= r; ++dx) {
+          const int nx2 = ix + dx;
+          const int ny2 = iy + dy;
+          const int nz2 = iz + dz;
+          if (!indexValid(nx2, ny2, nz2)) {
+            continue;
+          }
+          if (occ_raw_[cellIndex(nx2, ny2, nz2)]) {
+            raw_neighbors.emplace_back(nx2, ny2, nz2);
+          }
+        }
+      }
+    }
+  }
+
+  // Restore inflation halos of surviving obstacles adjacent to the ray.
+  for (const auto & n : raw_neighbors) {
+    inflateAround(n.x(), n.y(), n.z());
   }
 
   setRawOccupied(h_idx.x(), h_idx.y(), h_idx.z());

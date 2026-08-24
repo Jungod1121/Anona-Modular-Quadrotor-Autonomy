@@ -687,7 +687,11 @@ private:
     const double replan_dist = get_parameter("replan_dist").as_double();
     bool near_end = false;
     if (!traj_.empty()) {
-      near_end = (pos - traj_.back()).norm() < replan_dist &&
+      // When the goal is only reachable via a snapped endpoint, the
+      // (traj_end vs goal) gap never closes — replanning on it every tick
+      // would thrash. Park at the nearest achievable point instead.
+      near_end = !goal_displaced_ &&
+                 (pos - traj_.back()).norm() < replan_dist &&
                  (traj_.back() - goal_p).norm() > goal_tol;
       while (traj_idx_ + 1 < traj_.size() &&
              (traj_[traj_idx_] - pos).norm() > (traj_[traj_idx_ + 1] - pos).norm()) {
@@ -697,13 +701,16 @@ private:
 
     if (need_replan_ || traj_.empty() || near_end ||
       peersThreatenPathLocked(pos) ||
-      state_ == State::REPLAN_TRAJ || state_ == State::GEN_NEW_TRAJ)
+      state_ == State::REPLAN_TRAJ || state_ == State::GEN_NEW_TRAJ ||
+      state_ == State::FAIL)
     {
       const double min_interval = get_parameter("min_replan_interval_sec").as_double();
-      const bool forced = traj_.empty() || state_ == State::REPLAN_TRAJ ||
-        state_ == State::GEN_NEW_TRAJ;
+      const bool forced = state_ == State::REPLAN_TRAJ ||
+        state_ == State::GEN_NEW_TRAJ ||
+        (traj_.empty() && state_ != State::FAIL);
       if (!forced && (now() - last_plan_time_).seconds() < min_interval) {
-        // Throttle replans — keep tracking current trajectory.
+        // Throttle replans — keep tracking current trajectory. In FAIL this
+        // also rate-limits retry attempts against an unreachable goal.
       } else {
         state_ = State::GEN_NEW_TRAJ;
         // Keep controller on the path while A* runs (do not let it chase /drone/goal).
@@ -721,10 +728,17 @@ private:
         }
         lk.lock();
         if (!ok) {
+          // Stay in FAIL: keep tracking the stale trajectory toward it, but
+          // retry after min_replan_interval instead of silently abandoning
+          // the new goal until some unrelated trigger happens to fire.
           state_ = State::FAIL;
-          publishLocalGoal(pos);
+          if (!traj_.empty()) {
+            publishLocalGoal(traj_[std::min(traj_idx_, traj_.size() - 1)]);
+          } else {
+            publishLocalGoal(pos);
+          }
           publishTrajectoryCmd(false);
-          publishStatus("FAIL", false, "A*/optimize failed — holding hover");
+          publishStatus("FAIL", !traj_.empty(), "A*/optimize failed — retrying", pathLength(traj_));
           need_replan_ = false;
           return;
         }
@@ -823,8 +837,9 @@ private:
     }
 
     // B-spline shapes the yellow path; local_goal lookahead above tracks it.
-    // Do not open-loop traj_cmd FF — lag → FF races ahead → blue cuts through obstacles.
-    publish_traj_cmd = false;
+    // Default keeps feedforward traj_cmd off (lag → FF races ahead → blue cuts
+    // through obstacles); use_trajectory_cmd:=true re-enables it explicitly.
+    publish_traj_cmd = get_parameter("use_trajectory_cmd").as_bool();
 
     const double ox = active_origin_.x();
     const double oy = active_origin_.y();
@@ -920,6 +935,16 @@ private:
         "A* failed (true_3d=%s, band=±%.2f) — no free 3D route",
         opt.true_3d ? "yes" : "no", opt.z_band);
       return false;
+    }
+
+    // Endpoints may have been snapped out of inflation — remember when the
+    // commanded goal is not directly reachable so the FSM does not replan
+    // forever chasing an arrival test it can never satisfy.
+    goal_displaced_ = (guide.back() - g).norm() > 2.0 * active_resolution_;
+    if (goal_displaced_) {
+      RCLCPP_WARN(get_logger(),
+        "Commanded goal inside inflation — path ends %.2f m away (displaced)",
+        (guide.back() - g).norm());
     }
 
     // Legacy horizontal mode flattens; true 3D keeps vertical waypoints.
@@ -1194,6 +1219,8 @@ private:
   nav_msgs::msg::Odometry odom_;
   geometry_msgs::msg::PoseStamped goal_;
   bool have_odom_{false}, have_goal_{false}, have_map_{false}, need_replan_{false};
+  /// Commanded goal not directly reachable — path ends at snapped point.
+  bool goal_displaced_{false};
   std::vector<Eigen::Vector3d> obstacles_;
   std::vector<Eigen::Vector3d> traj_;
   size_t traj_idx_{0};
