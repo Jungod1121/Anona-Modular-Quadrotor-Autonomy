@@ -1675,7 +1675,7 @@ class Handler(BaseHTTPRequestHandler):
         # Browsers cancel requests mid-transfer (prefetch, aborted polls);
         # a dead socket is not a server error — swallow and move on.
         try:
-            self._write(data)
+            self.wfile.write(data)
         except (BrokenPipeError, ConnectionResetError):
             pass
 
