@@ -1,105 +1,98 @@
-[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-07-24-00-00-13-780948-jungod-asus-tuf-gaming-a15-122518
+[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-08-25-16-28-11-388594-jungod-asus-tuf-gaming-a15-42479
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [dynamics_node-1]: process started with pid [122535]
-[INFO] [controller_node-2]: process started with pid [122537]
-[INFO] [map_node-3]: process started with pid [122539]
-[INFO] [viz_node-4]: process started with pid [122541]
-[INFO] [rviz2-5]: process started with pid [122543]
-[viz_node-4] [INFO] [1784822413.849002803] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)
-[controller_node-2] [INFO] [1784822413.851074927] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on
-[dynamics_node-1] [INFO] [1784822413.851421557] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)
-[map_node-3] [INFO] [1784822413.856399560] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=0 points=0 downsample_voxel=0.000
-[map_node-3] [INFO] [1784822413.857110382] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=0 (native cylinders+walls for dense/narrow; ego_* modes optional)
-[rviz2-5] [INFO] [1784822414.287995474] [rviz2]: Stereo is NOT SUPPORTED
-[rviz2-5] [INFO] [1784822414.288147459] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)
-[rviz2-5] [INFO] [1784822414.316783865] [rviz2]: Stereo is NOT SUPPORTED
-[INFO] [interference_monitor-6]: process started with pid [122622]
-[interference_monitor-6] [INFO] [1784822416.813790697] [interference_monitor]: Interference monitor ready (goal=(0.0, 0.0, 1.5), limit=0.3 m)
-[INFO] [send_goal-7]: process started with pid [122650]
-[send_goal-7] [INFO] [1784822417.811491217] [send_goal]: Published goal (0.00, 0.00, 1.50) yaw=0.00 remaining=0 subs=2
+[INFO] [dynamics_node-1]: process started with pid [42496]
+[INFO] [controller_node-2]: process started with pid [42498]
+[INFO] [map_node-3]: process started with pid [42500]
+[INFO] [viz_node-4]: process started with pid [42502]
+[map_node-3] [INFO] [1787646491.454438073] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=600 downsample_voxel=0.000
+[map_node-3] [INFO] [1787646491.455112038] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=600 (native cylinders+walls for dense/narrow; ego_* modes optional)
+[viz_node-4] [INFO] [1787646491.781342605] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)
+[controller_node-2] [INFO] [1787646491.782329133] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on
+[dynamics_node-1] [INFO] [1787646491.782807740] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)
+[INFO] [interference_monitor-5]: process started with pid [42560]
+[interference_monitor-5] [INFO] [1787646494.425865957] [interference_monitor]: Interference monitor ready (goal=(0.0, 0.0, 1.5), limit=0.3 m)
+[INFO] [send_goal-6]: process started with pid [42588]
+[send_goal-6] [INFO] [1787646495.339690365] [send_goal]: Published goal (0.00, 0.00, 1.50) yaw=0.00 remaining=0 subs=1
 [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
-[INFO] [send_goal-7]: sending signal 'SIGINT' to process[send_goal-7]
-[INFO] [interference_monitor-6]: sending signal 'SIGINT' to process[interference_monitor-6]
-[INFO] [rviz2-5]: sending signal 'SIGINT' to process[rviz2-5]
+[INFO] [send_goal-6]: sending signal 'SIGINT' to process[send_goal-6]
+[INFO] [interference_monitor-5]: sending signal 'SIGINT' to process[interference_monitor-5]
 [INFO] [viz_node-4]: sending signal 'SIGINT' to process[viz_node-4]
 [INFO] [map_node-3]: sending signal 'SIGINT' to process[map_node-3]
 [INFO] [controller_node-2]: sending signal 'SIGINT' to process[controller_node-2]
 [INFO] [dynamics_node-1]: sending signal 'SIGINT' to process[dynamics_node-1]
-[rviz2-5] [INFO] [1784822513.988271382] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[controller_node-2] [INFO] [1784822513.988289125] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[map_node-3] [INFO] [1784822513.988283635] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[dynamics_node-1] [INFO] [1784822513.988299615] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[viz_node-4] [INFO] [1784822513.988284146] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[send_goal-7] Traceback (most recent call last):
-[send_goal-7]   File "/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal", line 33, in <module>
-[send_goal-7]     sys.exit(load_entry_point('drone_bringup==0.1.0', 'console_scripts', 'send_goal')())
-[send_goal-7]   File "/home/jungod/drone_ws/install/drone_bringup/lib/python3.10/site-packages/drone_bringup/send_goal.py", line 77, in main
-[send_goal-7]     rclpy.spin(node)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
-[send_goal-7]     executor.spin_once()
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
-[send_goal-7]     self._spin_once_impl(timeout_sec)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 803, in _spin_once_impl
-[send_goal-7]     handler()
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 256, in __call__
-[send_goal-7]     self._execute_coroutine_step(self._handler)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 272, in _execute_coroutine_step
-[send_goal-7]     result = coro.send(None)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 488, in handler
-[send_goal-7]     await call_coroutine(entity, arg)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 396, in _execute_timer
-[send_goal-7]     await await_or_execute(tmr.callback)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 110, in await_or_execute
-[send_goal-7]     return callback(*args)
-[send_goal-7]   File "/home/jungod/drone_ws/install/drone_bringup/lib/python3.10/site-packages/drone_bringup/send_goal.py", line 61, in <lambda>
-[send_goal-7]     self.create_timer(0.2, lambda: rclpy.shutdown())
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 130, in shutdown
-[send_goal-7]     _shutdown(context=context)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/utilities.py", line 58, in shutdown
-[send_goal-7]     return context.shutdown()
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 103, in shutdown
-[send_goal-7]     self._call_on_shutdown_callbacks()
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 92, in _call_on_shutdown_callbacks
-[send_goal-7]     callback = weak_method()
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 111, in reset_executor
-[send_goal-7]     __executor.shutdown()
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 252, in shutdown
-[send_goal-7]     if not self._work_tracker.wait(timeout_sec):
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 97, in wait
-[send_goal-7]     if not self._work_condition.wait_for(
-[send_goal-7]   File "/usr/lib/python3.10/threading.py", line 355, in wait_for
-[send_goal-7]     self.wait(waittime)
-[send_goal-7]   File "/usr/lib/python3.10/threading.py", line 320, in wait
-[send_goal-7]     waiter.acquire()
-[send_goal-7] KeyboardInterrupt
-[interference_monitor-6] Exception in thread Thread-1 (spin):
-[interference_monitor-6] Traceback (most recent call last):
-[interference_monitor-6]   File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
-[ERROR] [viz_node-4]: process has died [pid 122541, exit code -2, cmd '/home/jungod/drone_ws/install/drone_visualization/lib/drone_visualization/viz_node --ros-args -r __node:=drone_visualization --params-file /tmp/launch_params_zci3lemy'].
-[ERROR] [map_node-3]: process has died [pid 122539, exit code -2, cmd '/home/jungod/drone_ws/install/drone_map/lib/drone_map/map_node --ros-args -r __node:=drone_map --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/map_sparse.yaml'].
-[interference_monitor-6]     self.run()
-[interference_monitor-6]   File "/usr/lib/python3.10/threading.py", line 953, in run
-[interference_monitor-6]     self._target(*self._args, **self._kwargs)
-[interference_monitor-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
-[interference_monitor-6]     executor.spin_once()
-[interference_monitor-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
-[interference_monitor-6]     self._spin_once_impl(timeout_sec)
-[interference_monitor-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 797, in _spin_once_impl
-[interference_monitor-6]     handler, entity, node = self.wait_for_ready_callbacks(timeout_sec=timeout_sec)
-[interference_monitor-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 780, in wait_for_ready_callbacks
-[interference_monitor-6]     return next(self._cb_iter)
-[interference_monitor-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 681, in _wait_for_ready_callbacks
-[interference_monitor-6]     raise ExternalShutdownException()
-[interference_monitor-6] rclpy.executors.ExternalShutdownException
-[ERROR] [send_goal-7]: process has died [pid 122650, exit code -2, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal --x 0.0 --y 0.0 --z 1.5 --yaw 0.0 --topic /drone/goal --repeats 1'].
-[ERROR] [controller_node-2]: process has died [pid 122537, exit code -2, cmd '/home/jungod/drone_ws/install/drone_controller/lib/drone_controller/controller_node --ros-args -r __node:=drone_controller --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/controller.yaml'].
-[ERROR] [dynamics_node-1]: process has died [pid 122535, exit code -2, cmd '/home/jungod/drone_ws/install/drone_dynamics/lib/drone_dynamics/dynamics_node --ros-args -r __node:=drone_dynamics --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/dynamics.yaml --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/imu.yaml --params-file /tmp/launch_params_vnmbu1gg'].
-[rviz2-5] [INFO] [1784822513.993473607] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[interference_monitor-6] Exception in Tkinter callback
-[interference_monitor-6] Traceback (most recent call last):
-[interference_monitor-6]   File "/usr/lib/python3.10/tkinter/__init__.py", line 1919, in __call__
-[interference_monitor-6]     if self.subst:
-[interference_monitor-6] KeyboardInterrupt
-[INFO] [rviz2-5]: process has finished cleanly [pid 122543]
-[ERROR] [interference_monitor-6]: process[interference_monitor-6] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
-[INFO] [interference_monitor-6]: sending signal 'SIGTERM' to process[interference_monitor-6]
+[controller_node-2] [INFO] [1787646592.447859687] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[map_node-3] [INFO] [1787646592.447859747] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[viz_node-4] [INFO] [1787646592.447858635] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[interference_monitor-5] Exception in thread Thread-1 (spin):
+[interference_monitor-5] Traceback (most recent call last):
+[interference_monitor-5]   File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+[interference_monitor-5]     self.run()
+[interference_monitor-5]   File "/usr/lib/python3.10/threading.py", line 953, in run
+[interference_monitor-5]     self._target(*self._args, **self._kwargs)
+[interference_monitor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+[interference_monitor-5]     executor.spin_once()
+[interference_monitor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
+[interference_monitor-5]     self._spin_once_impl(timeout_sec)
+[interference_monitor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 797, in _spin_once_impl
+[interference_monitor-5]     handler, entity, node = self.wait_for_ready_callbacks(timeout_sec=timeout_sec)
+[interference_monitor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 780, in wait_for_ready_callbacks
+[interference_monitor-5]     return next(self._cb_iter)
+[interference_monitor-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 681, in _wait_for_ready_callbacks
+[interference_monitor-5]     raise ExternalShutdownException()
+[interference_monitor-5] rclpy.executors.ExternalShutdownException
+[send_goal-6] Traceback (most recent call last):
+[send_goal-6]   File "/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal", line 33, in <module>
+[send_goal-6]     sys.exit(load_entry_point('drone-bringup', 'console_scripts', 'send_goal')())
+[send_goal-6]   File "/home/jungod/drone_ws/build/drone_bringup/drone_bringup/send_goal.py", line 77, in main
+[send_goal-6]     rclpy.spin(node)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+[send_goal-6]     executor.spin_once()
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
+[send_goal-6]     self._spin_once_impl(timeout_sec)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 803, in _spin_once_impl
+[send_goal-6]     handler()
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 256, in __call__
+[send_goal-6]     self._execute_coroutine_step(self._handler)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 272, in _execute_coroutine_step
+[send_goal-6]     result = coro.send(None)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 488, in handler
+[send_goal-6]     await call_coroutine(entity, arg)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 396, in _execute_timer
+[send_goal-6]     await await_or_execute(tmr.callback)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 110, in await_or_execute
+[send_goal-6]     return callback(*args)
+[send_goal-6]   File "/home/jungod/drone_ws/build/drone_bringup/drone_bringup/send_goal.py", line 61, in <lambda>
+[send_goal-6]     self.create_timer(0.2, lambda: rclpy.shutdown())
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 130, in shutdown
+[send_goal-6]     _shutdown(context=context)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/utilities.py", line 58, in shutdown
+[send_goal-6]     return context.shutdown()
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 103, in shutdown
+[send_goal-6]     self._call_on_shutdown_callbacks()
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 92, in _call_on_shutdown_callbacks
+[send_goal-6]     callback = weak_method()
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 111, in reset_executor
+[send_goal-6]     __executor.shutdown()
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 252, in shutdown
+[send_goal-6]     if not self._work_tracker.wait(timeout_sec):
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 97, in wait
+[send_goal-6]     if not self._work_condition.wait_for(
+[send_goal-6]   File "/usr/lib/python3.10/threading.py", line 355, in wait_for
+[send_goal-6]     self.wait(waittime)
+[send_goal-6]   File "/usr/lib/python3.10/threading.py", line 320, in wait
+[send_goal-6]     waiter.acquire()
+[send_goal-6] KeyboardInterrupt
+[dynamics_node-1] [INFO] [1787646592.448339299] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[viz_node-4] [INFO] [1787646592.451846027] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [map_node-3]: process has died [pid 42500, exit code -2, cmd '/home/jungod/drone_ws/install/drone_map/lib/drone_map/map_node --ros-args -r __node:=drone_map --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/map_sparse.yaml'].
+[ERROR] [dynamics_node-1]: process has died [pid 42496, exit code -2, cmd '/home/jungod/drone_ws/install/drone_dynamics/lib/drone_dynamics/dynamics_node --ros-args -r __node:=drone_dynamics --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/dynamics.yaml --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/imu.yaml --params-file /tmp/launch_params_ftxjez1f'].
+[ERROR] [controller_node-2]: process has died [pid 42498, exit code -2, cmd '/home/jungod/drone_ws/install/drone_controller/lib/drone_controller/controller_node --ros-args -r __node:=drone_controller --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/controller.yaml'].
+[ERROR] [send_goal-6]: process has died [pid 42588, exit code -2, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal --x 0.0 --y 0.0 --z 1.5 --yaw 0.0 --topic /drone/goal --repeats 1'].
+[interference_monitor-5] Exception in Tkinter callback
+[interference_monitor-5] Traceback (most recent call last):
+[interference_monitor-5]   File "/usr/lib/python3.10/tkinter/__init__.py", line 1919, in __call__
+[interference_monitor-5]     if self.subst:
+[interference_monitor-5] KeyboardInterrupt
+[INFO] [viz_node-4]: process has finished cleanly [pid 42502]
+[ERROR] [interference_monitor-5]: process[interference_monitor-5] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [interference_monitor-5]: sending signal 'SIGTERM' to process[interference_monitor-5]

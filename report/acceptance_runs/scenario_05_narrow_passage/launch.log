@@ -1,90 +1,83 @@
-[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-07-23-23-57-01-636474-jungod-asus-tuf-gaming-a15-121635
+[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-08-25-16-25-18-430349-jungod-asus-tuf-gaming-a15-42001
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [dynamics_node-1]: process started with pid [121652]
-[INFO] [controller_node-2]: process started with pid [121654]
-[INFO] [map_node-3]: process started with pid [121656]
-[INFO] [planner_node-4]: process started with pid [121658]
-[INFO] [viz_node-5]: process started with pid [121660]
-[INFO] [rviz2-6]: process started with pid [121662]
-[controller_node-2] [INFO] [1784822221.703123232] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on
-[viz_node-5] [INFO] [1784822221.707659131] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)
-[dynamics_node-1] [INFO] [1784822221.710463636] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)
-[planner_node-4] [INFO] [1784822221.718420595] [drone_planner]: drone_planner ready (DynAStar=on, Bspline=off, local_mapping=off, map=/map/obstacles, peers=)
-[map_node-3] [INFO] [1784822221.730929393] [drone_map]: Map generated: mode=narrow_corridor seed=42 attempt=0 connected=true obstacles=83 points=137567 downsample_voxel=0.000
-[map_node-3] [INFO] [1784822221.734576246] [drone_map]: drone_map ready: mode=narrow_corridor seed=42 attempt=0 connected=yes points=137567 (native cylinders+walls for dense/narrow; ego_* modes optional)
-[planner_node-4] [INFO] [1784822221.755791718] [drone_planner]: Map ingested: 137567 raw -> 15616 voxels | origin=(-4.7,-4.7,-0.2) size=(29.4,19.4,4.7) res=0.25 inflate=0.08 [auto_fit] [auto_inflate]
-[rviz2-6] [INFO] [1784822222.167282117] [rviz2]: Stereo is NOT SUPPORTED
-[rviz2-6] [INFO] [1784822222.167414175] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)
-[rviz2-6] [INFO] [1784822222.186602138] [rviz2]: Stereo is NOT SUPPORTED
-[INFO] [send_goal-7]: process started with pid [121756]
-[planner_node-4] [INFO] [1784822226.592312239] [drone_planner]: New goal (17.00, 5.00, 1.50)
-[send_goal-7] [INFO] [1784822226.602805300] [send_goal]: Published goal (17.00, 5.00, 1.50) yaw=0.00 remaining=0 subs=3
-[planner_node-4] [INFO] [1784822226.618582613] [drone_planner]: Planning (1.0,5.0)->(17.0,5.0)
-[planner_node-4] [INFO] [1784822226.618647194] [drone_planner]: Running A* with 0 peer keep-outs
-[planner_node-4] [INFO] [1784822226.623975578] [drone_planner]: A* finished found=yes guide=87
-[planner_node-4] [INFO] [1784822226.624065376] [drone_planner]: Planned path: 138 waypoints, length=26.78 m (horizontal avoidance)
+[INFO] [dynamics_node-1]: process started with pid [42018]
+[INFO] [controller_node-2]: process started with pid [42020]
+[INFO] [map_node-3]: process started with pid [42022]
+[INFO] [planner_node-4]: process started with pid [42024]
+[INFO] [viz_node-5]: process started with pid [42026]
+[map_node-3] [INFO] [1787646318.516259220] [drone_map]: Map generated: mode=narrow_corridor seed=42 attempt=0 connected=true obstacles=83 points=137567 downsample_voxel=0.000
+[map_node-3] [INFO] [1787646318.519730764] [drone_map]: drone_map ready: mode=narrow_corridor seed=42 attempt=0 connected=yes points=137567 (native cylinders+walls for dense/narrow; ego_* modes optional)
+[viz_node-5] [INFO] [1787646318.832428601] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)
+[controller_node-2] [INFO] [1787646318.833054701] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on
+[dynamics_node-1] [INFO] [1787646318.833152961] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)
+[planner_node-4] [INFO] [1787646318.833830355] [drone_planner]: drone_planner ready (DynAStar=on, Bspline=off, local_mapping=off, map=/map/obstacles, peers=)
+[planner_node-4] [INFO] [1787646318.902232740] [drone_planner]: Map ingested: 137567 raw -> 61589 voxels | origin=(-4.7,-4.7,-0.2) size=(29.4,19.4,4.7) res=0.15 inflate=0.24 [auto_fit] [auto_inflate]
+[INFO] [send_goal-6]: process started with pid [42118]
+[planner_node-4] [INFO] [1787646323.063406485] [drone_planner]: New goal (17.00, 5.00, 1.50)
+[send_goal-6] [INFO] [1787646323.075384595] [send_goal]: Published goal (17.00, 5.00, 1.50) yaw=0.00 remaining=0 subs=2
+[planner_node-4] [INFO] [1787646323.083651412] [drone_planner]: Planning (1.0,5.0,1.3)->(17.0,5.0,1.5)
+[planner_node-4] [INFO] [1787646323.083684733] [drone_planner]: Running A* with 0 peer keep-outs (true_3d=no)
+[planner_node-4] [INFO] [1787646323.111019346] [drone_planner]: A* finished found=yes guide=153
+[planner_node-4] [INFO] [1787646323.111326520] [drone_planner]: Planned path: 278 waypoints, length=28.33 m (horizontal avoidance)
 [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
-[INFO] [send_goal-7]: sending signal 'SIGINT' to process[send_goal-7]
-[INFO] [rviz2-6]: sending signal 'SIGINT' to process[rviz2-6]
+[INFO] [send_goal-6]: sending signal 'SIGINT' to process[send_goal-6]
 [INFO] [viz_node-5]: sending signal 'SIGINT' to process[viz_node-5]
 [INFO] [planner_node-4]: sending signal 'SIGINT' to process[planner_node-4]
 [INFO] [map_node-3]: sending signal 'SIGINT' to process[map_node-3]
 [INFO] [controller_node-2]: sending signal 'SIGINT' to process[controller_node-2]
 [INFO] [dynamics_node-1]: sending signal 'SIGINT' to process[dynamics_node-1]
-[map_node-3] [INFO] [1784822385.717323285] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[viz_node-5] [INFO] [1784822385.717318887] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[planner_node-4] [INFO] [1784822385.717320279] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[rviz2-6] [INFO] [1784822385.717316132] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[dynamics_node-1] [INFO] [1784822385.717374180] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[send_goal-7] Traceback (most recent call last):
-[send_goal-7]   File "/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal", line 33, in <module>
-[send_goal-7]     sys.exit(load_entry_point('drone_bringup==0.1.0', 'console_scripts', 'send_goal')())
-[send_goal-7]   File "/home/jungod/drone_ws/install/drone_bringup/lib/python3.10/site-packages/drone_bringup/send_goal.py", line 77, in main
-[send_goal-7]     rclpy.spin(node)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
-[send_goal-7]     executor.spin_once()
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
-[send_goal-7]     self._spin_once_impl(timeout_sec)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 803, in _spin_once_impl
-[send_goal-7]     handler()
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 256, in __call__
-[send_goal-7]     self._execute_coroutine_step(self._handler)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 272, in _execute_coroutine_step
-[send_goal-7]     result = coro.send(None)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 488, in handler
-[send_goal-7]     await call_coroutine(entity, arg)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 396, in _execute_timer
-[send_goal-7]     await await_or_execute(tmr.callback)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 110, in await_or_execute
-[send_goal-7]     return callback(*args)
-[send_goal-7]   File "/home/jungod/drone_ws/install/drone_bringup/lib/python3.10/site-packages/drone_bringup/send_goal.py", line 61, in <lambda>
-[send_goal-7]     self.create_timer(0.2, lambda: rclpy.shutdown())
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 130, in shutdown
-[send_goal-7]     _shutdown(context=context)
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/utilities.py", line 58, in shutdown
-[send_goal-7]     return context.shutdown()
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 103, in shutdown
-[send_goal-7]     self._call_on_shutdown_callbacks()
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 92, in _call_on_shutdown_callbacks
-[send_goal-7]     callback = weak_method()
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 111, in reset_executor
-[send_goal-7]     __executor.shutdown()
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 252, in shutdown
-[send_goal-7]     if not self._work_tracker.wait(timeout_sec):
-[send_goal-7]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 97, in wait
-[send_goal-7]     if not self._work_condition.wait_for(
-[send_goal-7]   File "/usr/lib/python3.10/threading.py", line 355, in wait_for
-[send_goal-7]     self.wait(waittime)
-[send_goal-7]   File "/usr/lib/python3.10/threading.py", line 320, in wait
-[send_goal-7]     waiter.acquire()
-[send_goal-7] KeyboardInterrupt
-[controller_node-2] [INFO] [1784822385.717613479] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[rviz2-6] [INFO] [1784822385.721264904] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[viz_node-5] [INFO] [1784822385.721698327] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[ERROR] [controller_node-2]: process has died [pid 121654, exit code -2, cmd '/home/jungod/drone_ws/install/drone_controller/lib/drone_controller/controller_node --ros-args -r __node:=drone_controller --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/controller.yaml'].
-[ERROR] [dynamics_node-1]: process has died [pid 121652, exit code -2, cmd '/home/jungod/drone_ws/install/drone_dynamics/lib/drone_dynamics/dynamics_node --ros-args -r __node:=drone_dynamics --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/dynamics.yaml --params-file /tmp/launch_params_3l65fzr2'].
-[ERROR] [map_node-3]: process has died [pid 121656, exit code -2, cmd '/home/jungod/drone_ws/install/drone_map/lib/drone_map/map_node --ros-args -r __node:=drone_map --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/map_narrow.yaml'].
-[ERROR] [planner_node-4]: process has died [pid 121658, exit code -2, cmd '/home/jungod/drone_ws/install/drone_planner/lib/drone_planner/planner_node --ros-args -r __node:=drone_planner --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/planner.yaml --params-file /tmp/launch_params_g69m9chv'].
-[ERROR] [send_goal-7]: process has died [pid 121756, exit code -2, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal --x 17.0 --y 5.0 --z 1.5 --yaw 0.0 --topic /drone/goal --repeats 1'].
-[INFO] [viz_node-5]: process has finished cleanly [pid 121660]
-[INFO] [rviz2-6]: process has finished cleanly [pid 121662]
+[controller_node-2] [INFO] [1787646482.710889155] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[viz_node-5] [INFO] [1787646482.710890137] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[map_node-3] [INFO] [1787646482.710888584] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[planner_node-4] [INFO] [1787646482.710888354] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[dynamics_node-1] [INFO] [1787646482.710896008] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[send_goal-6] Traceback (most recent call last):
+[send_goal-6]   File "/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal", line 33, in <module>
+[send_goal-6]     sys.exit(load_entry_point('drone-bringup', 'console_scripts', 'send_goal')())
+[send_goal-6]   File "/home/jungod/drone_ws/build/drone_bringup/drone_bringup/send_goal.py", line 77, in main
+[send_goal-6]     rclpy.spin(node)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+[send_goal-6]     executor.spin_once()
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
+[send_goal-6]     self._spin_once_impl(timeout_sec)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 803, in _spin_once_impl
+[send_goal-6]     handler()
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 256, in __call__
+[send_goal-6]     self._execute_coroutine_step(self._handler)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 272, in _execute_coroutine_step
+[send_goal-6]     result = coro.send(None)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 488, in handler
+[send_goal-6]     await call_coroutine(entity, arg)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 396, in _execute_timer
+[send_goal-6]     await await_or_execute(tmr.callback)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 110, in await_or_execute
+[send_goal-6]     return callback(*args)
+[send_goal-6]   File "/home/jungod/drone_ws/build/drone_bringup/drone_bringup/send_goal.py", line 61, in <lambda>
+[send_goal-6]     self.create_timer(0.2, lambda: rclpy.shutdown())
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 130, in shutdown
+[send_goal-6]     _shutdown(context=context)
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/utilities.py", line 58, in shutdown
+[send_goal-6]     return context.shutdown()
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 103, in shutdown
+[send_goal-6]     self._call_on_shutdown_callbacks()
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/context.py", line 92, in _call_on_shutdown_callbacks
+[send_goal-6]     callback = weak_method()
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 111, in reset_executor
+[send_goal-6]     __executor.shutdown()
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 252, in shutdown
+[send_goal-6]     if not self._work_tracker.wait(timeout_sec):
+[send_goal-6]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 97, in wait
+[send_goal-6]     if not self._work_condition.wait_for(
+[send_goal-6]   File "/usr/lib/python3.10/threading.py", line 355, in wait_for
+[send_goal-6]     self.wait(waittime)
+[send_goal-6]   File "/usr/lib/python3.10/threading.py", line 320, in wait
+[send_goal-6]     waiter.acquire()
+[send_goal-6] KeyboardInterrupt
+[viz_node-5] [INFO] [1787646482.713851555] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[map_node-3] [INFO] [1787646482.714531983] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [controller_node-2]: process has died [pid 42020, exit code -2, cmd '/home/jungod/drone_ws/install/drone_controller/lib/drone_controller/controller_node --ros-args -r __node:=drone_controller --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/controller.yaml'].
+[ERROR] [planner_node-4]: process has died [pid 42024, exit code -2, cmd '/home/jungod/drone_ws/install/drone_planner/lib/drone_planner/planner_node --ros-args -r __node:=drone_planner --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/planner.yaml --params-file /tmp/launch_params_x79da4q_'].
+[ERROR] [dynamics_node-1]: process has died [pid 42018, exit code -2, cmd '/home/jungod/drone_ws/install/drone_dynamics/lib/drone_dynamics/dynamics_node --ros-args -r __node:=drone_dynamics --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/dynamics.yaml --params-file /tmp/launch_params_rzxz12yz'].
+[ERROR] [send_goal-6]: process has died [pid 42118, exit code -2, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal --x 17.0 --y 5.0 --z 1.5 --yaw 0.0 --topic /drone/goal --repeats 1'].
+[INFO] [viz_node-5]: process has finished cleanly [pid 42026]
+[INFO] [map_node-3]: process has finished cleanly [pid 42022]
