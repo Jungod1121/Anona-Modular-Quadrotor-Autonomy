@@ -119,52 +119,47 @@ class OccupancyGrid3D:
         max_clusters: int = 16,
     ) -> List[Tuple[np.ndarray, int]]:
         """Return (centroid xyz, cluster cell count) for frontier free clusters."""
-        free = np.argwhere(self.grid == FREE)
-        if free.size == 0:
+        free_mask = self.grid == FREE
+        if not free_mask.any():
             return []
 
         # Frontier: FREE with at least one UNKNOWN 6-neighbour.
-        dims = self.dims
-        frontiers = []
-        for i, j, k in free:
-            nbrs = (
-                (i > 0 and self.grid[i - 1, j, k] == UNK)
-                or (i + 1 < dims[0] and self.grid[i + 1, j, k] == UNK)
-                or (j > 0 and self.grid[i, j - 1, k] == UNK)
-                or (j + 1 < dims[1] and self.grid[i, j + 1, k] == UNK)
-                or (k > 0 and self.grid[i, j, k - 1] == UNK)
-                or (k + 1 < dims[2] and self.grid[i, j, k + 1] == UNK)
-            )
-            if nbrs:
-                frontiers.append((i, j, k))
-        if not frontiers:
+        # Vectorised via padded shifts — the pure-Python per-cell loop cost
+        # O(cells) interpreter round-trips per publish tick.
+        unk = self.grid == UNK
+        pad = np.pad(unk, 1, mode='constant', constant_values=False)
+        has_unk_nbr = (
+            pad[0:-2, 1:-1, 1:-1] | pad[2:, 1:-1, 1:-1]
+            | pad[1:-1, 0:-2, 1:-1] | pad[1:-1, 2:, 1:-1]
+            | pad[1:-1, 1:-1, 0:-2] | pad[1:-1, 1:-1, 2:]
+        )
+        frontiers = np.argwhere(free_mask & has_unk_nbr)
+        if frontiers.size == 0:
             return []
 
-        pts = self.idx_to_world(np.asarray(frontiers, dtype=np.int32))
+        pts = self.idx_to_world(frontiers.astype(np.int32))
         # Prefer slices near cruise height.
         band = np.abs(pts[:, 2] - cruise_z) < max(0.8, self.res * 2.5)
         if np.any(band):
             pts = pts[band]
-            frontiers = [frontiers[n] for n, b in enumerate(band) if b]
+            frontiers = frontiers[band]
 
-        # Greedy clustering in XY.
-        remaining = list(range(len(pts)))
+        # Greedy clustering in XY. Note: membership is measured against the
+        # SEED only (not chained), so each cluster is exactly "all frontier
+        # cells within sep of its seed" and the previous nested rescan loop
+        # was equivalent to a single masked pass — now done in numpy.
+        remaining = np.arange(len(pts))
         clusters: List[Tuple[np.ndarray, int]] = []
         sep = max(1.0, self.res * 3.0)
-        while remaining and len(clusters) < max_clusters:
-            seed = remaining.pop(0)
-            memb = [seed]
-            changed = True
-            while changed:
-                changed = False
-                for r in list(remaining):
-                    if np.hypot(pts[r, 0] - pts[seed, 0], pts[r, 1] - pts[seed, 1]) < sep:
-                        remaining.remove(r)
-                        memb.append(r)
-                        changed = True
-            if len(memb) < min_size:
+        while remaining.size and len(clusters) < max_clusters:
+            seed = remaining[0]
+            d2 = (pts[remaining, 0] - pts[seed, 0]) ** 2 + \
+                 (pts[remaining, 1] - pts[seed, 1]) ** 2
+            memb = remaining[d2 < sep * sep]
+            remaining = remaining[d2 >= sep * sep]
+            if memb.size < min_size:
                 continue
-            c = pts[np.asarray(memb)].mean(axis=0)
+            c = pts[memb].mean(axis=0)
             c[2] = cruise_z
-            clusters.append((c, len(memb)))
+            clusters.append((c, int(memb.size)))
         return clusters

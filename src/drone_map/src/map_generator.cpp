@@ -353,6 +353,23 @@ std::vector<Obstacle> MapGenerator::generateCandidateObstacles(
   int rejections = 0;
   const int max_rejections = obstacle_count * 500;
 
+  // Uniform spatial hash so the min-spacing test is O(1) amortized instead of
+  // O(n) per candidate (dense_asymmetric: ~530 obstacles x up to 500n
+  // rejections made generation quadratic). Cell size >= max possible
+  // required distance means a 3x3 neighborhood suffices.
+  const double cell_size = std::max(
+    1e-3, config_.min_obstacle_spacing + 2.0 * config_.max_obstacle_radius);
+  const int gw = std::max(1, static_cast<int>(std::ceil((bounds.x_max - bounds.x_min) / cell_size)) + 1);
+  const int gh = std::max(1, static_cast<int>(std::ceil((bounds.y_max - bounds.y_min) / cell_size)) + 1);
+  auto cell_index = [&](const Eigen::Vector2d & p) -> std::pair<int, int> {
+    int cx = static_cast<int>(std::floor((p.x() - bounds.x_min) / cell_size));
+    int cy = static_cast<int>(std::floor((p.y() - bounds.y_min) / cell_size));
+    return {std::clamp(cx, 0, gw - 1), std::clamp(cy, 0, gh - 1)};
+  };
+  std::vector<std::vector<const Obstacle *>> grid(static_cast<size_t>(gw) * gh);
+  // Grid stores raw pointers: pre-reserve so push_back never reallocates.
+  obstacles.reserve(static_cast<size_t>(obstacle_count));
+
   while (placed < obstacle_count && rejections < max_rejections) {
     Obstacle obs;
     obs.shape = (shape_coin(rng) < 0.75) ? Obstacle::Shape::CYLINDER : Obstacle::Shape::SPHERE;
@@ -389,12 +406,25 @@ std::vector<Obstacle> MapGenerator::generateCandidateObstacles(
     }
 
     bool too_close = false;
-    for (const auto & existing : obstacles) {
-      const Eigen::Vector2d ep(existing.center.x(), existing.center.y());
-      const double required = config_.min_obstacle_spacing + existing.radius + obs.radius;
-      if ((pos - ep).norm() < required) {
-        too_close = true;
-        break;
+    {
+      const auto [ccx, ccy] = cell_index(pos);
+      for (int dy = -1; dy <= 1 && !too_close; ++dy) {
+        for (int dx = -1; dx <= 1 && !too_close; ++dx) {
+          const int nx = ccx + dx;
+          const int ny = ccy + dy;
+          if (nx < 0 || nx >= gw || ny < 0 || ny >= gh) {
+            continue;
+          }
+          for (const Obstacle * existing : grid[static_cast<size_t>(ny) * gw + nx]) {
+            const Eigen::Vector2d ep(existing->center.x(), existing->center.y());
+            const double required =
+              config_.min_obstacle_spacing + existing->radius + obs.radius;
+            if ((pos - ep).squaredNorm() < required * required) {
+              too_close = true;
+              break;
+            }
+          }
+        }
       }
     }
     if (too_close) {
@@ -403,6 +433,10 @@ std::vector<Obstacle> MapGenerator::generateCandidateObstacles(
     }
 
     obstacles.push_back(obs);
+    {
+      const auto [ccx, ccy] = cell_index(pos);
+      grid[static_cast<size_t>(ccy) * gw + ccx].push_back(&obstacles.back());
+    }
     ++placed;
   }
 
