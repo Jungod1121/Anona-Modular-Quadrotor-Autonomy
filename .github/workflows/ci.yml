@@ -24,11 +24,14 @@ jobs:
           apt-get update
           apt-get install -y --no-install-recommends \
             git python3-pip python3-setuptools python3-colcon-common-extensions \
-            ros-humble-tf2-ros ros-humble-pcl-conversions \
-            ros-humble-message-filters ros-humble-xacro \
+            python3-rosdep ca-certificates \
             libpcl-dev libeigen3-dev libnlopt-dev \
             python3-numpy python3-matplotlib python3-yaml
           rm -rf /var/lib/apt/lists/*
+          rosdep init 2>/dev/null || true
+          rosdep update --rosdistro humble
+          source /opt/ros/humble/setup.bash
+          rosdep install -y --from-paths src --ignore-src --rosdistro humble
 
       - name: Build + functional tests (linters excluded)
         run: |
