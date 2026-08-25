@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: ros:humble
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout (with reference submodules)
         uses: actions/checkout@v4
@@ -20,7 +23,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends \
-            git python3-pip python3-setuptools \
+            git python3-pip python3-setuptools python3-colcon-common-extensions \
             ros-humble-tf2-ros ros-humble-pcl-conversions \
             ros-humble-message-filters ros-humble-xacro \
             libpcl-dev libeigen3-dev libnlopt-dev \
