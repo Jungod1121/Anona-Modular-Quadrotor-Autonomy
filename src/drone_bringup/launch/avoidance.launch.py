@@ -72,8 +72,8 @@ def launch_setup(context, *args, **kwargs):
         'grid_map/map_size_x': 50.0,
         'grid_map/map_size_y': 30.0,
         'grid_map/map_size_z': 4.0,
-        'grid_map/local_update_range_x': 5.5,
-        'grid_map/local_update_range_y': 5.5,
+        'grid_map/local_update_range_x': 7.0,
+        'grid_map/local_update_range_y': 7.0,
         'grid_map/local_update_range_z': 4.5,
         'grid_map/obstacles_inflation': 0.12,
         'grid_map/local_map_margin': 10,
@@ -166,7 +166,9 @@ def launch_setup(context, *args, **kwargs):
             'global_cloud_topic': '/map_generator/global_cloud',
             'odom_topic': '/drone/odom',
             'local_cloud_topic': '/drone_0_pcl_render_node/cloud',
-            'sensing_horizon': 5.0,
+            # See obstacles early enough that EGO picks its replan branch
+            # instead of the "suddenly discovered" emergency-stop latch.
+            'sensing_horizon': 7.0,
             'sensing_rate': 10.0,
             'frame_id': 'map',
         }],

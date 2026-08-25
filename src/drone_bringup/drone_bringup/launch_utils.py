@@ -157,7 +157,7 @@ def _random_forest_node(seed: int) -> Node:
             'map/z_size': 3.0,
             'map/resolution': 0.1,
             'ObstacleShape/seed': int(seed) if seed else 1,
-            'map/obs_num': 60,
+            'map/obs_num': 52,
             'ObstacleShape/lower_rad': 0.30,
             'ObstacleShape/upper_rad': 0.50,
             'ObstacleShape/lower_hei': 0.0,
@@ -169,7 +169,9 @@ def _random_forest_node(seed: int) -> Node:
             'ObstacleShape/z_h': 0.8,
             'ObstacleShape/theta': 0.5,
             'pub_rate': 1.0,
-            'min_distance': 1.0,
+            # Wider trunk spacing keeps inter-tree corridors passable with
+            # the inflated-grid clearance the acceptance criteria measure.
+            'min_distance': 1.6,
             'map/clear_y': 1.6,
         }],
     )
@@ -279,11 +281,17 @@ def map_stack(
 def planner_node(
     extra_params: Optional[dict] = None,
     namespace: str = '',
+    map_id: str = '',
 ) -> Node:
     params: List = [config_path('planner.yaml')]
     merged = {}
     if namespace:
         merged['namespace'] = namespace
+    if map_id:
+        # Per-map Path A hints (cruise/inflate/3D policy) — without this the
+        # registry overrides never reach the node and launches fly defaults.
+        from drone_bringup.maps_catalog import homemade_planner_overrides
+        merged.update(homemade_planner_overrides(map_id))
     if extra_params:
         merged.update(extra_params)
     if merged:

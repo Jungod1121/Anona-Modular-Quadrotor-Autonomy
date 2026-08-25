@@ -28,7 +28,10 @@ def launch_setup(context, *args, **kwargs):
         ),
         controller_node(),
         map_node('map_narrow.yaml'),
-        planner_node({'inflate_radius': 0.12}),
+        # map_id merges the narrow_corridor Path A hints (2D A* at cruise_z,
+        # auto-inflate 0.24–0.32, max_vel 0.65) — without them the planner
+        # ran 3D A* and dove under floating clutter, clipping gate frames.
+        planner_node(map_id='narrow_corridor'),
         visualization_node(),
         send_goal_process(17.0, 5.0, 1.5, yaw=0.0, delay_sec=4.0),
     ]

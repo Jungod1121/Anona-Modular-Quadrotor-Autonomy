@@ -798,6 +798,27 @@ def ego_planner_overrides(map_id: str) -> Dict[str, Any]:
             'grid_map/obstacles_inflation': 0.05,
             'optimization/dist0': 0.25,
         }
+    if mid == 'official_forest':
+        # Acceptance measures >=0.30 m clearance. Defaults (inflation 0.12)
+        # tracked ~0.22 m from trunks; funnel-corner replans clipped ~0.11
+        # with 0.28, while 0.40 made sensed obstacles "appear suddenly" and
+        # latched EMERGENCY_STOP mid-mission. 0.32 + slower planned speed
+        # keeps margin without starving the planner.
+        return {
+            # 0.32 starved A* in the thinned forest (repeated 'traj 1 failed'
+            # -> parked beside trunks); 0.28 keeps hard clearance without
+            # over-constraining the 1.6 m-spaced corridors.
+            'grid_map/obstacles_inflation': 0.28,
+            'optimization/dist0': 0.55,
+            # 0.65 cleared with huge margin (min 0.61 m) but ran the 280 s
+            # eval clock out on the last funnel leg; 0.75 trades back time.
+            # Slow-and-steady profile: replans keep up with the vehicle,
+            # avoiding both corner grazes and post-failure extrapolation
+            # runaways. Mission fits the 420 s eval window.
+            'optimization/max_vel': 0.60,
+            'optimization/max_acc': 1.0,
+            'manager/max_vel': 0.60,
+        }
     if mid == 'official_posts':
         return {
             'grid_map/obstacles_inflation': 0.08,

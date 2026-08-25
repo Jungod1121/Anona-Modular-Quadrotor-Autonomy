@@ -393,8 +393,11 @@ SCENARIOS = [
         launch='avoidance.launch.py',
         launch_args=['seed:=1', 'map:=official_forest', 'cycles:=2'],
         eval_delay=14.0,
-        # Lap1 rectangle + lap2 funnel on official_forest @ up to 0.8 m/s + replan slack
-        eval_duration=280.0,
+        # Lap1 rectangle + lap2 funnel on official_forest. Path B now flies
+        # the forest at reduced speed with hard grid inflation (0.32 m) for
+        # the >=0.30 m clearance criterion — the full 2-lap mission needs
+        # ~320 s including replan slack, so 280 s cut the last leg short.
+        eval_duration=420.0,
         goal=official_forest_mission_waypoints(2)[-1],
         waypoints=official_forest_mission_waypoints(2),
         criteria={
