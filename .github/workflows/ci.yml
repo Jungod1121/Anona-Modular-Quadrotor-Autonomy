@@ -1,0 +1,53 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-test-smoke:
+    runs-on: ubuntu-22.04
+    container:
+      image: ros:humble
+    steps:
+      - name: Checkout (with reference submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install workspace dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            git python3-pip python3-setuptools \
+            ros-humble-tf2-ros ros-humble-pcl-conversions \
+            ros-humble-message-filters ros-humble-xacro \
+            libpcl-dev libeigen3-dev libnlopt-dev \
+            python3-numpy python3-matplotlib python3-yaml
+          rm -rf /var/lib/apt/lists/*
+
+      - name: Build + functional tests (linters excluded)
+        run: |
+          source /opt/ros/humble/setup.bash
+          export PYTHONNOUSERSITE=1
+          bash scripts/test.sh
+
+      - name: Smoke — hover scenario reaches /drone/odom
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          export PYTHONNOUSERSITE=1
+          ros2 launch drone_bringup hover.launch.py use_rviz:=false > /tmp/hover.log 2>&1 &
+          LAUNCH_PID=$!
+          for i in $(seq 1 40); do
+            if timeout 3 ros2 topic echo /drone/odom --once >/dev/null 2>&1; then
+              echo "hover smoke OK (/drone/odom flowing)"
+              kill $LAUNCH_PID || true
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "hover smoke FAILED — no /drone/odom within 40s"
+          tail -50 /tmp/hover.log
+          exit 1
