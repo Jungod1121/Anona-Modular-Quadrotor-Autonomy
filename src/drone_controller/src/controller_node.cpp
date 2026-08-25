@@ -4,6 +4,7 @@
 #include <drone_msgs/msg/trajectory_command.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <nav_msgs/msg/odometry.hpp>
+#include <std_msgs/msg/string.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/imu.hpp>
 
@@ -35,6 +36,28 @@ public:
     odom_sub_ = create_subscription<nav_msgs::msg::Odometry>(
       prefix + "/drone/odom", 10,
       std::bind(&ControllerNode::onOdom, this, std::placeholders::_1));
+
+  // Plant/controller allocation-contract gate: both nodes derive the same
+  // identity string from their own physical params; divergence (one yaml
+  // edited without the other) is fatal instead of a silent torque mismatch.
+  expected_plant_signature_ = computePlantSignature();
+  sig_sub_ = create_subscription<std_msgs::msg::String>(
+    "/drone/plant_signature", rclcpp::QoS(1).transient_local().reliable(),
+    [this](std_msgs::msg::String::SharedPtr msg) {
+      if (plant_sig_checked_) return;
+      plant_sig_checked_ = true;
+      if (msg->data != expected_plant_signature_) {
+        RCLCPP_FATAL(get_logger(),
+          "Plant signature mismatch: dynamics='%s' controller expects='%s' "
+          "— arm_length/k_F/k_M diverged between configs. Refusing to arm.",
+          msg->data.c_str(), expected_plant_signature_.c_str());
+        rclcpp::shutdown();
+      } else {
+        RCLCPP_INFO(get_logger(), "plant_signature verified: %s",
+                    msg->data.c_str());
+      }
+    });
+
 
     imu_sub_ = create_subscription<sensor_msgs::msg::Imu>(
       prefix + "/drone/imu", 50,
@@ -385,6 +408,22 @@ private:
   bool planner_guided_{false};
   Eigen::Vector3d imu_omega_filt_{Eigen::Vector3d::Zero()};
   bool have_imu_{false};
+  static std::string fmt_e(double v)
+  {
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%.3e", v);
+    return buf;
+  }
+  std::string computePlantSignature() const
+  {
+    const double L = get_parameter("arm_length").as_double();
+    const double kF = get_parameter("k_F").as_double();
+    const double kM = get_parameter("k_M").as_double();
+    return "quad_x/L=" + fmt_e(L) + "/kF=" + fmt_e(kF) + "/kM=" + fmt_e(kM);
+  }
+  std::string expected_plant_signature_;
+  bool plant_sig_checked_{false};
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sig_sub_;
   rclcpp::Time last_odom_time_{0, 0, RCL_ROS_TIME};
   rclcpp::Time last_local_goal_time_{0, 0, RCL_ROS_TIME};
   rclcpp::Time last_traj_cmd_time_{0, 0, RCL_ROS_TIME};

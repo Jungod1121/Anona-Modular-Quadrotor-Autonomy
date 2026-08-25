@@ -4,6 +4,7 @@
 #include <drone_msgs/msg/motor_command.hpp>
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <nav_msgs/msg/odometry.hpp>
+#include <std_msgs/msg/string.hpp>
 #include <nav_msgs/msg/path.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/imu.hpp>
@@ -37,6 +38,23 @@ public:
     body_frame_ = ns.empty() ? "base_link" : (ns + "/base_link");
 
     odom_pub_ = create_publisher<nav_msgs::msg::Odometry>(prefix + "/drone/odom", 10);
+  // Plant identity: same formula as drone_controller's check — divergence in
+  // arm_length/k_F/k_M between the two nodes breaks the allocation contract.
+  {
+    const double L = get_parameter("arm_length").as_double();
+    const double kF = get_parameter("k_F").as_double();
+    const double kM = get_parameter("k_M").as_double();
+    plant_signature_ = "quad_x/L=" + fmt_e(L) + "/kF=" + fmt_e(kF) +
+                       "/kM=" + fmt_e(kM);
+  }
+  sig_pub_ = create_publisher<std_msgs::msg::String>(
+    "/drone/plant_signature", rclcpp::QoS(1).transient_local().reliable());
+  {
+    std_msgs::msg::String msg;
+    msg.data = plant_signature_;
+    sig_pub_->publish(msg);
+  }
+  RCLCPP_INFO(get_logger(), "plant_signature: %s", plant_signature_.c_str());
     imu_pub_ = create_publisher<sensor_msgs::msg::Imu>(prefix + "/drone/imu", 10);
     path_pub_ = create_publisher<nav_msgs::msg::Path>(prefix + "/drone/path", 10);
     disturb_pub_ = create_publisher<drone_msgs::msg::DisturbanceStatus>(
@@ -284,6 +302,14 @@ private:
   rclcpp::Time last_cmd_time_{0, 0, RCL_ROS_TIME};
   nav_msgs::msg::Path path_;
 
+  static std::string fmt_e(double v)
+  {
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%.3e", v);
+    return buf;
+  }
+  std::string plant_signature_;
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr sig_pub_;
   rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
   rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub_;
   rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub_;
