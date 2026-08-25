@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-25 16:30:04 CST",
+  "timestamp": "2026-08-25 21:57:01 CST",
   "passed": 6,
   "total": 6,
   "results": [
@@ -15,8 +15,8 @@
       },
       "summary": {
         "samples": "901",
-        "mean_pos_err": "0.0012 m",
-        "max_pos_err": "0.0370 m",
+        "mean_pos_err": "0.0004 m",
+        "max_pos_err": "0.0142 m",
         "final_pos_err": "0.0001 m",
         "hover_pass_0.3m": "True",
         "goal_pass_0.3m": "True",
@@ -28,8 +28,9 @@
         "avoidance_safety_distance": "0.3500 m",
         "avoidance_pass": "True",
         "avoidance_pass_0.35m": "True",
-        "flown_path_length": "0.0981 m",
-        "mean_jerk": "0.0098 m/s^3"
+        "flown_path_length": "0.0392 m",
+        "detour_ratio": "2.7522",
+        "mean_jerk": "0.0038 m/s^3"
       },
       "notes": "\u76ee\u6807 (0,0,1.5)\uff0c3s \u540e\u81ea\u52a8\u53d1 goal",
       "evaluate_exit_code": 0,
@@ -37,7 +38,7 @@
         "\u672b\u6bb5\u60ac\u505c\u22640.3m": true
       },
       "status": "pass",
-      "launch_log_tail": "[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-08-25-16-14-25-256052-jungod-asus-tuf-gaming-a15-38368\n[INFO] [launch]: Default logging verbosity is set to INFO\n[INFO] [dynamics_node-1]: process started with pid [38385]\n[INFO] [controller_node-2]: process started with pid [38387]\n[INFO] [map_node-3]: process started with pid [38389]\n[INFO] [viz_node-4]: process started with pid [38391]\n[controller_node-2] [INFO] [1787645665.320532092] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[dynamics_node-1] [INFO] [1787645665.324156149] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[viz_node-4] [INFO] [1787645665.325749113] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[map_node-3] [INFO] [1787645665.332655713] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=600 downsample_voxel=0.000\n[map_node-3] [INFO] [1787645665.333502802] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=600 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[INFO] [send_goal-5]: process started with pid [38434]\n[send_goal-5] [INFO] [1787645669.221581319] [send_goal]: Published goal (0.00, 0.00, 1.50) yaw=0.00 remaining=0 subs=1"
+      "launch_log_tail": "[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-08-25-21-41-21-912985-jungod-asus-tuf-gaming-a15-506888\n[INFO] [launch]: Default logging verbosity is set to INFO\n[INFO] [dynamics_node-1]: process started with pid [506905]\n[INFO] [controller_node-2]: process started with pid [506907]\n[INFO] [map_node-3]: process started with pid [506909]\n[INFO] [viz_node-4]: process started with pid [506911]\n[viz_node-4] [INFO] [1787665281.971337558] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[dynamics_node-1] [INFO] [1787665281.975577152] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[controller_node-2] [INFO] [1787665281.975979538] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[map_node-3] [INFO] [1787665281.978357344] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=600 downsample_voxel=0.000\n[map_node-3] [INFO] [1787665281.979108274] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=600 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[INFO] [send_goal-5]: process started with pid [506970]\n[send_goal-5] [INFO] [1787665285.521271201] [send_goal]: Published goal (0.00, 0.00, 1.50) yaw=0.00 remaining=0 subs=1"
     },
     {
       "id": 2,
@@ -51,7 +52,7 @@
       },
       "summary": {
         "samples": "1002",
-        "mean_pos_err": "0.0078 m",
+        "mean_pos_err": "0.0070 m",
         "max_pos_err": "0.1096 m",
         "final_pos_err": "0.0013 m",
         "hover_pass_0.3m": "True",
@@ -60,13 +61,13 @@
         "hold_at_goal_samples": "30",
         "planner_success_ever": "False",
         "final_planner_state": "",
-        "min_obstacle_distance": "2.8980 m",
+        "min_obstacle_distance": "2.9299 m",
         "avoidance_safety_distance": "0.3500 m",
         "avoidance_pass": "True",
         "avoidance_pass_0.35m": "True",
-        "flown_path_length": "0.5865 m",
-        "detour_ratio": "5.4073",
-        "mean_jerk": "1.3881 m/s^3"
+        "flown_path_length": "0.4516 m",
+        "detour_ratio": "10.2603",
+        "mean_jerk": "1.3928 m/s^3"
       },
       "notes": "\u76ee\u6807 (2,1,1.5)\uff1bRViz \u5f00\u542f\u65f6\u7b49\u5f85\u754c\u9762\u5c31\u7eea\u540e\u53d1 goal",
       "evaluate_exit_code": 0,
@@ -74,7 +75,7 @@
         "\u672b\u6bb5\u60ac\u505c\u22640.3m": true
       },
       "status": "pass",
-      "launch_log_tail": "[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-08-25-16-15-28-898075-jungod-asus-tuf-gaming-a15-38702\n[INFO] [launch]: Default logging verbosity is set to INFO\n[INFO] [dynamics_node-1]: process started with pid [38719]\n[INFO] [controller_node-2]: process started with pid [38721]\n[INFO] [map_node-3]: process started with pid [38723]\n[INFO] [viz_node-4]: process started with pid [38725]\n[controller_node-2] [INFO] [1787645728.962226990] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[viz_node-4] [INFO] [1787645728.966977896] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[dynamics_node-1] [INFO] [1787645728.967411176] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[map_node-3] [INFO] [1787645728.972849504] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=711 downsample_voxel=0.000\n[map_node-3] [INFO] [1787645728.973714421] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=711 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[INFO] [send_goal-5]: process started with pid [38767]\n[send_goal-5] [INFO] [1787645732.533497800] [send_goal]: Published goal (2.00, 1.00, 1.50) yaw=0.00 remaining=0 subs=1"
+      "launch_log_tail": "[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-08-25-21-42-26-231752-jungod-asus-tuf-gaming-a15-507219\n[INFO] [launch]: Default logging verbosity is set to INFO\n[INFO] [dynamics_node-1]: process started with pid [507237]\n[INFO] [controller_node-2]: process started with pid [507239]\n[INFO] [map_node-3]: process started with pid [507241]\n[INFO] [viz_node-4]: process started with pid [507243]\n[viz_node-4] [INFO] [1787665346.291216894] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[controller_node-2] [INFO] [1787665346.291684002] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[dynamics_node-1] [INFO] [1787665346.292177348] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[map_node-3] [INFO] [1787665346.296285354] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=711 downsample_voxel=0.000\n[map_node-3] [INFO] [1787665346.297006609] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=711 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[INFO] [send_goal-5]: process started with pid [507302]\n[send_goal-5] [INFO] [1787665349.839193107] [send_goal]: Published goal (2.00, 1.00, 1.50) yaw=0.00 remaining=0 subs=1"
     },
     {
       "id": 3,
@@ -87,23 +88,23 @@
         "\u6700\u7ec8\u56de\u5230\u8d77\u70b9\u9644\u8fd1": true
       },
       "summary": {
-        "samples": "1201",
-        "mean_pos_err": "0.2936 m",
-        "max_pos_err": "2.9025 m",
-        "final_pos_err": "0.0012 m",
+        "samples": "1202",
+        "mean_pos_err": "0.3120 m",
+        "max_pos_err": "2.9136 m",
+        "final_pos_err": "0.0009 m",
         "hover_pass_0.3m": "True",
         "goal_pass_0.3m": "True",
         "hold_at_goal_pass_0.3m": "True",
         "hold_at_goal_samples": "30",
         "planner_success_ever": "False",
         "final_planner_state": "",
-        "min_obstacle_distance": "0.7268 m",
+        "min_obstacle_distance": "0.7433 m",
         "avoidance_safety_distance": "0.3500 m",
         "avoidance_pass": "True",
         "avoidance_pass_0.35m": "True",
-        "flown_path_length": "10.2783 m",
-        "detour_ratio": "6.8522",
-        "mean_jerk": "4.7459 m/s^3"
+        "flown_path_length": "9.7594 m",
+        "detour_ratio": "6.5063",
+        "mean_jerk": "1.8465 m/s^3"
       },
       "notes": "\u539f\u70b9\u8d77\u6b65\u7684 2m\u00d72m \u95ed\u5408\u6b63\u65b9\u5f62\uff1b\u5230\u70b9\u4e14\u4f4e\u901f\u540e\u5207\u6362\u4e0b\u4e00\u822a\u70b9",
       "evaluate_exit_code": 0,
@@ -161,7 +162,7 @@
         "tolerance_m": 0.25
       },
       "status": "pass",
-      "launch_log_tail": "[INFO] [controller_node-2]: process started with pid [39111]\n[INFO] [map_node-3]: process started with pid [39113]\n[INFO] [viz_node-4]: process started with pid [39115]\n[viz_node-4] [INFO] [1787645797.635362356] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[controller_node-2] [INFO] [1787645797.636281883] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[dynamics_node-1] [INFO] [1787645797.636320215] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[map_node-3] [INFO] [1787645797.645259035] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=600 downsample_voxel=0.000\n[map_node-3] [INFO] [1787645797.646048649] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=600 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[INFO] [waypoint_publisher-5]: process started with pid [39190]\n[waypoint_publisher-5] [INFO] [1787645803.155897577] [waypoint_publisher]: Waypoint publisher: 4 pts/cycle \u00d7 1 cycles, mode=arrival, topic=/drone/goal\n[waypoint_publisher-5] [INFO] [1787645803.645317292] [waypoint_publisher]: Waypoint cycle 1/1 1/4: (2.00, 0.00, 1.50)\n[waypoint_publisher-5] [INFO] [1787645805.945179294] [waypoint_publisher]: Waypoint cycle 1/1 2/4: (2.00, 2.00, 1.50)\n[waypoint_publisher-5] [INFO] [1787645808.145105876] [waypoint_publisher]: Waypoint cycle 1/1 3/4: (0.00, 2.00, 1.50)\n[waypoint_publisher-5] [INFO] [1787645810.345488295] [waypoint_publisher]: Waypoint cycle 1/1 4/4: (0.00, 0.00, 1.50)\n[waypoint_publisher-5] [INFO] [1787645812.545342154] [waypoint_publisher]: Waypoint sequence complete"
+      "launch_log_tail": "[INFO] [controller_node-2]: process started with pid [507569]\n[INFO] [map_node-3]: process started with pid [507571]\n[INFO] [viz_node-4]: process started with pid [507573]\n[controller_node-2] [INFO] [1787665415.414438258] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[viz_node-4] [INFO] [1787665415.416263907] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[dynamics_node-1] [INFO] [1787665415.417798699] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[map_node-3] [INFO] [1787665415.425299989] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=600 downsample_voxel=0.000\n[map_node-3] [INFO] [1787665415.425948727] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=600 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[INFO] [waypoint_publisher-5]: process started with pid [507646]\n[waypoint_publisher-5] [INFO] [1787665420.624674777] [waypoint_publisher]: Waypoint publisher: 4 pts/cycle \u00d7 1 cycles, mode=arrival, topic=/drone/goal\n[waypoint_publisher-5] [INFO] [1787665421.115274131] [waypoint_publisher]: Waypoint cycle 1/1 1/4: (2.00, 0.00, 1.50)\n[waypoint_publisher-5] [INFO] [1787665423.415560275] [waypoint_publisher]: Waypoint cycle 1/1 2/4: (2.00, 2.00, 1.50)\n[waypoint_publisher-5] [INFO] [1787665425.615206302] [waypoint_publisher]: Waypoint cycle 1/1 3/4: (0.00, 2.00, 1.50)\n[waypoint_publisher-5] [INFO] [1787665427.815168040] [waypoint_publisher]: Waypoint cycle 1/1 4/4: (0.00, 0.00, 1.50)\n[waypoint_publisher-5] [INFO] [1787665430.014675420] [waypoint_publisher]: Waypoint sequence complete"
     },
     {
       "id": 4,
@@ -176,23 +177,23 @@
       },
       "summary": {
         "samples": "8402",
-        "mean_pos_err": "8.9819 m",
-        "max_pos_err": "19.7572 m",
-        "final_pos_err": "0.0755 m",
+        "mean_pos_err": "8.7713 m",
+        "max_pos_err": "19.6685 m",
+        "final_pos_err": "0.0662 m",
         "hover_pass_0.3m": "False",
         "goal_pass_0.3m": "True",
         "hold_at_goal_pass_0.3m": "True",
         "hold_at_goal_samples": "30",
         "planner_success_ever": "True",
         "final_planner_state": "TRAJ_CMD",
-        "min_obstacle_distance": "0.4869 m",
+        "min_obstacle_distance": "0.4910 m",
         "avoidance_safety_distance": "0.3000 m",
         "avoidance_pass": "True",
         "avoidance_pass_0.35m": "True",
-        "flown_path_length": "136.3906 m",
-        "detour_ratio": "14.4176",
-        "mean_jerk": "2.4899 m/s^3",
-        "planned_tracking_error_mean": "7.6432 m"
+        "flown_path_length": "130.1320 m",
+        "detour_ratio": "14.2241",
+        "mean_jerk": "1.6430 m/s^3",
+        "planned_tracking_error_mean": "7.7560 m"
       },
       "notes": "Path B EGO + official_forest: lap1 \u77e9\u5f62, lap2 \u6f0f\u6597(\u5bf9\u89d2\u2192\u5bbd\u2192\u5bf9\u89d2\u2192\u5bbd)",
       "evaluate_exit_code": 0,
@@ -277,7 +278,7 @@
         "tolerance_m": 1.5
       },
       "status": "pass",
-      "launch_log_tail": "[ego_planner_node-5] wait for goal or trigger.\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[map_adapter-2] [INFO] [1787646306.202350616] [map_adapter]: adapted cloud #4320 width=27388 occ=136x88 topdown_cells=527\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[map_adapter-2] [INFO] [1787646308.204809947] [map_adapter]: adapted cloud #4340 width=27388 occ=136x88 topdown_cells=527\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[local_sense_cloud-6] [INFO] [1787646309.149312642] [drone_0_local_sense_cloud]: global cloud cached: 25800 points\n[local_sense_cloud-6] [INFO] [1787646309.169393144] [drone_0_local_sense_cloud]: local cloud #4350: 6731 pts @ (-8.0,-6.0,1.1)\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.",
+      "launch_log_tail": "[map_adapter-2] [INFO] [1787665922.302022031] [map_adapter]: adapted cloud #4320 width=27388 occ=136x88 topdown_cells=527\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[map_adapter-2] [INFO] [1787665924.300873287] [map_adapter]: adapted cloud #4340 width=27388 occ=136x88 topdown_cells=527\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[local_sense_cloud-6] [INFO] [1787665924.849630992] [drone_0_local_sense_cloud]: global cloud cached: 25800 points\n[local_sense_cloud-6] [INFO] [1787665925.275979063] [drone_0_local_sense_cloud]: local cloud #4350: 6684 pts @ (-8.0,-6.0,1.1)\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.\n[map_adapter-2] [INFO] [1787665926.304980504] [map_adapter]: adapted cloud #4360 width=27388 occ=136x88 topdown_cells=527\n[ego_planner_node-5] [FSM]: state: WAIT_TARGET\n[ego_planner_node-5] wait for goal or trigger.",
       "attempts_used": 2
     },
     {
@@ -293,31 +294,31 @@
       },
       "summary": {
         "samples": "3002",
-        "mean_pos_err": "1.3826 m",
-        "max_pos_err": "12.5954 m",
-        "final_pos_err": "0.3013 m",
+        "mean_pos_err": "1.4014 m",
+        "max_pos_err": "12.6390 m",
+        "final_pos_err": "0.0005 m",
         "hover_pass_0.3m": "True",
-        "goal_pass_0.3m": "False",
-        "hold_at_goal_pass_0.3m": "False",
+        "goal_pass_0.3m": "True",
+        "hold_at_goal_pass_0.3m": "True",
         "hold_at_goal_samples": "30",
         "planner_success_ever": "True",
         "final_planner_state": "EXEC_TRAJ",
-        "min_obstacle_distance": "0.9492 m",
+        "min_obstacle_distance": "0.9595 m",
         "avoidance_safety_distance": "0.3500 m",
         "avoidance_pass": "True",
         "avoidance_pass_0.35m": "True",
-        "flown_path_length": "31.8545 m",
-        "detour_ratio": "2.5291",
-        "mean_jerk": "17.8384 m/s^3",
-        "planned_tracking_error_mean": "0.0397 m"
+        "flown_path_length": "25.4617 m",
+        "detour_ratio": "2.0145",
+        "mean_jerk": "6.8399 m/s^3",
+        "planned_tracking_error_mean": "0.0243 m"
       },
       "notes": "narrow_corridor S-bend: 3\u00d71.6m doors + side clutter (PLAN \u00a75.3)",
       "evaluate_exit_code": 0,
       "supplementary_checks": {
-        "\u672b\u6bb5\u60ac\u505c\u22640.3m": false
+        "\u672b\u6bb5\u60ac\u505c\u22640.3m": true
       },
       "status": "pass",
-      "launch_log_tail": "[INFO] [viz_node-5]: process started with pid [42026]\n[map_node-3] [INFO] [1787646318.516259220] [drone_map]: Map generated: mode=narrow_corridor seed=42 attempt=0 connected=true obstacles=83 points=137567 downsample_voxel=0.000\n[map_node-3] [INFO] [1787646318.519730764] [drone_map]: drone_map ready: mode=narrow_corridor seed=42 attempt=0 connected=yes points=137567 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[viz_node-5] [INFO] [1787646318.832428601] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[controller_node-2] [INFO] [1787646318.833054701] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[dynamics_node-1] [INFO] [1787646318.833152961] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[planner_node-4] [INFO] [1787646318.833830355] [drone_planner]: drone_planner ready (DynAStar=on, Bspline=off, local_mapping=off, map=/map/obstacles, peers=)\n[planner_node-4] [INFO] [1787646318.902232740] [drone_planner]: Map ingested: 137567 raw -> 61589 voxels | origin=(-4.7,-4.7,-0.2) size=(29.4,19.4,4.7) res=0.15 inflate=0.24 [auto_fit] [auto_inflate]\n[INFO] [send_goal-6]: process started with pid [42118]\n[planner_node-4] [INFO] [1787646323.063406485] [drone_planner]: New goal (17.00, 5.00, 1.50)\n[send_goal-6] [INFO] [1787646323.075384595] [send_goal]: Published goal (17.00, 5.00, 1.50) yaw=0.00 remaining=0 subs=2\n[planner_node-4] [INFO] [1787646323.083651412] [drone_planner]: Planning (1.0,5.0,1.3)->(17.0,5.0,1.5)\n[planner_node-4] [INFO] [1787646323.083684733] [drone_planner]: Running A* with 0 peer keep-outs (true_3d=no)\n[planner_node-4] [INFO] [1787646323.111019346] [drone_planner]: A* finished found=yes guide=153\n[planner_node-4] [INFO] [1787646323.111326520] [drone_planner]: Planned path: 278 waypoints, length=28.33 m (horizontal avoidance)"
+      "launch_log_tail": "[INFO] [viz_node-5]: process started with pid [508501]\n[viz_node-5] [INFO] [1787665935.887949964] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[dynamics_node-1] [INFO] [1787665935.888748774] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[controller_node-2] [INFO] [1787665935.889161880] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[planner_node-4] [INFO] [1787665935.890019580] [drone_planner]: drone_planner ready (DynAStar=on, Bspline=off, local_mapping=off, map=/map/obstacles, peers=)\n[map_node-3] [INFO] [1787665935.906641476] [drone_map]: Map generated: mode=narrow_corridor seed=42 attempt=0 connected=true obstacles=83 points=137567 downsample_voxel=0.000\n[map_node-3] [INFO] [1787665935.910610781] [drone_map]: drone_map ready: mode=narrow_corridor seed=42 attempt=0 connected=yes points=137567 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[planner_node-4] [INFO] [1787665935.966399311] [drone_planner]: Map ingested: 137567 raw -> 61589 voxels | origin=(-4.7,-4.7,-0.2) size=(29.4,19.4,4.7) res=0.15 inflate=0.24 [auto_fit] [auto_inflate]\n[INFO] [send_goal-6]: process started with pid [508556]\n[planner_node-4] [INFO] [1787665940.436676801] [drone_planner]: New goal (17.00, 5.00, 1.50)\n[planner_node-4] [INFO] [1787665940.440055356] [drone_planner]: Planning (1.0,5.0,1.4)->(17.0,5.0,1.5)\n[planner_node-4] [INFO] [1787665940.440080072] [drone_planner]: Running A* with 0 peer keep-outs (true_3d=no)\n[send_goal-6] [INFO] [1787665940.449392391] [send_goal]: Published goal (17.00, 5.00, 1.50) yaw=0.00 remaining=0 subs=2\n[planner_node-4] [INFO] [1787665940.467211785] [drone_planner]: A* finished found=yes guide=153\n[planner_node-4] [INFO] [1787665940.467513201] [drone_planner]: Planned path: 278 waypoints, length=28.33 m (horizontal avoidance)"
     },
     {
       "id": 6,
@@ -330,28 +331,28 @@
         "\u8bc4\u6d4b\u56fe\u5df2\u751f\u6210": true
       },
       "summary": {
-        "samples": "1802",
-        "mean_pos_err": "0.0358 m",
-        "max_pos_err": "0.0852 m",
-        "final_pos_err": "0.0480 m",
+        "samples": "1801",
+        "mean_pos_err": "0.0354 m",
+        "max_pos_err": "0.0820 m",
+        "final_pos_err": "0.0367 m",
         "hover_pass_0.3m": "True",
         "goal_pass_0.3m": "True",
         "hold_at_goal_pass_0.3m": "True",
         "hold_at_goal_samples": "30",
         "planner_success_ever": "False",
         "final_planner_state": "",
-        "min_obstacle_distance": "1.7146 m",
+        "min_obstacle_distance": "1.7177 m",
         "avoidance_safety_distance": "0.3500 m",
         "avoidance_pass": "True",
         "avoidance_pass_0.35m": "True",
-        "flown_path_length": "4.0335 m",
-        "detour_ratio": "60.5393",
-        "mean_jerk": "1.4049 m/s^3"
+        "flown_path_length": "3.9949 m",
+        "detour_ratio": "63.9746",
+        "mean_jerk": "1.5567 m/s^3"
       },
       "notes": "wind_enable+imu_noise_enable, \u624b\u52a8\u8dd1 evaluate",
       "evaluate_exit_code": 0,
       "status": "pass",
-      "launch_log_tail": "[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-08-25-16-28-11-388594-jungod-asus-tuf-gaming-a15-42479\n[INFO] [launch]: Default logging verbosity is set to INFO\n[INFO] [dynamics_node-1]: process started with pid [42496]\n[INFO] [controller_node-2]: process started with pid [42498]\n[INFO] [map_node-3]: process started with pid [42500]\n[INFO] [viz_node-4]: process started with pid [42502]\n[map_node-3] [INFO] [1787646491.454438073] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=600 downsample_voxel=0.000\n[map_node-3] [INFO] [1787646491.455112038] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=600 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[viz_node-4] [INFO] [1787646491.781342605] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[controller_node-2] [INFO] [1787646491.782329133] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[dynamics_node-1] [INFO] [1787646491.782807740] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[INFO] [interference_monitor-5]: process started with pid [42560]\n[interference_monitor-5] [INFO] [1787646494.425865957] [interference_monitor]: Interference monitor ready (goal=(0.0, 0.0, 1.5), limit=0.3 m)\n[INFO] [send_goal-6]: process started with pid [42588]\n[send_goal-6] [INFO] [1787646495.339690365] [send_goal]: Published goal (0.00, 0.00, 1.50) yaw=0.00 remaining=0 subs=1"
+      "launch_log_tail": "[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-08-25-21-55-08-456836-jungod-asus-tuf-gaming-a15-508853\n[INFO] [launch]: Default logging verbosity is set to INFO\n[INFO] [dynamics_node-1]: process started with pid [508870]\n[INFO] [controller_node-2]: process started with pid [508872]\n[INFO] [map_node-3]: process started with pid [508874]\n[INFO] [viz_node-4]: process started with pid [508876]\n[viz_node-4] [INFO] [1787666108.520361410] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)\n[controller_node-2] [INFO] [1787666108.522307345] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on\n[dynamics_node-1] [INFO] [1787666108.522936604] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)\n[map_node-3] [INFO] [1787666108.527871549] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=600 downsample_voxel=0.000\n[map_node-3] [INFO] [1787666108.529008537] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=600 (native cylinders+walls for dense/narrow; ego_* modes optional)\n[INFO] [interference_monitor-5]: process started with pid [508934]\n[interference_monitor-5] [INFO] [1787666111.482879439] [interference_monitor]: Interference monitor ready (goal=(0.0, 0.0, 1.5), limit=0.3 m)\n[INFO] [send_goal-6]: process started with pid [508962]\n[send_goal-6] [INFO] [1787666112.398532197] [send_goal]: Published goal (0.00, 0.00, 1.50) yaw=0.00 remaining=0 subs=1"
     }
   ],
   "rates": {

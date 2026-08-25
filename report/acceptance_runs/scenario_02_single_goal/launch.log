@@ -1,26 +1,26 @@
-[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-08-25-16-15-28-898075-jungod-asus-tuf-gaming-a15-38702
+[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-08-25-21-42-26-231752-jungod-asus-tuf-gaming-a15-507219
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [dynamics_node-1]: process started with pid [38719]
-[INFO] [controller_node-2]: process started with pid [38721]
-[INFO] [map_node-3]: process started with pid [38723]
-[INFO] [viz_node-4]: process started with pid [38725]
-[controller_node-2] [INFO] [1787645728.962226990] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on
-[viz_node-4] [INFO] [1787645728.966977896] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)
-[dynamics_node-1] [INFO] [1787645728.967411176] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)
-[map_node-3] [INFO] [1787645728.972849504] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=711 downsample_voxel=0.000
-[map_node-3] [INFO] [1787645728.973714421] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=711 (native cylinders+walls for dense/narrow; ego_* modes optional)
-[INFO] [send_goal-5]: process started with pid [38767]
-[send_goal-5] [INFO] [1787645732.533497800] [send_goal]: Published goal (2.00, 1.00, 1.50) yaw=0.00 remaining=0 subs=1
+[INFO] [dynamics_node-1]: process started with pid [507237]
+[INFO] [controller_node-2]: process started with pid [507239]
+[INFO] [map_node-3]: process started with pid [507241]
+[INFO] [viz_node-4]: process started with pid [507243]
+[viz_node-4] [INFO] [1787665346.291216894] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)
+[controller_node-2] [INFO] [1787665346.291684002] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on
+[dynamics_node-1] [INFO] [1787665346.292177348] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)
+[map_node-3] [INFO] [1787665346.296285354] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=711 downsample_voxel=0.000
+[map_node-3] [INFO] [1787665346.297006609] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=711 (native cylinders+walls for dense/narrow; ego_* modes optional)
+[INFO] [send_goal-5]: process started with pid [507302]
+[send_goal-5] [INFO] [1787665349.839193107] [send_goal]: Published goal (2.00, 1.00, 1.50) yaw=0.00 remaining=0 subs=1
 [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
 [INFO] [send_goal-5]: sending signal 'SIGINT' to process[send_goal-5]
 [INFO] [viz_node-4]: sending signal 'SIGINT' to process[viz_node-4]
 [INFO] [map_node-3]: sending signal 'SIGINT' to process[map_node-3]
 [INFO] [controller_node-2]: sending signal 'SIGINT' to process[controller_node-2]
 [INFO] [dynamics_node-1]: sending signal 'SIGINT' to process[dynamics_node-1]
-[dynamics_node-1] [INFO] [1787645788.866814285] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[map_node-3] [INFO] [1787645788.866813915] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[controller_node-2] [INFO] [1787645788.866824745] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[viz_node-4] [INFO] [1787645788.866848740] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[dynamics_node-1] [INFO] [1787665406.666756343] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[viz_node-4] [INFO] [1787665406.666753007] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[controller_node-2] [INFO] [1787665406.666767745] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[map_node-3] [INFO] [1787665406.666781050] [rclcpp]: signal_handler(SIGINT/SIGTERM)
 [send_goal-5] Traceback (most recent call last):
 [send_goal-5]   File "/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal", line 33, in <module>
 [send_goal-5]     sys.exit(load_entry_point('drone-bringup', 'console_scripts', 'send_goal')())
@@ -63,11 +63,11 @@
 [send_goal-5]   File "/usr/lib/python3.10/threading.py", line 320, in wait
 [send_goal-5]     waiter.acquire()
 [send_goal-5] KeyboardInterrupt
-[viz_node-4] [INFO] [1787645788.869349111] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[map_node-3] [INFO] [1787645788.870499614] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[controller_node-2] [INFO] [1787645788.871108218] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[ERROR] [dynamics_node-1]: process has died [pid 38719, exit code -2, cmd '/home/jungod/drone_ws/install/drone_dynamics/lib/drone_dynamics/dynamics_node --ros-args -r __node:=drone_dynamics --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/dynamics.yaml --params-file /tmp/launch_params_g0pk7k5d'].
-[ERROR] [send_goal-5]: process has died [pid 38767, exit code -2, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal --x 2.0 --y 1.0 --z 1.5 --yaw 0.0 --topic /drone/goal --repeats 1'].
-[INFO] [viz_node-4]: process has finished cleanly [pid 38725]
-[INFO] [controller_node-2]: process has finished cleanly [pid 38721]
-[INFO] [map_node-3]: process has finished cleanly [pid 38723]
+[viz_node-4] [INFO] [1787665406.669936637] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[map_node-3] [INFO] [1787665406.670237321] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[controller_node-2] [INFO] [1787665406.670536924] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [dynamics_node-1]: process has died [pid 507237, exit code -2, cmd '/home/jungod/drone_ws/install/drone_dynamics/lib/drone_dynamics/dynamics_node --ros-args -r __node:=drone_dynamics --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/dynamics.yaml --params-file /tmp/launch_params_mhmqqw3r'].
+[ERROR] [send_goal-5]: process has died [pid 507302, exit code -2, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/send_goal --x 2.0 --y 1.0 --z 1.5 --yaw 0.0 --topic /drone/goal --repeats 1'].
+[INFO] [viz_node-4]: process has finished cleanly [pid 507243]
+[INFO] [controller_node-2]: process has finished cleanly [pid 507239]
+[INFO] [map_node-3]: process has finished cleanly [pid 507241]

@@ -1,6 +1,6 @@
 samples: 901
-mean_pos_err: 0.0012 m
-max_pos_err: 0.0370 m
+mean_pos_err: 0.0004 m
+max_pos_err: 0.0142 m
 final_pos_err: 0.0001 m
 hover_pass_0.3m: True
 goal_pass_0.3m: True
@@ -12,5 +12,6 @@ min_obstacle_distance: 1.7550 m
 avoidance_safety_distance: 0.3500 m
 avoidance_pass: True
 avoidance_pass_0.35m: True
-flown_path_length: 0.0981 m
-mean_jerk: 0.0098 m/s^3
+flown_path_length: 0.0392 m
+detour_ratio: 2.7522
+mean_jerk: 0.0038 m/s^3

@@ -1,30 +1,31 @@
-[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-08-25-16-16-37-570477-jungod-asus-tuf-gaming-a15-39092
+[INFO] [launch]: All log files can be found below /home/jungod/.ros/log/2026-08-25-21-43-35-352860-jungod-asus-tuf-gaming-a15-507550
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [dynamics_node-1]: process started with pid [39109]
-[INFO] [controller_node-2]: process started with pid [39111]
-[INFO] [map_node-3]: process started with pid [39113]
-[INFO] [viz_node-4]: process started with pid [39115]
-[viz_node-4] [INFO] [1787645797.635362356] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)
-[controller_node-2] [INFO] [1787645797.636281883] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on
-[dynamics_node-1] [INFO] [1787645797.636320215] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)
-[map_node-3] [INFO] [1787645797.645259035] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=600 downsample_voxel=0.000
-[map_node-3] [INFO] [1787645797.646048649] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=600 (native cylinders+walls for dense/narrow; ego_* modes optional)
-[INFO] [waypoint_publisher-5]: process started with pid [39190]
-[waypoint_publisher-5] [INFO] [1787645803.155897577] [waypoint_publisher]: Waypoint publisher: 4 pts/cycle × 1 cycles, mode=arrival, topic=/drone/goal
-[waypoint_publisher-5] [INFO] [1787645803.645317292] [waypoint_publisher]: Waypoint cycle 1/1 1/4: (2.00, 0.00, 1.50)
-[waypoint_publisher-5] [INFO] [1787645805.945179294] [waypoint_publisher]: Waypoint cycle 1/1 2/4: (2.00, 2.00, 1.50)
-[waypoint_publisher-5] [INFO] [1787645808.145105876] [waypoint_publisher]: Waypoint cycle 1/1 3/4: (0.00, 2.00, 1.50)
-[waypoint_publisher-5] [INFO] [1787645810.345488295] [waypoint_publisher]: Waypoint cycle 1/1 4/4: (0.00, 0.00, 1.50)
-[waypoint_publisher-5] [INFO] [1787645812.545342154] [waypoint_publisher]: Waypoint sequence complete
+[INFO] [dynamics_node-1]: process started with pid [507567]
+[INFO] [controller_node-2]: process started with pid [507569]
+[INFO] [map_node-3]: process started with pid [507571]
+[INFO] [viz_node-4]: process started with pid [507573]
+[controller_node-2] [INFO] [1787665415.414438258] [drone_controller]: drone_controller ready: 100 Hz, mass=1.00, goal_fallback=on
+[viz_node-4] [INFO] [1787665415.416263907] [drone_visualization]: drone_visualization ready (quadrotor marker from /drone/odom)
+[dynamics_node-1] [INFO] [1787665415.417798699] [drone_dynamics]: drone_dynamics ready: integ=500Hz pub=100Hz mass=1.00 (self-developed, not MARSIM/EGO sim)
+[map_node-3] [INFO] [1787665415.425299989] [drone_map]: Map generated: mode=sparse seed=42 attempt=0 connected=true obstacles=2 points=600 downsample_voxel=0.000
+[map_node-3] [INFO] [1787665415.425948727] [drone_map]: drone_map ready: mode=sparse seed=42 attempt=0 connected=yes points=600 (native cylinders+walls for dense/narrow; ego_* modes optional)
+[INFO] [waypoint_publisher-5]: process started with pid [507646]
+[waypoint_publisher-5] [INFO] [1787665420.624674777] [waypoint_publisher]: Waypoint publisher: 4 pts/cycle × 1 cycles, mode=arrival, topic=/drone/goal
+[waypoint_publisher-5] [INFO] [1787665421.115274131] [waypoint_publisher]: Waypoint cycle 1/1 1/4: (2.00, 0.00, 1.50)
+[waypoint_publisher-5] [INFO] [1787665423.415560275] [waypoint_publisher]: Waypoint cycle 1/1 2/4: (2.00, 2.00, 1.50)
+[waypoint_publisher-5] [INFO] [1787665425.615206302] [waypoint_publisher]: Waypoint cycle 1/1 3/4: (0.00, 2.00, 1.50)
+[waypoint_publisher-5] [INFO] [1787665427.815168040] [waypoint_publisher]: Waypoint cycle 1/1 4/4: (0.00, 0.00, 1.50)
+[waypoint_publisher-5] [INFO] [1787665430.014675420] [waypoint_publisher]: Waypoint sequence complete
 [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
 [INFO] [waypoint_publisher-5]: sending signal 'SIGINT' to process[waypoint_publisher-5]
 [INFO] [viz_node-4]: sending signal 'SIGINT' to process[viz_node-4]
 [INFO] [map_node-3]: sending signal 'SIGINT' to process[map_node-3]
 [INFO] [controller_node-2]: sending signal 'SIGINT' to process[controller_node-2]
 [INFO] [dynamics_node-1]: sending signal 'SIGINT' to process[dynamics_node-1]
-[viz_node-4] [INFO] [1787645864.561905583] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[map_node-3] [INFO] [1787645864.561907777] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[dynamics_node-1] [INFO] [1787645864.561914649] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[map_node-3] [INFO] [1787665481.077077169] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[viz_node-4] [INFO] [1787665481.077077059] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[controller_node-2] [INFO] [1787665481.077077079] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[dynamics_node-1] [INFO] [1787665481.077076758] [rclcpp]: signal_handler(SIGINT/SIGTERM)
 [waypoint_publisher-5] Traceback (most recent call last):
 [waypoint_publisher-5]   File "/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/waypoint_publisher", line 33, in <module>
 [waypoint_publisher-5]     sys.exit(load_entry_point('drone-bringup', 'console_scripts', 'waypoint_publisher')())
@@ -67,13 +68,11 @@
 [waypoint_publisher-5]   File "/usr/lib/python3.10/threading.py", line 320, in wait
 [waypoint_publisher-5]     waiter.acquire()
 [waypoint_publisher-5] KeyboardInterrupt
-[controller_node-2] [INFO] [1787645864.562225540] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[viz_node-4] [INFO] [1787645864.564553767] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[map_node-3] [INFO] [1787645864.564874696] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[controller_node-2] [INFO] [1787645864.565165068] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[dynamics_node-1] [INFO] [1787645864.565413151] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[ERROR] [waypoint_publisher-5]: process has died [pid 39190, exit code -2, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/waypoint_publisher --pattern list --hold 8.0 --list=2,0,1.5;2,2,1.5;0,2,1.5;0,0,1.5 --wait-arrival --arrival-tol 0.12 --max-hold 25'].
-[INFO] [controller_node-2]: process has finished cleanly [pid 39111]
-[INFO] [viz_node-4]: process has finished cleanly [pid 39115]
-[INFO] [dynamics_node-1]: process has finished cleanly [pid 39109]
-[INFO] [map_node-3]: process has finished cleanly [pid 39113]
+[viz_node-4] [INFO] [1787665481.079933855] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[map_node-3] [INFO] [1787665481.080241733] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[controller_node-2] [INFO] [1787665481.080460874] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [dynamics_node-1]: process has died [pid 507567, exit code -2, cmd '/home/jungod/drone_ws/install/drone_dynamics/lib/drone_dynamics/dynamics_node --ros-args -r __node:=drone_dynamics --params-file /home/jungod/drone_ws/install/drone_bringup/share/drone_bringup/config/dynamics.yaml --params-file /tmp/launch_params_qhqx6ob4'].
+[ERROR] [waypoint_publisher-5]: process has died [pid 507646, exit code -2, cmd '/home/jungod/drone_ws/install/drone_bringup/lib/drone_bringup/waypoint_publisher --pattern list --hold 8.0 --list=2,0,1.5;2,2,1.5;0,2,1.5;0,0,1.5 --wait-arrival --arrival-tol 0.12 --max-hold 25'].
+[INFO] [controller_node-2]: process has finished cleanly [pid 507569]
+[INFO] [viz_node-4]: process has finished cleanly [pid 507573]
+[INFO] [map_node-3]: process has finished cleanly [pid 507571]

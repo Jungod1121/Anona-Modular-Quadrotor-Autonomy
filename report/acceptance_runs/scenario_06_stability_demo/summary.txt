@@ -1,17 +1,17 @@
-samples: 1802
-mean_pos_err: 0.0358 m
-max_pos_err: 0.0852 m
-final_pos_err: 0.0480 m
+samples: 1801
+mean_pos_err: 0.0354 m
+max_pos_err: 0.0820 m
+final_pos_err: 0.0367 m
 hover_pass_0.3m: True
 goal_pass_0.3m: True
 hold_at_goal_pass_0.3m: True
 hold_at_goal_samples: 30
 planner_success_ever: False
 final_planner_state: 
-min_obstacle_distance: 1.7146 m
+min_obstacle_distance: 1.7177 m
 avoidance_safety_distance: 0.3500 m
 avoidance_pass: True
 avoidance_pass_0.35m: True
-flown_path_length: 4.0335 m
-detour_ratio: 60.5393
-mean_jerk: 1.4049 m/s^3
+flown_path_length: 3.9949 m
+detour_ratio: 63.9746
+mean_jerk: 1.5567 m/s^3
