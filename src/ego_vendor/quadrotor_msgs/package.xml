@@ -16,8 +16,8 @@
   <depend>std_msgs</depend>
   <depend>builtin_interfaces</depend>
 
-  <build_depend>Eigen3</build_depend>
-  <exec_depend>Eigen3</exec_depend>
+  <build_depend>eigen</build_depend>
+  <exec_depend>eigen</exec_depend>
 
   <member_of_group>rosidl_interface_packages</member_of_group>
 
