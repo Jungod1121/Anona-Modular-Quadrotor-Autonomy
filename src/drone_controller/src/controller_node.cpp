@@ -76,6 +76,11 @@ private:
     // Fail-safe: if /drone/odom stalls longer than this, stop trusting the
     // stale state and cut motors instead of integrating against phantom error.
     declare_parameter("odom_timeout_sec", 0.2);
+    // Planner-commanded setpoints are clamped to this flight band. Planners
+    // occasionally emit ground-strike trajectories (obstacle squeeze from
+    // above); without a fence the controller faithfully flies into the dirt.
+    declare_parameter("goal_z_min", 0.35);
+    declare_parameter("goal_z_max", 1.9);
     // When false, ignore /drone/goal ballistic fallback (multi/EGO-Swarm: goals
     // must not bypass the planner).
     declare_parameter("use_drone_goal_fallback", true);
@@ -245,12 +250,25 @@ private:
     }
   }
 
+  double clampGoalZ(double z)
+  {
+    const double zmin = get_parameter("goal_z_min").as_double();
+    const double zmax = get_parameter("goal_z_max").as_double();
+    const double clamped = std::clamp(z, zmin, zmax);
+    if (clamped != z) {
+      RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000,
+        "Planner setpoint z=%.2f outside flight band [%.2f, %.2f] — clamped",
+        z, zmin, zmax);
+    }
+    return clamped;
+  }
+
   void onLocalGoal(const geometry_msgs::msg::PoseStamped::SharedPtr msg)
   {
     local_goal_.position = Eigen::Vector3d(
       msg->pose.position.x,
       msg->pose.position.y,
-      msg->pose.position.z);
+      clampGoalZ(msg->pose.position.z));
     local_goal_.yaw = yawFromQuaternion(msg->pose.orientation);
     local_goal_.velocity.setZero();
     local_goal_.acceleration.setZero();
@@ -271,7 +289,7 @@ private:
       return;
     }
     traj_cmd_.position = Eigen::Vector3d(
-      msg->position.x, msg->position.y, msg->position.z);
+      msg->position.x, msg->position.y, clampGoalZ(msg->position.z));
     traj_cmd_.velocity = Eigen::Vector3d(
       msg->velocity.x, msg->velocity.y, msg->velocity.z);
     traj_cmd_.acceleration = Eigen::Vector3d(

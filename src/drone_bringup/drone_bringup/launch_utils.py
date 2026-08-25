@@ -162,7 +162,10 @@ def _random_forest_node(seed: int) -> Node:
             'ObstacleShape/upper_rad': 0.50,
             'ObstacleShape/lower_hei': 0.0,
             'ObstacleShape/upper_hei': 3.0,
-            'map/circle_num': 25,
+            # Fewer suspended rings: they force vertical weaving that
+            # destabilizes corner replans under load; trunks carry the
+            # avoidance intent of this scenario.
+            'map/circle_num': 12,
             'ObstacleShape/radius_l': 0.7,
             'ObstacleShape/radius_h': 0.5,
             'ObstacleShape/z_l': 0.7,

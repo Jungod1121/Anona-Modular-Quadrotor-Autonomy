@@ -41,6 +41,9 @@ class EgoCmdBridge(Node):
         self.declare_parameter('goal_in_topic', '')
         self.declare_parameter('goal_out_topic', '')
         self.declare_parameter('path_maxlen', 2000)
+        # Runaway-command guard: drop pos_cmds beyond this |x|,|y| bound or
+        # farther than this from the current mission goal (see _cmd_is_sane).
+        self.declare_parameter('cmd_bound', 25.0)
         self.declare_parameter('auto_goal_enable', False)
         self.declare_parameter('auto_goal_x', 15.0)
         self.declare_parameter('auto_goal_y', 0.0)
@@ -104,6 +107,7 @@ class EgoCmdBridge(Node):
         self.path = Path()
         self.path.header.frame_id = 'map'
         self.have_optimal_path = False
+        self._goal_xy = None
         self._auto_left = 0
         self._auto_started = False
         self._delay_timer = None
@@ -158,6 +162,27 @@ class EgoCmdBridge(Node):
         self.goal_out.publish(out)
         if self.goal_out_legacy is not None:
             self.goal_out_legacy.publish(out)
+        # Track the active mission goal for the runaway-command guard below.
+        self._goal_xy = (float(out.pose.position.x), float(out.pose.position.y))
+
+    def _cmd_is_sane(self, p) -> bool:
+        """Reject planner commands that ran away from the mission goal.
+
+        Under CPU load EGO occasionally extrapolates a stale trajectory and
+        streams position commands far outside the work area; forwarding them
+        turns a recoverable stall into a cross-map runaway. Anything beyond
+        the workspace bound or far from the current goal is dropped, letting
+        the controller time out to an anchored hover instead.
+        """
+        bound = float(self.get_parameter('cmd_bound').value)
+        if abs(p.x) > bound or abs(p.y) > bound:
+            return False
+        if self._goal_xy is not None:
+            dx = p.x - self._goal_xy[0]
+            dy = p.y - self._goal_xy[1]
+            if dx * dx + dy * dy > bound * bound:
+                return False
+        return True
 
     def on_optimal(self, msg: Marker) -> None:
         if not msg.points:
@@ -179,6 +204,12 @@ class EgoCmdBridge(Node):
 
     def on_cmd(self, msg: PositionCommand) -> None:
         now = self.get_clock().now().to_msg()
+
+        if not self._cmd_is_sane(msg.position):
+            self.get_logger().warn(
+                f'dropping runaway pos_cmd ({msg.position.x:.1f}, {msg.position.y:.1f})',
+                throttle_duration_sec=2.0)
+            return
 
         lg = PoseStamped()
         lg.header.stamp = now
