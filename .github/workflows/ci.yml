@@ -27,10 +27,10 @@ jobs:
             python3-rosdep ca-certificates \
             libpcl-dev libeigen3-dev libnlopt-dev \
             python3-numpy python3-matplotlib python3-yaml
-          rm -rf /var/lib/apt/lists/*
           rosdep init 2>/dev/null || true
           rosdep update --rosdistro humble
           source /opt/ros/humble/setup.bash
+          apt-get update
           rosdep install -y --from-paths src --ignore-src --rosdistro humble
 
       - name: Build + functional tests (linters excluded)
