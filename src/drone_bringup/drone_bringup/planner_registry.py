@@ -52,6 +52,10 @@ FRAMES = {
 PLANNERS: Dict[str, Dict[str, Any]] = {
     'homemade': {
         'id': 'homemade',
+        # Command channels this backend actually drives (conformance-tested):
+        #   local_goal — position setpoint stream (contract minimum)
+        #   traj_ff    — feedforward /planner/trajectory_cmd with ready=true
+        'command_channels': ['local_goal'],
         'aliases': ['a', 'path_a', 'dynastar'],
         'label_en': 'Path A — Grid A* + B-spline',
         'label_zh': '路径 A — 栅格 A* + B 样条',
@@ -69,6 +73,10 @@ PLANNERS: Dict[str, Dict[str, Any]] = {
     },
     'ego': {
         'id': 'ego',
+        # Command channels this backend actually drives (conformance-tested):
+        #   local_goal — position setpoint stream (contract minimum)
+        #   traj_ff    — feedforward /planner/trajectory_cmd with ready=true
+        'command_channels': ['local_goal', 'traj_ff'],
         'aliases': ['b', 'path_b'],
         'label_en': 'Path B — EGO rebound B-spline',
         'label_zh': '路径 B — EGO 反弹 B 样条',
@@ -86,6 +94,10 @@ PLANNERS: Dict[str, Dict[str, Any]] = {
     },
     'gcopter': {
         'id': 'gcopter',
+        # Command channels this backend actually drives (conformance-tested):
+        #   local_goal — position setpoint stream (contract minimum)
+        #   traj_ff    — feedforward /planner/trajectory_cmd with ready=true
+        'command_channels': ['local_goal', 'traj_ff'],
         'aliases': ['c', 'path_c', 'minco'],
         'label_en': 'Path C — GCOPTER / MINCO',
         'label_zh': '路径 C — GCOPTER / MINCO',
@@ -103,6 +115,10 @@ PLANNERS: Dict[str, Dict[str, Any]] = {
     },
     'fuel_explore': {
         'id': 'fuel_explore',
+        # Command channels this backend actually drives (conformance-tested):
+        #   local_goal — position setpoint stream (contract minimum)
+        #   traj_ff    — feedforward /planner/trajectory_cmd with ready=true
+        'command_channels': ['local_goal', 'traj_ff'],
         'aliases': ['d', 'path_d', 'fuel'],
         'label_en': 'Mode D — Frontier exploration (EGO)',
         'label_zh': '模式 D — 边界探索（EGO）',
@@ -120,6 +136,10 @@ PLANNERS: Dict[str, Dict[str, Any]] = {
     },
     'mighty': {
         'id': 'mighty',
+        # Command channels this backend actually drives (conformance-tested):
+        #   local_goal — position setpoint stream (contract minimum)
+        #   traj_ff    — feedforward /planner/trajectory_cmd with ready=true
+        'command_channels': ['local_goal', 'traj_ff'],
         'aliases': ['e', 'path_e'],
         'label_en': 'Path E — MIGHTY HGP',
         'label_zh': '路径 E — MIGHTY HGP',
@@ -137,6 +157,10 @@ PLANNERS: Dict[str, Dict[str, Any]] = {
     },
     'fast_planner': {
         'id': 'fast_planner',
+        # Command channels this backend actually drives (conformance-tested):
+        #   local_goal — position setpoint stream (contract minimum)
+        #   traj_ff    — feedforward /planner/trajectory_cmd with ready=true
+        'command_channels': ['local_goal', 'traj_ff'],
         'aliases': ['f', 'path_f', 'fast'],
         'label_en': 'Optional F — Fast-Planner kino (lineage)',
         'label_zh': '可选 F — Fast-Planner 动力学（对照）',
@@ -154,6 +178,10 @@ PLANNERS: Dict[str, Dict[str, Any]] = {
     },
     'vfh': {
         'id': 'vfh',
+        # Command channels this backend actually drives (conformance-tested):
+        #   local_goal — position setpoint stream (contract minimum)
+        #   traj_ff    — feedforward /planner/trajectory_cmd with ready=true
+        'command_channels': ['local_goal'],
         'aliases': ['g', 'path_g', 'rl', 'ppo', 'mappo'],
         'label_en': 'Path G — VFH+ histogram',
         'label_zh': '路径 G — VFH+ 直方图',
@@ -171,6 +199,10 @@ PLANNERS: Dict[str, Dict[str, Any]] = {
     },
     'sac': {
         'id': 'sac',
+        # Command channels this backend actually drives (conformance-tested):
+        #   local_goal — position setpoint stream (contract minimum)
+        #   traj_ff    — feedforward /planner/trajectory_cmd with ready=true
+        'command_channels': ['local_goal'],
         'aliases': ['h', 'path_h', 'drq_sac'],
         'label_en': 'Path H — Polar DrQ-SAC',
         'label_zh': '路径 H — Polar DrQ-SAC',
@@ -243,6 +275,7 @@ def planner_public_info(lang: str = 'en') -> List[Dict[str, Any]]:
             'principle': meta.get('principle', ''),
             'aliases': list(meta.get('aliases', [])),
             'capabilities': list(meta.get('capabilities', [])),
+            'command_channels': list(meta.get('command_channels', ['local_goal'])),
         })
     return out
 

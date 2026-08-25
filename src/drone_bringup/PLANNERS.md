@@ -18,6 +18,26 @@ rename controller topics per backend — only remap planner inputs and bridge ou
 | out | `/planner/trajectory` | `nav_msgs/Path` (RViz yellow) |
 | out | `/planner/local_goal_marker` | `visualization_msgs/Marker` (rolling local goal) |
 
+### Command channels (declared, conformance-tested)
+
+Each backend declares which plant-facing command channels it drives
+(`command_channels` in `planner_registry.py`); `planner_conformance_test`
+verifies the declared set is actually live.
+
+| Channel | Contract | Used by |
+|---|---|---|
+| `local_goal` | `/planner/local_goal` PoseStamped, frame `map`, ≥5 Hz while tracking | **all backends** (contract minimum) |
+| `traj_ff` | `/planner/trajectory_cmd` with `trajectory_ready=true` — controller drops messages without the flag | ego, gcopter, mighty, fast_planner, fuel_explore |
+
+Notes:
+- Path A / G / H intentionally drive `local_goal` only: their feedforward
+  channel is either disabled by design (A: FF raced ahead of B-spline) or not
+  produced (reactive/learned heading streams). The plant controller falls back
+  to position tracking with a stale-goal timeout — this asymmetry is part of
+  the comparison, not a defect.
+- `trajectory_cmd` with `trajectory_ready=false` is a *keep-alive/clear*
+  signal, never tracked.
+
 **Goals:** RViz **2D Goal Pose** → `/drone/goal` (official EGO does the same). RViz z is
 usually ~0 — Path B uses `fsm/cruise_height` (default 1.0), Path A `cruise_z`, Path C
 `CruiseHeight`. Yellow planned path is `/planner/trajectory`; blue flown path is
