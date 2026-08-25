@@ -39,6 +39,9 @@ void GridMap::initMap(rclcpp::Node::SharedPtr node)
   node_->declare_parameter("grid_map/virtual_ceil_height", -0.1);
   node_->declare_parameter("grid_map/virtual_ceil_yp", -0.1);
   node_->declare_parameter("grid_map/virtual_ceil_yn", -0.1);
+  // Symmetric floor barrier: one occupied inflate layer at this height so
+  // planners cannot route below it (mirrors virtual_ceil_height; <= -0.5 disables).
+  node_->declare_parameter("grid_map/virtual_floor_height", -0.1);
   node_->declare_parameter("grid_map/show_occ_time", false);
   node_->declare_parameter("grid_map/pose_type", 1);
   node_->declare_parameter("grid_map/frame_id", "world");
@@ -76,6 +79,7 @@ void GridMap::initMap(rclcpp::Node::SharedPtr node)
   node_->get_parameter("grid_map/virtual_ceil_height", mp_.virtual_ceil_height_);
   node_->get_parameter("grid_map/virtual_ceil_yp", mp_.virtual_ceil_yp_);
   node_->get_parameter("grid_map/virtual_ceil_yn", mp_.virtual_ceil_yn_);
+  node_->get_parameter("grid_map/virtual_floor_height", mp_.virtual_floor_height_);
   node_->get_parameter("grid_map/show_occ_time", mp_.show_occ_time_);
   node_->get_parameter("grid_map/pose_type", mp_.pose_type_);
   node_->get_parameter("grid_map/frame_id", mp_.frame_id_);
@@ -698,6 +702,20 @@ void GridMap::clearAndInflateLocalMap()
         md_.occupancy_buffer_inflate_[toAddress(x, y, ceil_id)] = 1;
       }
   }
+
+  // add virtual floor to keep trajectories out of the ground-strike band
+  if (mp_.virtual_floor_height_ > -0.5)
+  {
+    int floor_id = ceil((mp_.virtual_floor_height_ - mp_.map_origin_(2)) * mp_.resolution_inv_) + 1;
+    if (floor_id < 1) {
+      floor_id = 1;
+    }
+    for (int x = md_.local_bound_min_(0); x <= md_.local_bound_max_(0); ++x)
+      for (int y = md_.local_bound_min_(1); y <= md_.local_bound_max_(1); ++y)
+      {
+        md_.occupancy_buffer_inflate_[toAddress(x, y, floor_id)] = 1;
+      }
+  }
 }
 
 void GridMap::visCallback()
@@ -910,6 +928,18 @@ void GridMap::cloudCallback(const sensor_msgs::msg::PointCloud2::ConstPtr &img)
     for (int x = md_.local_bound_min_(0); x <= md_.local_bound_max_(0); ++x)
       for (int y = md_.local_bound_min_(1); y <= md_.local_bound_max_(1); ++y) {
         md_.occupancy_buffer_inflate_[toAddress(x, y, ceil_id)] = 1;
+      }
+  }
+
+  // add virtual floor to keep trajectories out of the ground-strike band
+  if (mp_.virtual_floor_height_ > -0.5) {
+    int floor_id = ceil((mp_.virtual_floor_height_ - mp_.map_origin_(2)) * mp_.resolution_inv_) + 1;
+    if (floor_id < 1) {
+      floor_id = 1;
+    }
+    for (int x = md_.local_bound_min_(0); x <= md_.local_bound_max_(0); ++x)
+      for (int y = md_.local_bound_min_(1); y <= md_.local_bound_max_(1); ++y) {
+        md_.occupancy_buffer_inflate_[toAddress(x, y, floor_id)] = 1;
       }
   }
 }

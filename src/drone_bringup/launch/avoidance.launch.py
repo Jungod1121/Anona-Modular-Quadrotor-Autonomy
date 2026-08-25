@@ -97,6 +97,11 @@ def launch_setup(context, *args, **kwargs):
         'grid_map/min_ray_length': 0.1,
         'grid_map/max_ray_length': 4.5,
         'grid_map/virtual_ceil_height': 2.8,
+        # Hard floor barrier: EGO's rebound optimizer occasionally plans a
+        # ground-strike trajectory when corner replans degrade; make the
+        # below-0.25 m band physically unroutable instead of relying on the
+        # controller's soft z-clamp.
+        'grid_map/virtual_floor_height': 0.22,
         'grid_map/visualization_truncate_height': 1.8,
         'grid_map/show_occ_time': False,
         'grid_map/pose_type': 2,
