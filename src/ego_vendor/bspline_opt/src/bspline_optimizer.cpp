@@ -1483,7 +1483,41 @@ namespace ego_planner
             }
         }
         else
-          RCLCPP_WARN(rclcpp::get_logger("check_collision_and_rebound"), "Failed to generate direction. It doesn't matter.");
+        {
+          // Fallback: the ctrl_pts_law ray missed every A* escape path, so
+          // step 2 assigned no base_point/direction to this segment's control
+          // points and they would receive NO rebound force this iteration —
+          // letting the trajectory grind through obstacles when replans
+          // degrade under load. Anchor each unassigned point at its nearest
+          // escape-path waypoint instead.
+          const auto &escape = a_star_pathes[i];
+          if (!escape.empty())
+          {
+            for (int j = segment_ids[i].first; j <= segment_ids[i].second; ++j)
+            {
+              if (cps_.flag_temp[j] || !cps_.direction[j].empty())
+                continue;
+              double best = std::numeric_limits<double>::max();
+              Eigen::Vector3d best_pt = cps_.points.col(j);
+              for (const auto &pt : escape)
+              {
+                const double d = (pt - cps_.points.col(j)).squaredNorm();
+                if (d < best)
+                {
+                  best = d;
+                  best_pt = pt;
+                }
+              }
+              Eigen::Vector3d dir = best_pt - cps_.points.col(j);
+              if (dir.norm() > 1e-6)
+              {
+                cps_.base_point[j].push_back(best_pt);
+                cps_.direction[j].push_back(dir.normalized());
+                cps_.flag_temp[j] = true;
+              }
+            }
+          }
+        }
       }
 
       force_stop_type_ = STOP_FOR_REBOUND;
