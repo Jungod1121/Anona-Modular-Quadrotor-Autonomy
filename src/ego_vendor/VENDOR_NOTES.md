@@ -43,14 +43,21 @@ message definitions), copy over, and refresh this table.
 - `ego_replan_fsm.cpp`: odometry twist rotated body->world (REP-105; the
   plant publishes body-frame twist and the kinodynamic search seeds plus
   fail-safe velocity check need world-frame velocity).
-- Everything under `bspline_opt` / `path_searching` / `plan_env` /
-  `traj_utils` / `cmake_utils`: currently byte-identical to upstream `23a8d5a`.
+- `plan_env/grid_map.{h,cpp}`: added `grid_map/virtual_floor_height` — an
+  occupied inflate layer symmetric to the upstream virtual ceiling, so
+  planners cannot route into the ground-strike band (used by
+  avoidance.launch at 0.22 m). Adding the MapParameters member changes its
+  ABI: always rebuild with `--packages-above plan_env`.
+- Everything under `bspline_opt` / `path_searching` / `traj_utils` /
+  `cmake_utils`: currently byte-identical to upstream `23a8d5a`.
 
 ## Known upstream limitation (follow-up)
 
 Under sustained CPU load EGO's rebound optimizer can exhaust escape
 directions near forest corners ("Failed to generate direction") and plan a
 degenerate trajectory; plant-side guards (controller z-fence,
-bridge runaway-command filter, extended sensing horizon) contain this but
-scenario 4 remains load-sensitive. Proper fix belongs in EGO's
-checkCollisionAndRebound/optimizer — tracked as follow-up work.
+bridge runaway-command filter, extended sensing horizon, virtual floor)
+contain this but scenario 4 remains load-sensitive — the acceptance suite
+therefore budgets a retry for it. A deeper fix belongs in EGO's
+checkCollisionAndRebound/optimizer and/or collision response in the plant
+dynamics model (a tip-over currently slides through obstacles).
