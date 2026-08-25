@@ -3,7 +3,7 @@
   <name>drone_rl_planner</name>
   <version>0.1.0</version>
   <description>Learning-based local trajectory planner (PPO / MAPPO) for the shared drone plant.</description>
-  <maintainer email="student@drone_ws.local">drone_ws</maintainer>
+  <maintainer email="Jungod1121@users.noreply.github.com">drone_ws</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_python</buildtool_depend>
