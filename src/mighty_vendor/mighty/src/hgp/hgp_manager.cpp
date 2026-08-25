@@ -1208,6 +1208,10 @@ void HGPManager::updateMap(double wdx, double wdy, double wdz, const Vec3f& cent
                      std::max(1, (int)std::lround(wdy / res_)),
                      std::max(1, (int)std::lround(wdz / res_)), center_map, par_.z_min, par_.z_max,
                      par_.inflation_hgp, obst_pos, obst_bbox, traj_max_time);
+  // readMap() populates the grid but nothing upstream ever set this flag,
+  // so findClosestFreePoint / findClosestNonOccupiedPoint were permanent
+  // no-ops ("Map is not initialized") and pushPathIntoFreeSpace did nothing.
+  map_util_->setMapInitialized(true);
 
   // Build 2D ground robot map
   if (is_ground_robot_) {

@@ -2968,9 +2968,9 @@ void SolverLBFGS::setStaticConstraintsForSafePath(const std::vector<LinearConstr
         b[r] /= n;
       }
     }
-    A_stat_.push_back(std::move(A));
-    A_stat_.push_back(std::move(A));
-    b_stat_.push_back(std::move(b));
+    A_stat_.push_back(A);
+    A_stat_.push_back(std::move(A));  // same plane registered twice by design;
+    b_stat_.push_back(b);             // only the LAST push may move.
     b_stat_.push_back(std::move(b));
   }
 }

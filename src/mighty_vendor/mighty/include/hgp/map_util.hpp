@@ -45,6 +45,9 @@ typedef timer::Timer MyTimer;
 template <int Dim>
 class MapUtil {
  public:
+  /// Marks the grid as populated so free-space query helpers
+  /// (findClosestFreePoint etc.) become active.
+  void setMapInitialized(bool v) { map_initialized_ = v; }
   // Constructor
   MapUtil(float res, float x_min, float x_max, float y_min, float y_max, float z_min, float z_max,
           float inflation, float obst_max_vel) {

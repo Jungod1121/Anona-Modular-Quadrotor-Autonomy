@@ -208,9 +208,15 @@ MIGHTY_NODE::MIGHTY_NODE() : Node("mighty_node") {
   sub_predicted_traj_ = this->create_subscription<dynus_interfaces::msg::DynTraj>(
       "predicted_trajs", critical_qos,
       std::bind(&MIGHTY_NODE::trajCallback, this, std::placeholders::_1), options_re_1);
+  // stateCallback mutates actual_traj_hist_ and other plain members without
+  // locks; a Reentrant group allowed concurrent invocations of the callback
+  // with itself (data race at the 100 Hz state rate). Serialize it.
+  rclcpp::SubscriptionOptions options_state;
+  options_state.callback_group =
+      this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
   sub_state_ = this->create_subscription<dynus_interfaces::msg::State>(
       "state", critical_qos, std::bind(&MIGHTY_NODE::stateCallback, this, std::placeholders::_1),
-      options_re_1);
+      options_state);
   sub_terminal_goal_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
       "term_goal", critical_qos,
       std::bind(&MIGHTY_NODE::terminalGoalCallback, this, std::placeholders::_1));
@@ -2370,7 +2376,7 @@ void MIGHTY_NODE::logData() {
                  << "," << std::get<5>(row) << "," << std::get<6>(row) << "," << std::get<7>(row)
                  << "," << std::get<8>(row) << "," << std::get<9>(row) << "," << std::get<10>(row)
                  << "," << std::get<11>(row) << "," << std::get<12>(row) << "," << std::get<13>(row)
-                 << std::get<14>(row) << "\n";
+                 << "," << std::get<14>(row) << "\n";
       } else {
         log_file << par_.global_planner << "," << std::get<0>(row) << "," << std::get<1>(row) << ","
                  << std::get<2>(row) * 1000.0 << "," << std::get<3>(row) << "," << std::get<4>(row)

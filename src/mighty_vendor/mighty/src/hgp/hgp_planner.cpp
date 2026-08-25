@@ -418,7 +418,7 @@ bool HGPPlanner::plan(const Vecf<3>& start, const Vecf<3>& start_vel, const Vecf
 
   if ((map_util_->map_).empty()) {
     if (planner_verbose_) printf(ANSI_COLOR_RED "need to set the map!\n" ANSI_COLOR_RESET);
-    return -1;
+    return false;
   }
 
   // compute initial g value (this is due to the fact that the actual initial position is not on the
@@ -452,14 +452,18 @@ bool HGPPlanner::plan(const Vecf<3>& start, const Vecf<3>& start_vel, const Vecf
 
   // Run global plan module
   int max_expand = max_expand_;
-  graph_search_->plan(start_int(0), start_int(1), sz, goal_int(0), goal_int(1), gz, initial_g,
-                      global_planning_time_, hgp_static_jps_time_, hgp_check_path_time_,
-                      hgp_dynamic_astar_time_, hgp_recover_path_time_, current_time, start_vel,
-                      max_expand, hgp_timeout_duration_ms_);
+  // Respect the search verdict: every failure exit of GraphSearch still
+  // leaves >=1 recovered waypoint, so the size check below alone cannot
+  // detect "goal unreachable" and downstream treated garbage as a plan.
+  const bool search_ok = graph_search_->plan(
+      start_int(0), start_int(1), sz, goal_int(0), goal_int(1), gz, initial_g,
+      global_planning_time_, hgp_static_jps_time_, hgp_check_path_time_,
+      hgp_dynamic_astar_time_, hgp_recover_path_time_, current_time, start_vel,
+      max_expand, hgp_timeout_duration_ms_);
 
   const auto path = graph_search_->getPath();
 
-  if (path.size() < 1) {
+  if (!search_ok || path.size() < 2) {
     std::cout << ANSI_COLOR_RED "Cannot find a path from " << start.transpose() << " to "
               << goal.transpose() << " Abort!" ANSI_COLOR_RESET << std::endl;
     status_ = -1;
