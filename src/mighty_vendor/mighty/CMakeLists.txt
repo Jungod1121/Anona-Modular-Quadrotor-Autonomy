@@ -74,6 +74,14 @@ include_directories(
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../decomp_util/include")
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../decomp_util/include")
 endif()
+# Source-tree fallbacks for the other vendored decomp packages — identical to
+# their installed headers, immune to install-order/caching differences.
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../decomp_ros_msgs/include")
+  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../decomp_ros_msgs/include")
+endif()
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../decomp_rviz_plugins/include")
+  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../decomp_rviz_plugins/include")
+endif()
 # dynus / decomp installed headers (Humble nested layout)
 foreach(_p
     "${CMAKE_INSTALL_PREFIX}/../dynus_interfaces/include"
