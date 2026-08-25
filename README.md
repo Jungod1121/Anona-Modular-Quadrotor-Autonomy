@@ -104,8 +104,14 @@ ros2 run drone_bringup dashboard         # http://127.0.0.1:8765/
 | 6 | Stability | `ros2 launch drone_bringup stability_demo.launch.py` |
 
 ```bash
-python3 scripts/run_acceptance.py
+python3 scripts/run_acceptance.py          # six scenarios (~30 min; scenario 4
+                                           #   budgets one retry for planner variance)
+python3 scripts/run_conformance.py --planner ego   # single-planner contract check
 ```
+
+Scenario 4 flies the official forest at a deliberately conservative speed with a
+hard grid-inflation margin — its acceptance window is 420 s and the min-obstacle
+criterion is 0.30 m.
 
 <p align="center">
   <img src="docs/media/scenario_04_avoid_rviz.png" alt="Avoidance" width="360"/>

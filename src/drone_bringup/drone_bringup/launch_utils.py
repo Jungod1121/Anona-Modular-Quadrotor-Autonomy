@@ -128,22 +128,6 @@ def map_adapter_node(input_topic: str, map_id: str, seed: int = 1, planner: str 
     )
 
 
-def cloud_bridge_node(input_topic: str) -> Node:
-    return Node(
-        package='drone_bringup',
-        executable='cloud_bridge',
-        name='cloud_bridge',
-        output='screen',
-        parameters=[{
-            'input_topic': input_topic,
-            'output_topics': [
-                '/map/obstacles',
-                '/map_generator/global_cloud',
-            ],
-            'frame_id': 'map',
-        }],
-    )
-
 
 def _random_forest_node(seed: int) -> Node:
     return Node(

@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      planners:
+        description: 'Comma-separated planner ids for the conformance matrix'
+        default: 'homemade,ego,gcopter,vfh,sac'
 
 jobs:
   build-test-smoke:
@@ -57,3 +62,48 @@ jobs:
           echo "hover smoke FAILED — no /drone/odom within 40s"
           tail -50 /tmp/hover.log
           exit 1
+
+  conformance-matrix:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-22.04
+    container:
+      image: ros:humble
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout (with reference submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install workspace dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            git python3-pip python3-setuptools python3-colcon-common-extensions \
+            python3-rosdep ca-certificates \
+            libpcl-dev libeigen3-dev \
+            python3-numpy python3-matplotlib python3-yaml
+          rosdep init 2>/dev/null || true
+          rosdep update --rosdistro humble
+          source /opt/ros/humble/setup.bash
+          apt-get update
+          rosdep install -y --from-paths src --ignore-src --rosdistro humble
+      - name: Build (skip tests)
+        run: |
+          source /opt/ros/humble/setup.bash
+          export PYTHONNOUSERSITE=1
+          bash scripts/setup_nlopt.sh
+          colcon build --symlink-install
+      - name: Conformance over planner set
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          export PYTHONNOUSERSITE=1
+          IFS=',' read -ra PS <<< "${{ github.event.inputs.planners }}"
+          rc=0
+          for p in "${PS[@]}"; do
+            echo "===== conformance: $p ====="
+            python3 scripts/run_conformance.py --planner "$p" --window 45 || rc=1
+          done
+          exit $rc
