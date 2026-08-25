@@ -83,6 +83,9 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../decomp_rviz_plugins/include")
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../decomp_rviz_plugins/include")
 endif()
 # dynus / decomp installed headers (Humble nested layout)
+message(STATUS "MIGHTY_DEBUG prefix=${CMAKE_INSTALL_PREFIX}")
+execute_process(COMMAND ls "${CMAKE_INSTALL_PREFIX}/.." OUTPUT_VARIABLE _ls_out ERROR_QUIET)
+message(STATUS "MIGHTY_DEBUG sibling install dirs:\n${_ls_out}")
 foreach(_p
     "${CMAKE_INSTALL_PREFIX}/../dynus_interfaces/include"
     "${CMAKE_CURRENT_BINARY_DIR}/../../install/dynus_interfaces/include"
@@ -92,7 +95,10 @@ foreach(_p
     "${CMAKE_INSTALL_PREFIX}/../decomp_ros_msgs/include/decomp_ros_msgs"
     "${CMAKE_INSTALL_PREFIX}/../decomp_rviz_plugins/include")
   if(EXISTS "${_p}")
+    message(STATUS "MIGHTY_DEBUG inc OK  ${_p}")
     include_directories("${_p}")
+  else()
+    message(STATUS "MIGHTY_DEBUG inc MISS ${_p}")
   endif()
 endforeach()
 
