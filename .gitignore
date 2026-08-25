@@ -9,7 +9,11 @@ __pycache__/
 *.csv
 !report/appendix/*.csv
 scripts/output/
-third_party/
+third_party/*
+# Vendored NLopt source (MIT) — fp_bspline_opt builds against it; the
+# nlopt_install/ prefix stays ignored (build output).
+!third_party/nlopt/
+third_party/nlopt/build/
 
 .ros_log_tmp/
 .ros_logs/

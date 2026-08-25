@@ -20,6 +20,9 @@ fi
 
 LINT_EXCLUDE='lint_cmake|uncrustify|xmllint|cppcheck|cpplint|copyright|flake8|pep257'
 
+echo "==> vendored nlopt"
+bash scripts/setup_nlopt.sh
+
 echo "==> colcon build $*"
 colcon build --symlink-install "$@"
 
