@@ -16,6 +16,7 @@
 #include "drone_planner/uniform_bspline.hpp"
 
 #include <drone_msgs/msg/planner_status.hpp>
+#include <drone_msgs/msg/planner_diagnostics.hpp>
 #include <drone_msgs/msg/trajectory_command.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <nav_msgs/msg/odometry.hpp>
@@ -145,6 +146,8 @@ public:
       prefix_ + "/planner/trajectory_cmd", 10);
     status_pub_ = create_publisher<drone_msgs::msg::PlannerStatus>(
       prefix_ + "/planner/status", 10);
+    diag_pub_ = create_publisher<drone_msgs::msg::PlannerDiagnostics>(
+      prefix_ + "/planner/diagnostics", 10);
 
     // Separate callback groups so map ingest cannot starve goal/odom/timer.
     map_cb_group_ = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
@@ -700,10 +703,16 @@ private:
         publishTrajectoryCmd(false);
         lk.unlock();
         bool ok = false;
+        const auto plan_t0 = std::chrono::steady_clock::now();
         {
           std::lock_guard<std::mutex> plan_lk(mtx_);
           ok = plan(pos, goal_p);
         }
+        last_replan_ms_ =
+          std::chrono::duration<double, std::milli>(
+            std::chrono::steady_clock::now() - plan_t0).count();
+        ++replan_count_;
+        if (!ok) ++fail_count_;
         lk.lock();
         if (!ok) {
           // Stay in FAIL: keep tracking the stale trajectory toward it, but
@@ -1144,6 +1153,16 @@ private:
     st.path_length = plen;
     st.min_obstacle_distance = mind;
     status_pub_->publish(st);
+
+    drone_msgs::msg::PlannerDiagnostics dg;
+    dg.header = st.header;
+    dg.planner_id = "homemade";
+    dg.state = state;
+    dg.solve_time_ms = last_replan_ms_;
+    dg.last_replan_ms = last_replan_ms_;
+    dg.replan_count = replan_count_;
+    dg.fail_count = fail_count_;
+    diag_pub_->publish(dg);
   }
 
   std::string prefix_;
@@ -1185,6 +1204,10 @@ private:
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr local_goal_pub_;
   rclcpp::Publisher<drone_msgs::msg::TrajectoryCommand>::SharedPtr traj_cmd_pub_;
   rclcpp::Publisher<drone_msgs::msg::PlannerStatus>::SharedPtr status_pub_;
+  rclcpp::Publisher<drone_msgs::msg::PlannerDiagnostics>::SharedPtr diag_pub_;
+  double last_replan_ms_{0.0};
+  uint32_t replan_count_{0};
+  uint32_t fail_count_{0};
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr goal_sub_;
   rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr map_sub_;

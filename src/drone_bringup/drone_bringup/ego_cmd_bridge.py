@@ -12,6 +12,7 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPo
 from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Path
 from visualization_msgs.msg import Marker
+from drone_msgs.msg import PlannerStatus
 from drone_msgs.msg import TrajectoryCommand
 
 try:
@@ -100,6 +101,15 @@ class EgoCmdBridge(Node):
         if fanout and goal_out.rstrip('/') != legacy:
             self.goal_out_legacy = self.create_publisher(PoseStamped, legacy, GOAL_QOS)
 
+        # Contract telemetry: synthesise PlannerStatus from the command flow so
+        # every bridged backend (ego/mighty/fast/fuel) reports on the standard
+        # status topic like native backends do.
+        self._status_topic = f'{prefix}/planner/status' if prefix else '/planner/status'
+        self.status_pub = self.create_publisher(PlannerStatus, self._status_topic, 10)
+        self._last_cmd_mono = None
+        self._goal_seen = False
+        self.create_timer(0.2, self._publish_status)
+
         self.create_subscription(PositionCommand, cmd_topic, self.on_cmd, 50)
         self.create_subscription(PoseStamped, goal_in, self.on_goal, GOAL_QOS)
         self.create_subscription(Marker, opt_topic, self.on_optimal, 10)
@@ -153,6 +163,7 @@ class EgoCmdBridge(Node):
             f'{msg.pose.position.z:.1f}) remaining={self._auto_left}')
 
     def on_goal(self, msg: PoseStamped) -> None:
+        self._goal_seen = True
         out = PoseStamped()
         out.header = msg.header
         out.header.frame_id = 'map' if not msg.header.frame_id else msg.header.frame_id
@@ -184,6 +195,19 @@ class EgoCmdBridge(Node):
                 return False
         return True
 
+    def _publish_status(self) -> None:
+        import time as _time
+        st = PlannerStatus()
+        st.header.stamp = self.get_clock().now().to_msg()
+        st.header.frame_id = 'map'
+        executing = (
+            self._last_cmd_mono is not None
+            and _time.monotonic() - self._last_cmd_mono < 0.3)
+        st.state = 'EXEC_TRAJ' if executing else 'WAIT_TARGET'
+        st.success = executing
+        st.message = 'pos_cmd flowing' if executing else 'waiting for planner'
+        self.status_pub.publish(st)
+
     def on_optimal(self, msg: Marker) -> None:
         if not msg.points:
             return
@@ -203,6 +227,8 @@ class EgoCmdBridge(Node):
         self.path_pub.publish(self.path)
 
     def on_cmd(self, msg: PositionCommand) -> None:
+        import time as _time
+        self._last_cmd_mono = _time.monotonic()
         now = self.get_clock().now().to_msg()
 
         if not self._cmd_is_sane(msg.position):

@@ -13,6 +13,8 @@
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <std_msgs/msg/float64.hpp>
 #include <drone_msgs/msg/trajectory_command.hpp>
+#include <drone_msgs/msg/planner_status.hpp>
+#include <drone_msgs/msg/planner_diagnostics.hpp>
 
 #include <cmath>
 #include <iostream>
@@ -118,6 +120,11 @@ private:
     double trajStamp{0.0};
     bool mapInitialized{false};
     bool haveOdom{false};
+    rclcpp::Publisher<drone_msgs::msg::PlannerStatus>::SharedPtr statusPub;
+    rclcpp::Publisher<drone_msgs::msg::PlannerDiagnostics>::SharedPtr diagPub;
+    int replanCount{0}, failCount{0};
+    double lastReplanMs{0.0};
+    std::chrono::steady_clock::time_point planT0_;
     bool havePlanned{false};
     int mapIngestCount_{0};
     size_t lastMapPoints_{0};
@@ -151,6 +158,8 @@ public:
             std::bind(&GlobalPlanner::odomCallback, this, std::placeholders::_1));
 
         localGoalPub = this->create_publisher<geometry_msgs::msg::PoseStamped>("/planner/local_goal", 10);
+        statusPub = this->create_publisher<drone_msgs::msg::PlannerStatus>("/planner/status", 10);
+        diagPub = this->create_publisher<drone_msgs::msg::PlannerDiagnostics>("/planner/diagnostics", 10);
         trajCmdPub = this->create_publisher<drone_msgs::msg::TrajectoryCommand>("/planner/trajectory_cmd", 10);
         // Latch so late RViz / dashboard subscribers still see the yellow path.
         auto path_qos = rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable();
@@ -307,8 +316,29 @@ public:
         plan(start, goal);
     }
 
+    void publishStatus(const std::string &state, bool ok, const std::string &msg)
+    {
+        drone_msgs::msg::PlannerStatus st;
+        st.header.stamp = now();
+        st.header.frame_id = "map";
+        st.state = state;
+        st.success = ok;
+        st.message = msg;
+        statusPub->publish(st);
+
+        drone_msgs::msg::PlannerDiagnostics dg;
+        dg.header = st.header;
+        dg.replan_count = replanCount;
+        dg.fail_count = failCount;
+        dg.solve_time_ms = lastReplanMs;
+        dg.last_replan_ms = lastReplanMs;
+        diagPub->publish(dg);
+    }
+
     void plan(const Eigen::Vector3d &start, const Eigen::Vector3d &goal)
     {
+        ++replanCount;
+        planT0_ = std::chrono::steady_clock::now();
         std::vector<Eigen::Vector3d> route;
         sfc_gen::planPath<voxel_map::VoxelMap>(
             start, goal, voxelMap.getOrigin(), voxelMap.getCorner(),
@@ -318,6 +348,8 @@ public:
             RCLCPP_ERROR(get_logger(),
                 "Path front-end failed (no free 3D route; refusing straight-line fallback)");
             havePlanned = false;
+            ++failCount;
+            publishStatus("FAIL", false, "front-end failed");
             return;
         }
 
@@ -346,17 +378,25 @@ public:
                            magnitudeBounds, penaltyWeights, physicalParams)) {
             RCLCPP_ERROR(get_logger(), "GCOPTER setup failed");
             havePlanned = false;
+            ++failCount;
+            publishStatus("FAIL", false, "GCOPTER setup failed");
             return;
         }
         if (std::isinf(gcopter.optimize(traj, config.relCostTol))) {
             RCLCPP_ERROR(get_logger(), "GCOPTER optimize failed");
             havePlanned = false;
+            ++failCount;
+            publishStatus("FAIL", false, "optimize failed");
             return;
         }
+        lastReplanMs =
+            std::chrono::duration<double, std::milli>(
+                std::chrono::steady_clock::now() - planT0_).count();
 
         if (traj.getPieceNum() > 0) {
             trajStamp = this->now().seconds();
             visualizer.visualize(traj, route);
+            publishStatus("EXEC_TRAJ", true, "tracking");
             publishPath();
             lastPathPubSec_ = trajStamp;
             RCLCPP_INFO(get_logger(), "GCOPTER traj pieces=%d duration=%.2fs",
