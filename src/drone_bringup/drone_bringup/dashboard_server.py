@@ -97,6 +97,9 @@ from drone_bringup.planner_registry import (
 
 ROOT = Path(__file__).resolve().parent
 STATIC_DIR = ROOT / 'dashboard_static'
+# Intro site lives in the repo's docs/ (GitHub Pages source); mounted into the
+# console origin so the Flight Deck can link to it at /intro/.
+DOCS_DIR = None  # resolved lazily via ws_root()
 BG_USER_DIR = Path(os.environ.get('XDG_CONFIG_HOME', Path.home() / '.config')) / 'drone-ws' / 'backgrounds'
 # Wallpapers: cap upload size; SVG is rejected (scriptable → stored XSS when
 # served same-origin as image/svg+xml).
@@ -1730,6 +1733,31 @@ class Handler(BaseHTTPRequestHandler):
         except json.JSONDecodeError:
             return {}
 
+    def _serve_docs(self, rel: str) -> None:
+        """Serve files from <ws>/docs (the GitHub-Pages intro site)."""
+        docs = Path(ws_root()) / 'docs'
+        path = (docs / rel.lstrip('/')).resolve()
+        if not str(path).startswith(str(docs.resolve())) or not path.is_file():
+            self.send_error(404)
+            return
+        ctype = {
+            '.html': 'text/html; charset=utf-8',
+            '.png': 'image/png',
+            '.gif': 'image/gif',
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.svg': 'image/svg+xml',
+            '.css': 'text/css',
+            '.js': 'text/javascript',
+            '.md': 'text/plain; charset=utf-8',
+        }.get(path.suffix.lower(), 'application/octet-stream')
+        data = path.read_bytes()
+        self.send_response(200)
+        self.send_header('Content-Type', ctype)
+        self.send_header('Content-Length', str(len(data)))
+        self.end_headers()
+        self._write(data)
+
     def _serve_static(self, rel: str) -> None:
         if rel in ('', '/'):
             rel = '/index.html'
@@ -1831,6 +1859,16 @@ class Handler(BaseHTTPRequestHandler):
             return
         if u.path.startswith('/api/'):
             self._json(404, {'error': 'not found'})
+            return
+        # Intro site (repo docs/) mounted into the console origin.
+        if u.path in ('/intro', '/intro/'):
+            self._serve_docs('index.html')
+            return
+        if u.path.startswith('/intro/media/'):
+            self._serve_docs('media/' + u.path[len('/intro/media/'):])
+            return
+        if u.path.startswith('/media/'):
+            self._serve_docs('media/' + u.path[len('/media/'):])
             return
         self._serve_static(u.path)
 

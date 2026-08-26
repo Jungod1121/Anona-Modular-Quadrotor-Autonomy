@@ -87,7 +87,7 @@ img,svg{display:block;max-width:100%}
 }
 .eng-note{
   font-size:15px;
-  font-weight:500;
+  font-weight:600;
   color:var(--gray);
   margin-top:14px;
   letter-spacing:.01em;
@@ -147,7 +147,7 @@ img,svg{display:block;max-width:100%}
 .nav-links a:hover{color:var(--white)}
 .nav-cta{
   font-size:12px;
-  font-weight:500;
+  font-weight:600;
   color:var(--white);
   background:var(--blue);
   border-radius:var(--r-btn);
@@ -157,7 +157,7 @@ img,svg{display:block;max-width:100%}
 .nav-cta:hover{background:var(--blue-hover)}
 .nav-lang{
   font-size:12px;
-  font-weight:500;
+  font-weight:600;
   color:var(--gray);
   background:none;
   border:1px solid #3A3A3C;
@@ -240,7 +240,7 @@ img,svg{display:block;max-width:100%}
   line-height:1.02;
 }
 .hero-tag{
-  font-weight:500;
+  font-weight:600;
   color:var(--white);
   font-size:clamp(16px,1.4vw,22px);
 }
@@ -260,7 +260,7 @@ img,svg{display:block;max-width:100%}
 }
 .btn{
   font-size:15px;
-  font-weight:500;
+  font-weight:600;
   border-radius:var(--r-btn);
   padding:12px 26px;
   transition:all .2s ease;
@@ -345,7 +345,7 @@ img,svg{display:block;max-width:100%}
 }
 .arch-card .en{
   font-size:13px;
-  font-weight:500;
+  font-weight:600;
   color:var(--gray);
   letter-spacing:.04em;
 }
@@ -481,7 +481,7 @@ img,svg{display:block;max-width:100%}
   gap:7px;
   margin-top:20px;
   font-size:12px;
-  font-weight:500;
+  font-weight:600;
   color:var(--gray-2);
 }
 .badge .dot{width:7px;height:7px;border-radius:50%;background:#B6B6BC}
@@ -492,7 +492,7 @@ img,svg{display:block;max-width:100%}
   display:inline-block;
   margin-top:36px;
   font-size:15px;
-  font-weight:500;
+  font-weight:600;
   color:var(--blue);
   transition:color .2s ease;
 }
@@ -726,6 +726,42 @@ img,svg{display:block;max-width:100%}
 .finale-links a{font-size:13px;color:var(--gray);transition:color .2s ease}
 .finale-links a:hover{color:var(--white)}
 .finale-links .sep{color:#3A3A3C;font-size:13px}
+
+/* ==== Console integration (Apple tokens: glass nav CTA + steps tile) ==== */
+.nav-cta-console{
+  background:var(--white);
+  color:var(--black);
+  padding:6px 14px;
+  border-radius:980px;
+  font-weight:600;
+  transition:transform .18s cubic-bezier(0.16,1,0.3,1), opacity .2s ease;
+}
+.nav-cta-console:hover{color:var(--black);opacity:.85}
+.nav-cta-console:active{transform:scale(.96)}
+.console-steps{
+  margin-top:40px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+}
+.cstep{
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:22px 22px 20px;
+}
+.cstep .n{
+  font-size:12px;font-weight:600;color:var(--gray);
+  letter-spacing:.06em;
+}
+.cstep h3{font-size:17px;font-weight:600;margin:8px 0 6px;letter-spacing:-0.01em}
+.cstep p{font-size:13.5px;color:var(--gray-2)}
+.cstep code{
+  font-family:var(--font-mono);font-size:12px;color:var(--ink);
+  background:#E8E8ED;border-radius:6px;padding:2px 6px;white-space:nowrap;
+}
+.console-open-row{margin-top:28px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+@media (prefers-reduced-motion: reduce){.nav-cta-console,.btn{transition:none}}
 </style>
 <noscript><style>.rv{opacity:1;transform:none}</style></noscript>
 </head>
@@ -742,6 +778,7 @@ img,svg{display:block;max-width:100%}
     <li><a href="#acceptance" data-i18n="nav.accept">验收</a></li>
     <li><a href="#console" data-i18n="nav.console">快速开始</a></li>
     <li class="nav-lang-li"><button id="langBtn" class="nav-lang" type="button" data-i18n-title="nav.langTip" title="切换到英文">EN</button></li>
+    <li class="nav-cta-li"><a class="nav-cta nav-cta-console" data-console-link href="/" data-i18n="nav.openConsole">打开控制台</a></li>
     <li class="nav-cta-li"><a class="nav-cta" href="https://github.com/Jungod1121/Anona-Modular-Quadrotor-Autonomy" target="_blank" rel="noopener">GitHub ↗</a></li>
   </ul>
 </nav>
@@ -763,6 +800,7 @@ img,svg{display:block;max-width:100%}
     </p>
     <div class="hero-cta">
       <a class="btn btn-primary" href="#console" data-i18n="hero.cta1">快速开始</a>
+      <a class="btn btn-ghost" data-console-link href="/" data-i18n="hero.consoleCta">打开任务控制台 ↗</a>
       <a class="btn btn-ghost" href="https://www.bilibili.com/video/BV11Dgi6gE9A/" target="_blank" rel="noopener" data-i18n="hero.cta2">观看演示 ↗</a>
     </div>
   </div>
@@ -1284,6 +1322,29 @@ img,svg{display:block;max-width:100%}
       <p class="footnote" style="margin-top:24px"><span data-i18n="console.foot">Ubuntu 22.04 · ROS 2 Humble · colcon 构建。启动控制台：</span><span class="mono">ros2 run drone_bringup dashboard</span></p>
     </div>
 
+    <div class="console-steps rv">
+      <div class="cstep">
+        <div class="n">STEP 1</div>
+        <h3 data-i18n="cstep1t">启动仿真栈</h3>
+        <p><code>ros2 launch drone_bringup planner_sim.launch.py planner:=ego map:=official_forest</code></p>
+      </div>
+      <div class="cstep">
+        <div class="n">STEP 2</div>
+        <h3 data-i18n="cstep2t">打开控制台</h3>
+        <p><code>ros2 run drone_bringup dashboard</code> → <code>http://127.0.0.1:8765/</code></p>
+      </div>
+      <div class="cstep">
+        <div class="n">STEP 3</div>
+        <h3 data-i18n="cstep3t">选规划器，点 Start</h3>
+        <p data-i18n="cstep3d">地图与规划器即点即换，实时里程计与路径同屏。</p>
+      </div>
+    </div>
+
+    <div class="console-open-row rv">
+      <a class="btn btn-primary" data-console-link href="/" data-i18n="cta.openConsole">启动并打开控制台</a>
+      <span style="color:var(--gray);font-size:13px" data-i18n="cta.hint">控制台随栈本机运行（127.0.0.1:8765）— 在线访问此页时请先在本地启动</span>
+    </div>
+
     <div class="terminal rv" role="img" data-i18n-aria="console.termAria" aria-label="快速开始命令">
       <div class="terminal-bar">
         <span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span>
@@ -1341,7 +1402,12 @@ var I18N = {
     "hero.t1": "一套平台。", "hero.t2": "八大规划。",
     "hero.tag": "One plant. Many planners. Fair comparison.",
     "hero.sub": "统一被控对象，可插拔规划器，在同一套标准下公平对比 —— 一个基于 ROS 2 Humble 的四旋翼自主飞行仿真工作台。",
-    "hero.cta1": "快速开始", "hero.cta2": "观看演示 ↗",
+    "hero.cta1": "快速开始", "hero.consoleCta": "打开任务控制台 ↗", "hero.cta2": "观看演示 ↗",
+    "nav.openConsole": "打开控制台",
+    "cstep1t": "启动仿真栈", "cstep2t": "打开控制台", "cstep3t": "选规划器，点 Start",
+    "cstep3d": "地图与规划器即点即换，实时里程计与路径同屏。",
+    "cta.openConsole": "启动并打开控制台",
+    "cta.hint": "控制台随栈本机运行（127.0.0.1:8765）— 在线访问此页时请先在本地启动",
     "stat1l": "规划器 · Path A–H", "stat2l": "验收场景一次通过", "stat3l": "动力学积分频率", "stat4l": "过程化生成地图",
     "arch.eyebrow": "Architecture · 架构",
     "arch.title": "平台不变，规划可变。",
@@ -1433,7 +1499,12 @@ var I18N = {
     "hero.t1": "One plant.", "hero.t2": "Eight planners.",
     "hero.tag": "一套平台。八大规划。公平对比。",
     "hero.sub": "One fixed plant, swappable planners, compared under the same standard — a modular quadrotor autonomy workbench on ROS 2 Humble.",
-    "hero.cta1": "Quick Start", "hero.cta2": "Watch the demo ↗",
+    "hero.cta1": "Get started", "hero.consoleCta": "Open Mission Console ↗", "hero.cta2": "Watch the demo ↗",
+    "nav.openConsole": "Console",
+    "cstep1t": "Launch the stack", "cstep2t": "Open the console", "cstep3t": "Pick a planner, press Start",
+    "cstep3d": "Swap maps and planners on the fly with live odometry and path overlays.",
+    "cta.openConsole": "Start & open the console",
+    "cta.hint": "The console runs locally with the stack (127.0.0.1:8765) — start it before using this page online.",
     "stat1l": "Planners · Path A–H", "stat2l": "Acceptance scenarios passed", "stat3l": "Dynamics integration rate", "stat4l": "Procedural maps",
     "arch.eyebrow": "ARCHITECTURE",
     "arch.title": "The platform stays. The planners change.",
@@ -1686,6 +1757,33 @@ var I18N = {
     var fn=draws[svg.getAttribute('data-map')];
     if(fn)fn(svg);
   });
+})();
+</script>
+
+<script>
+/* Console link resolver:
+   - served from the Flight Deck origin (/intro) -> same-origin "/"
+   - served from GitHub Pages -> point at the local console and hint why */
+(function () {
+  var links = document.querySelectorAll('[data-console-link]');
+  if (!links.length) return;
+  function apply(href, title) {
+    Array.prototype.forEach.call(links, function (a) {
+      a.setAttribute('href', href);
+      if (title) a.setAttribute('title', title);
+    });
+  }
+  fetch('/api/status', { method: 'GET' })
+    .then(function (r) {
+      if (r.ok) apply('/', null);
+      else throw new Error('not console origin');
+    })
+    .catch(function () {
+      var zh = (document.documentElement.lang || 'zh').indexOf('zh') === 0;
+      apply('http://127.0.0.1:8765/',
+        zh ? '需要本地先启动：ros2 run drone_bringup dashboard'
+           : 'Start it locally first: ros2 run drone_bringup dashboard');
+    });
 })();
 </script>
 </body>

@@ -277,6 +277,15 @@ html[data-ambiance="day"] .rail__panel--foot {
   gap: 2px;
 }
 .rail__brand { display: flex; align-items: center; gap: 12px; padding: 2px 4px; }
+.rail__intro {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--muted, #86868B);
+  text-decoration: none;
+  transition: color .2s ease;
+}
+.rail__intro:hover { color: var(--text, #1D1D1F); }
 .rail__logo {
   width: 40px;
   height: 40px;
